@@ -763,17 +763,7 @@
 .mx-btn-solid{background:#111;border:1px solid #111;color:#fff;}
 
 
-/* Responsive */
-@media (max-width: 1200px){
-  .mx-main{ grid-template-columns: 1fr; }
-}
-@media (max-width: 768px){
-  .mx-w-title{ font-size: 20px; }
-  .mx-liftbtn{ font-size: 14px; }
-  .mx-pricecard{ font-size: 22px; }
-  .mx-gridHead{ grid-template-columns: 90px repeat(9, 1fr); }
-  .mx-gridBody{ grid-template-columns: 90px repeat(9, 1fr); }
-}
+
 
 
 /* ===== Auth Modal (Login/Register) ===== */
@@ -897,4 +887,33 @@
 }
 #mxAuthModal .btn-close:hover {
   opacity: 1;
+}
+
+.mx-leftbottom {
+  display: block;  /* show top button initially */
+}
+
+.cal-sub-btn {
+  display: none;   /* hide bottom button initially */
+}
+/* Responsive */
+@media (max-width: 1200px){
+  .mx-main{ grid-template-columns: 1fr; }
+}
+@media (max-width: 768px){
+  .mx-w-title{ font-size: 20px; }
+  .mx-liftbtn{ font-size: 14px; }
+  .mx-pricecard{ font-size: 22px; }
+  .mx-gridHead{ grid-template-columns: 90px repeat(9, 1fr); }
+  .mx-gridBody{ grid-template-columns: 90px repeat(9, 1fr); }
+
+  
+.mx-leftbottom {
+    display: block; /* ensure top button shows by default in mobile */
+  }
+  .cal-sub-btn {
+    display: none; /* hide bottom button by default */
+  }
+
+
 }

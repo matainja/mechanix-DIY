@@ -7,7 +7,7 @@
             rgb(119, 17, 23) 100%
         );
         /* padding: 7px 66px; */
-        font-size: 14px;
+        font-size: 11px;
         font-weight: 600;
         letter-spacing: 2px;
         transition: all 0.3s;
@@ -26,7 +26,7 @@
 
     .hero-title {
         font-size: 18px;
-        margin-bottom: 19.2rem;
+        margin-bottom: 356px;
     }
 
     .hero-buttons {
@@ -48,7 +48,7 @@
     }
 
     .footer-content {
-        flex-direction: column;
+        /* flex-direction: column; */
         text-align: center;
     }
 
@@ -82,12 +82,115 @@
     }
 
     .hero-section {
-        height: 59vh;
+        height: 74vh;
     }
     .services-icons {
         display: none;
     }
-    .footer-center{
-      display: none;
+    .footer-center {
+        display: none !important;
     }
+
+    .footer-content {
+        justify-content: space-between !important;
+    }
+
+    
+    .social-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+   .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;        /* 👈 AUTO HEIGHT */
+    
+    background: #111;
+    z-index: 9999 !important;
+    padding: 20px;
+    z-index: 1050;
+    transition: right 0.3s ease;
+    display: block !important;
+    overflow-y: auto;
+}
+
+/* Override Bootstrap collapse */
+.mobile-sidebar.collapse {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.mobile-sidebar.collapsing {
+    height: 100% !important;
+}
+
+.mobile-sidebar.show {
+    right: 0;
+}
+
+.mobile-sidebar .navbar-nav {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mobile-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-sidebar li {
+    margin-bottom: 12px;
+}
+
+.mobile-services-header,
+.mobile-footer-header {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    color: #dc2626;
+    text-transform: uppercase;
+}
+
+.mobile-sidebar a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.mobile-sidebar a:hover {
+    color: #fff;
+}
+
+
+    
+.navbar .btn-book-now {
+    display: none;
+}
+ .mobile-only {
+        display: block;
+    }
+
+   
+.membership-section {
+  
+    z-index: -1;
+}
+
+
+.hero-content {
+    z-index: 0; 
+    margin-top: 10px;
+}
+
+.rentals-wrap
+{
+z-index:0;
+}
+
+    
 }

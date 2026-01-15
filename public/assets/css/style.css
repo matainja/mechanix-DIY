@@ -560,6 +560,23 @@ body {
   letter-spacing: 0;
 }
 
+.mobile-service-link {
+    display: block;
+    color: #ccc;
+    text-decoration: none;
+    padding: 8px 0;
+    font-size: 15px;
+}
+
+.mobile-service-link:hover {
+    color: #fff;
+}
+
+.mobile-only {
+    display: none;
+}
+
+
 
 
 

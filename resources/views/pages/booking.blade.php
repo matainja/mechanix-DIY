@@ -199,6 +199,9 @@
                     <span><i class="mx-box grey"></i> Unavailable</span>
                 </div>
             </div>
+            <div class="mx-leftbottom cal-sub-btn">
+                    <button class="mx-bookbig" id="openDayCalendar">Book Now</button>
+                </div>
 
         </div>
         <!-- </div> -->
