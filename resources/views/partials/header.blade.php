@@ -40,7 +40,7 @@
                 </li>
                 <!-- SERVICES TITLE (MOBILE ONLY) -->
                 <li class="nav-item mobile-only mt-4 mb-2">
-                    <span class="text-white fw-bold">SERVICES</span>
+                    <span class="text-white fw-bold">RENTALS</span>
                 </li>
 
                 <!-- SERVICES LINKS (MOBILE ONLY) -->
