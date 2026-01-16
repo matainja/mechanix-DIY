@@ -64,10 +64,32 @@
                     <a class="nav-link mobile-service-link" href="{{ route('coming') }}">Alignment</a>
                 </li>
 
-                <li class="mobile-footer-header mobile-only">More</li>
-                <li class="mobile-only"><a href="#">Contact Us</a></li>
-                <li class="mobile-only"><a href="#">Privacy Policy</a></li>
+                <div class="dropdown">
 
+
+                    <li class="nav-item dropdown mobile-only mt-3">
+
+                        <!-- Dropdown button (looks like normal menu item) -->
+                        <a class="nav-link dropdown-toggle mobile-footer-header"
+                            href="#"
+                            id="mobileMoreDropdown"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            More
+                        </a>
+
+                        <!-- Dropdown menu -->
+                        <ul class="dropdown-menu w-100" aria-labelledby="mobileMoreDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#">Contact Us</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Privacy Policy</a>
+                            </li>
+                        </ul>
+
+                    </li>
 
 
             </ul>

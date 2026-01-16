@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ===== Elements =====
 const openBtn = document.getElementById("openDayCalendar");
+const openBtnMb = document.getElementById("openDayCalendarMb");
 const calendarWrap = document.getElementById("calendarWrap");
 const gridWrap = document.querySelector(".mx-gridWrap");
 const gridMini = document.querySelector(".mx-legendMini");
@@ -521,27 +522,47 @@ fpInstance = flatpickr("#bookingDate", {
     },
 
     onChange: function (selectedDates, dateStr, fp) {
-        // Block selecting unavailable day based on current package
         const ok = isDateAvailableByPackage(dateStr, selectedPackHours);
+        // console.log("date valid?", ok);
 
         if (!ok) {
             selectedDate = null;
+
+            // TOP button
             openBtn.textContent = "Pick a valid date";
             openBtn.disabled = true;
             openBtn.classList.remove("enabled");
+
+            // MOBILE button
+            openBtnMb.textContent = "Pick a valid date";
+            openBtnMb.disabled = true;
+            openBtnMb.classList.remove("enabled");
+
             return;
         }
 
         selectedDate = dateStr || null;
 
         if (selectedDate) {
+            // TOP button
             openBtn.textContent = `Book for ${selectedDate}`;
             openBtn.disabled = false;
             openBtn.classList.add("enabled");
+
+            // MOBILE button
+            openBtnMb.textContent = `Book for ${selectedDate}`;
+            openBtnMb.disabled = false;
+            openBtnMb.classList.add("enabled");
         } else {
+            // TOP button
             openBtn.textContent = "Pick a date";
             openBtn.disabled = true;
             openBtn.classList.remove("enabled");
+
+            // MOBILE button
+            openBtnMb.textContent = "Pick a date";
+            openBtnMb.disabled = true;
+            openBtnMb.classList.remove("enabled");
         }
     },
 });
@@ -658,9 +679,22 @@ openBtn.addEventListener("click", () => {
     showTimeView();
     renderTimeSlots(selectedDate);
 });
+openBtnMb.addEventListener("click", () => {
+    if (!selectedDate) return;
+    gridWrap.style.display = "none";
+    gridMini.style.display = "none";
+    openBtnMb.style.display = "none";
+
+    showTimeView();
+    renderTimeSlots(selectedDate);
+});
 
 // Back to calendar
-backBtn.addEventListener("click", showDateView);
+backBtn.addEventListener("click", () => {
+    showDateView();
+    openBtnMb.style.display = "block";
+    
+});
 
 // Modal close handlers
 modalClose.addEventListener("click", closeModal);
@@ -761,6 +795,10 @@ document.querySelectorAll(".mx-liftbtn").forEach((btn) => {
         // update bullet points
         const ul = document.getElementById("mxLiftPoints");
         ul.innerHTML = lift.points.map((p) => `<li>${p}</li>`).join("");
+
+        setTimeout(() => {
+            scrollToEl(document.getElementById("hoursSection"));
+        }, 200);
     });
 });
 
@@ -788,6 +826,10 @@ document.querySelectorAll(".mx-pricecard").forEach((card) => {
         if (selectedDate) {
             renderTimeSlots(selectedDate);
         }
+
+        setTimeout(() => {
+            scrollToEl(document.getElementById("calendarSection"));
+        }, 200);
     });
 });
 
@@ -961,3 +1003,100 @@ document.addEventListener("DOMContentLoaded", function () {
         mxContinueBookingAfterAuth();
     });
 });
+
+// Mobile dropdown lift selector
+document
+    .querySelectorAll("#mxLiftDropdownMenu .dropdown-item")
+    .forEach((item) => {
+        item.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const lift = this.dataset.lift;
+            const label = this.innerText;
+
+            // Update dropdown text
+            document.getElementById("mxLiftDropdownBtn").innerText = label;
+
+            // Trigger existing button logic
+            const btn = document.querySelector(
+                `.mx-liftbtn[data-lift="${lift}"]`
+            );
+            if (btn) btn.click();
+        });
+    });
+
+function syncBookButtonsVisibility() {
+    const topWrap = document.getElementById("leftupButton");
+    const bottomWrap = document.querySelector(".cal-sub-btn");
+
+    const topBtn = topWrap?.querySelector("button");
+    const bottomBtn = bottomWrap?.querySelector("button");
+
+    const topVisible =
+        topWrap && window.getComputedStyle(topWrap).display !== "none";
+    const bottomVisible =
+        bottomWrap && window.getComputedStyle(bottomWrap).display !== "none";
+
+    console.log("top:", topVisible, "bottom:", bottomVisible);
+
+    // Default: disable both
+    if (topBtn) {
+        topBtn.disabled = true;
+        topBtn.style.pointerEvents = "none";
+    }
+
+    if (bottomBtn) {
+        bottomBtn.disabled = true;
+        bottomBtn.style.pointerEvents = "none";
+    }
+
+    // Enable ONLY the visible one
+    if (topVisible && topBtn) {
+        topBtn.disabled = false;
+        topBtn.style.pointerEvents = "auto";
+    } else if (bottomVisible && bottomBtn) {
+        bottomBtn.disabled = false;
+        bottomBtn.style.pointerEvents = "auto";
+    }
+}
+
+syncBookButtonsVisibility();
+// On resize
+window.addEventListener("resize", syncBookButtonsVisibility);
+
+// scrolling for mobile view
+function scrollToEl(el) {
+    if (!el) return;
+    el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+    });
+}
+
+function scrollToEl(el, offset = 70) {
+    if (!el) return;
+
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({
+        top: y,
+        behavior: "smooth",
+    });
+}
+
+const BookClose = document.getElementById("bookclose");
+
+function toggleBookClose() {
+    if (!BookClose) return;
+
+    if (window.innerWidth < 768) {
+        BookClose.style.display = "block";
+    } else {
+        BookClose.style.display = "none";
+    }
+}
+
+// Run on page load
+toggleBookClose();
+
+// Run on resize
+window.addEventListener("resize", toggleBookClose);

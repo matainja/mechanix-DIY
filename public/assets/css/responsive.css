@@ -1,23 +1,14 @@
 @media (max-width: 768px) {
     .btn-member {
-        background-color: #dd2b31;
-        background: linear-gradient(
-            180deg,
-            rgba(221, 43, 49, 1) 0%,
-            rgb(119, 17, 23) 100%
-        );
-        /* padding: 7px 66px; */
         font-size: 11px;
         font-weight: 600;
-        letter-spacing: 2px;
-        transition: all 0.3s;
-        border-radius: 0;
-        border-style: solid;
-        border-width: 2px 2px 2px 2px;
-        border-color: #e15055 #791218 #791218 #791218;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        letter-spacing: 0.5px;
         padding: 5px 15px;
         height: auto;
+    }
+
+    .footer {
+        padding: 1.2rem 0;
     }
 
     .hero-section {
@@ -62,7 +53,7 @@
     .logo-img {
         height: auto;
         width: auto;
-        max-width: 200px;
+        max-width: 215px;
         object-fit: contain;
         opacity: 32.9;
         transform: none;
@@ -95,102 +86,106 @@
         justify-content: space-between !important;
     }
 
-    
     .social-icon {
-        width: 34px;
-        height: 34px;
+        width: 26px;
+        height: 26px;
+    }
+    .footer-left {
+        font-size: 14px;
     }
 
-   .mobile-sidebar {
-    position: fixed;
-    top: 0;
-    right: -300px;
-    width: 300px;
-    height: 100%;        /* 👈 AUTO HEIGHT */
-    
-    background: #111;
-    z-index: 9999 !important;
-    padding: 20px;
-    z-index: 1050;
-    transition: right 0.3s ease;
-    display: block !important;
-    overflow-y: auto;
-}
+    .mobile-sidebar {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 300px;
+        height: 100vh; /* 👈 AUTO HEIGHT */
 
-/* Override Bootstrap collapse */
-.mobile-sidebar.collapse {
-    display: block !important;
-    visibility: visible !important;
-}
+        background: #111;
+        z-index: 9999 !important;
+        padding: 20px;
 
-.mobile-sidebar.collapsing {
-    height: 100% !important;
-}
+        transition: right 0.3s ease;
+        display: block !important;
+        overflow-y: auto;
+    }
 
-.mobile-sidebar.show {
-    right: 0;
-}
+    /* Override Bootstrap collapse */
+    .mobile-sidebar.collapse {
+        display: block !important;
+        visibility: visible !important;
+    }
 
-.mobile-sidebar .navbar-nav {
-    flex-direction: column;
-    gap: 12px;
-}
+    .mobile-sidebar.collapsing {
+        height: 100% !important;
+    }
 
-.mobile-sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+    .mobile-sidebar.show {
+        right: 0;
+    }
 
-.mobile-sidebar li {
-    margin-bottom: 12px;
-}
+    .mobile-sidebar .navbar-nav {
+        flex-direction: column;
+        gap: 12px;
+    }
 
-.mobile-services-header,
-.mobile-footer-header {
-    font-weight: 700;
-    font-size: 1rem;
-    margin-top: 12px;
-    margin-bottom: 6px;
-    color: #dc2626;
-    text-transform: uppercase;
-}
+    .mobile-sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
 
-.mobile-sidebar a {
-    color: #ccc;
-    text-decoration: none;
-    font-size: 15px;
-}
+    .mobile-sidebar li {
+        margin-bottom: 12px;
+    }
 
-.mobile-sidebar a:hover {
-    color: #fff;
-}
+    .mobile-services-header,
+    .mobile-footer-header {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-top: 12px;
+        margin-bottom: 6px;
+        color: #dc2626;
+        text-transform: uppercase;
+    }
 
+    .mobile-sidebar a {
+        color: #ccc;
+        text-decoration: none;
+        font-size: 15px;
+    }
 
-    
-.navbar .btn-book-now {
-    display: none;
-}
- .mobile-only {
+    .mobile-sidebar a:hover {
+        color: #fff;
+    }
+
+    .navbar .btn-book-now {
+        display: none;
+    }
+    .mobile-only {
         display: block;
     }
 
+    .membership-section {
+        z-index: 0;
+    }
+
+    .hero-content {
+        z-index: 0;
+        margin-top: 10px;
+    }
+
+    .rentals-wrap {
+        z-index: 0;
+    }
+
+    .footer .container, .footer .footer-content {
+ 
+    z-index: 0;
+}
+.navbar-nav .dropdown-menu {
    
-.membership-section {
-  
-    z-index: -1;
+    background-color: #121212;
 }
-
-
-.hero-content {
-    z-index: 0; 
-    margin-top: 10px;
-}
-
-.rentals-wrap
-{
-z-index:0;
-}
-
-    
+ 
 }

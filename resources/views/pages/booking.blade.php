@@ -17,6 +17,49 @@
             <!-- <div class="mx-w-title" data-ws="2">Workstation II</div> -->
         </div>
 
+        <!-- Mobile Lift Selector -->
+        <div class="mx-lift-dropdown d-md-none mb-3">
+            <div class="dropdown">
+                <button class="mx-liftbtn active dropdown-toggle w-100 d-flex align-items-center justify-content-between"
+                    type="button"
+                    id="mxLiftDropdownBtn"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Select Lift Type
+                </button>
+
+                <ul class="dropdown-menu w-100" id="mxLiftDropdownMenu">
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" data-lift="four" data-icon="{{ asset('assets/images/icons/four-post.png') }}" href="#">
+                            Four-Post Lift
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" data-lift="two" data-icon="{{ asset('assets/images/icons/two-post.png') }}" href="#">
+                            Two-Post Lift
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" data-lift="scissor" data-icon="{{ asset('assets/images/icons/scissor.png') }}" href="#">
+                            Scissor Lift
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" data-lift="flat" data-icon="{{ asset('assets/images/icons/moto-lift.png') }}" href="#">
+                            Motorcycle Lift
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" data-lift="flat2" data-icon="{{ asset('assets/images/icons/alignment-rack.png') }}" href="#">
+                            Alignment Rack
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+
         <!-- Lift type buttons row -->
         <div class="mx-liftbar">
             <button class="mx-liftbtn active " data-lift="four">
@@ -51,8 +94,8 @@
         <div class="mx-main">
 
             <!-- LEFT: pricing + lift preview -->
-            <div class="mx-left">
-                <div class="mx-pricecard mx-selected" data-hours="1">
+            <div class="mx-left" id="liftSection">
+                <div class="mx-pricecard mx-selected" id="hoursSection" data-hours="1">
                     <span class="mx-hours">1 Hour</span>
                     <span class="mx-price">$45</span>
                 </div>
@@ -82,14 +125,14 @@
 
                 </div>
 
-                <div class="mx-leftbottom">
+                <div class="mx-leftbottom" id="leftupButton">
                     <button class="mx-bookbig" id="openDayCalendar">Book Now</button>
 
                 </div>
             </div>
 
             <!-- RIGHT: calendar -->
-            <div class="mx-right">
+            <div class="mx-right" id="calendarSection">
 
                 <!--  Flatpickr input (hidden by CSS) -->
                 <div class="calendar-box">
@@ -179,7 +222,7 @@
 
                         <div class="mx-modal-actions">
                             <button type="button" class="mx-btn-outline" id="mxModalCancel">Cancel</button>
-                            <button type="button" class="mx-btn-solid" id="mxModalConfirm">Confirm booking</button>
+                            <button type="button" class="mx-btn-solid" id="mxModalConfirm">Confirm</button>
                         </div>
                     </div>
                 </div>
@@ -198,10 +241,12 @@
                     <span><i class="mx-box red"></i> Booked</span>
                     <span><i class="mx-box grey"></i> Unavailable</span>
                 </div>
-            </div>
-            <div class="mx-leftbottom cal-sub-btn">
-                    <button class="mx-bookbig" id="openDayCalendar">Book Now</button>
+                <!-- for mobile view -->
+                <div class="mx-leftbottom cal-sub-btn" id="bookclose">
+                    <button class="mx-bookbig" id="openDayCalendarMb">Book Now</button>
                 </div>
+            </div>
+
 
         </div>
         <!-- </div> -->
@@ -215,8 +260,8 @@
     data-logged-in="{{ auth()->check() ? '1' : '0' }}">
 </div>
 <div id="mx-routes"
-     data-login-url="{{ route('popup.login') }}"
-     data-register-url="{{ route('popup.register') }}">
+    data-login-url="{{ route('popup.login') }}"
+    data-register-url="{{ route('popup.register') }}">
 </div>
 {{-- Auth Modal --}}
 <div class="modal fade" id="mxAuthModal" tabindex="-1" aria-hidden="true">

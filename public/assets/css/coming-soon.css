@@ -61,3 +61,10 @@
       background: linear-gradient(180deg, #ff3b3b, #b80000);
       border-color: rgba(255,0,0,.35);
     }
+
+    @media(max-width: 768px)
+    {
+      .cs-wrap {
+        min-height: calc(100vh - 119px);
+    }
+    }
