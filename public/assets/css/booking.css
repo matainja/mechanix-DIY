@@ -81,11 +81,15 @@
     cursor: pointer;
     user-select: none;
 
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
         0 10px 18px rgba(0, 0, 0, 0.25);
 
-    transition: transform 0.18s ease, box-shadow 0.18s ease,
-        border-color 0.18s ease, filter 0.18s ease;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        filter 0.18s ease;
     overflow: hidden;
 }
 
@@ -110,18 +114,24 @@
     height: 40px;
     object-fit: contain;
     filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.35));
-    transition: transform 0.18s ease, filter 0.18s ease;
+    transition:
+        transform 0.18s ease,
+        filter 0.18s ease;
 }
 .mx-liftbtn span {
-    transition: transform 0.18s ease, color 0.18s ease;
+    transition:
+        transform 0.18s ease,
+        color 0.18s ease;
 }
 
 /* ===== Hover ===== */
 .mx-liftbtn:hover {
     transform: translateY(-2px);
     border-color: rgba(220, 38, 38, 0.35);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 14px 26px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(220, 38, 38, 0.12);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 14px 26px rgba(0, 0, 0, 0.35),
+        0 0 0 2px rgba(220, 38, 38, 0.12);
 }
 .mx-liftbtn:hover::before {
     opacity: 0.85;
@@ -138,8 +148,10 @@
 .mx-liftbtn.active {
     border-color: rgba(220, 38, 38, 0.65);
     background: linear-gradient(#3a1212, #140a0a);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 16px 30px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(220, 38, 38, 0.25),
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 16px 30px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(220, 38, 38, 0.25),
         0 0 22px rgba(220, 38, 38, 0.18);
 }
 .mx-liftbtn.active::before {
@@ -161,8 +173,10 @@
 /* ===== Keyboard focus ===== */
 .mx-liftbtn:focus-visible {
     outline: none;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 16px 30px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.18),
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 16px 30px rgba(0, 0, 0, 0.4),
+        0 0 0 3px rgba(255, 255, 255, 0.18),
         0 0 0 6px rgba(220, 38, 38, 0.2);
 }
 
@@ -236,17 +250,24 @@
     user-select: none;
 
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
         0 8px 18px rgba(0, 0, 0, 0.35);
 
-    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease,
-        filter 0.18s ease, border-color 0.18s ease;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        opacity 0.18s ease,
+        filter 0.18s ease,
+        border-color 0.18s ease;
 }
 
 /* Selected state */
 .mx-pricecard.mx-selected {
     background: linear-gradient(#3b4048, #1d2026);
-    box-shadow: inset 0 0 0 2px #fff, 0 10px 24px rgba(0, 0, 0, 0.35);
+    box-shadow:
+        inset 0 0 0 2px #fff,
+        0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 /* Dimmed cards */
@@ -257,7 +278,8 @@
 /* Hover (only if not selected) */
 .mx-pricecard:hover {
     transform: translateY(-2px);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
         0 12px 26px rgba(0, 0, 0, 0.45);
 }
 
@@ -266,7 +288,8 @@
     background: linear-gradient(180deg, #3a4048, #1c2026);
     border-color: #e12b2b;
 
-    box-shadow: inset 0 0 0 1px rgba(77, 163, 255, 0.35),
+    box-shadow:
+        inset 0 0 0 1px rgba(77, 163, 255, 0.35),
         0 14px 28px rgba(0, 0, 0, 0.55);
 
     transform: translateY(-1px);
@@ -361,6 +384,7 @@
 }
 .mx-pickedInfo {
     color: black;
+    font-size: 0.6rem;
 }
 .mx-gridHead {
     display: grid;
@@ -608,8 +632,10 @@
 
     border: 1px solid rgba(0, 0, 0, 0.6) !important;
 
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.25), 0 2px 3px rgba(0, 0, 0, 0.35) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+        0 2px 3px rgba(0, 0, 0, 0.35) !important;
 
     background: linear-gradient(#f2f2f2, #d8d8d8) !important;
     color: #111 !important;
@@ -658,13 +684,7 @@
 .mx-timeView {
     width: 100%;
 }
-.mx-timeTop {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin: 8px 0 14px;
-}
+
 
 .mx-backBtn {
     border: 1px solid #ddd;
@@ -689,12 +709,6 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
-}
-
-@media (max-width: 768px) {
-    .mx-timeGrid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 /* Slot button */
@@ -754,6 +768,7 @@
 }
 .mx-confirmBtn:not(:disabled) {
     opacity: 1;
+    font-size: 0.6rem;
 }
 
 /* ===== Slots layout ===== */
@@ -763,6 +778,7 @@
     justify-content: space-between;
     gap: 12px;
     margin: 8px 0 14px;
+    font-size: 0.6rem;
 }
 .mx-backBtn {
     border: 1px solid #ddd;
@@ -786,11 +802,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
 }
-@media (max-width: 768px) {
-    .mx-timeGrid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
+
 
 .mx-slot {
     border: 1px solid #ddd;
@@ -842,9 +854,7 @@
 .mx-confirmBtn:disabled {
     cursor: not-allowed;
 }
-.mx-confirmBtn:not(:disabled) {
-    opacity: 1;
-}
+
 
 /* ===== Modal ===== */
 .mx-modal-overlay {
@@ -1121,9 +1131,8 @@
     opacity: 1;
 }
 
-.cal-sub-btn
-{
-  display: none;
+.cal-sub-btn {
+    display: none;
 }
 
 .mx-lift-dropdown {
@@ -1162,12 +1171,17 @@
     .mx-main {
         padding: 0px 0px 20px 0px;
     }
-.cal-sub-btn
-{
-  display: block;
-}
+    .cal-sub-btn {
+        display: block;
+    }
 
-    #leftupButton{
-  display: none;
-}
+    #leftupButton {
+        display: none;
+    }
+
+    .mx-timeGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        font-size: 0.6rem;
+    }
+   
 }
