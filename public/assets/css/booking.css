@@ -384,7 +384,7 @@
 }
 .mx-pickedInfo {
     color: black;
-    font-size: 0.6rem;
+    font-size: 14px;
 }
 .mx-gridHead {
     display: grid;
@@ -768,7 +768,7 @@
 }
 .mx-confirmBtn:not(:disabled) {
     opacity: 1;
-    font-size: 0.6rem;
+    font-size: 14px;
 }
 
 /* ===== Slots layout ===== */
@@ -778,7 +778,7 @@
     justify-content: space-between;
     gap: 12px;
     margin: 8px 0 14px;
-    font-size: 0.6rem;
+    font-size: 14px;
 }
 .mx-backBtn {
     border: 1px solid #ddd;
@@ -1008,128 +1008,7 @@
     color: #fff;
 }
 
-/* ===== Auth Modal (Login/Register) ===== */
-#mxAuthModal .modal-dialog {
-    max-width: 460px;
-}
 
-#mxAuthModal .modal-content {
-    border: 0;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-}
-
-#mxAuthModal .modal-header {
-    border-bottom: 0;
-    padding: 18px 20px 10px;
-}
-
-#mxAuthModal .modal-title {
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: 0.2px;
-}
-
-#mxAuthModal .modal-body {
-    padding: 14px 20px 20px;
-}
-
-/* Tabs */
-#mxAuthModal .nav-tabs {
-    border-bottom: 0;
-    gap: 10px;
-}
-
-#mxAuthModal .nav-tabs .nav-link {
-    border: 0;
-    border-radius: 999px;
-    padding: 10px 14px;
-    font-weight: 700;
-    font-size: 14px;
-    color: #6b7280;
-    background: #8b919d;
-    transition: all 0.2s ease;
-}
-
-#mxAuthModal .nav-tabs .nav-link:hover {
-    background: #e5e7eb;
-    color: #111827;
-}
-
-#mxAuthModal .nav-tabs .nav-link.active {
-    background: #111827;
-    color: #fff;
-}
-
-/* Form labels and inputs */
-#mxAuthModal .form-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 6px;
-}
-
-#mxAuthModal .form-control {
-    border-radius: 12px;
-    padding: 11px 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: none;
-}
-
-#mxAuthModal .form-control:focus {
-    border-color: #111827;
-    box-shadow: 0 0 0 0.18rem rgba(17, 24, 39, 0.12);
-}
-
-/* Buttons */
-#mxAuthModal .btn {
-    border-radius: 12px;
-    padding: 11px 12px;
-    font-weight: 800;
-}
-
-#mxAuthModal .btn-primary {
-    background: #111827;
-    border-color: #111827;
-}
-
-#mxAuthModal .btn-primary:hover {
-    background: #0b1220;
-    border-color: #0b1220;
-}
-
-#mxAuthModal .btn-success {
-    background: #16a34a;
-    border-color: #16a34a;
-}
-
-#mxAuthModal .btn-success:hover {
-    background: #15803d;
-    border-color: #15803d;
-}
-
-/* Alert style */
-#mxAuthModal .alert {
-    border-radius: 12px;
-    padding: 10px 12px;
-    font-size: 13px;
-    margin-bottom: 12px;
-}
-
-/* Smooth tab content spacing */
-#mxAuthModal .tab-content {
-    margin-top: 12px;
-}
-
-/* Optional: make close button a bit softer */
-#mxAuthModal .btn-close {
-    transform: scale(0.95);
-    opacity: 0.7;
-}
-#mxAuthModal .btn-close:hover {
-    opacity: 1;
-}
 
 .cal-sub-btn {
     display: none;

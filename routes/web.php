@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthPopupController;
 use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ForgotPasswordController;
 
 
 //Page Controller
@@ -34,23 +35,35 @@ Route::get('/coming-soon', [PageController::class, 'comingSoon'])->name('coming'
 
 
 //admin
-Route::get('/admin', [AdminController::class, 'home'])->name('admin.home');
-Route::get('/admin/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
-// Route::get('/admin/holidays', [AdminController::class, 'holidays'])->name('admin.holidays');
-Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-//admin panel
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
+        Route::get('/', [AdminController::class, 'home'])->name('home');
 
-    Route::post('/holidays/store-single', [HolidayController::class, 'storeSingle'])->name('holidays.storeSingle');
-    Route::post('/holidays/store-weekly', [HolidayController::class, 'storeWeekly'])->name('holidays.storeWeekly');
+        Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
 
-    Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.delete');
-});
+        Route::get('/users', [AdminController::class, 'users'])->name('users');
+
+        // Holidays
+        Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
+
+        Route::post('/holidays/store-single', [HolidayController::class, 'storeSingle'])->name('holidays.storeSingle');
+
+        Route::post('/holidays/store-weekly', [HolidayController::class, 'storeWeekly'])->name('holidays.storeWeekly');
+
+        Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.delete');
+
+    });
 
 
 //Loin & Register Popup
 
 Route::post('/popup-login', [AuthPopupController::class, 'login'])->name('popup.login');
 Route::post('/popup-register', [AuthPopupController::class, 'register'])->name('popup.register');
+Route::post('/logout', [AuthPopupController::class, 'logout'])->name('logout');
+
+Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp']);
+Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
+Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword']);

@@ -31,19 +31,20 @@ class AuthPopupController extends Controller
 
     public function register(Request $request)
     {
+
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'mobile_no' => 'required|string|max:30',
-            'address' => 'required|string|max:1000',
+            // 'address' => 'required|string|max:1000',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
-            'name' => $data['name'],
+            // 'name' => $data['name'],
             'email' => $data['email'],
             'mobile_no' => $data['mobile_no'],
-            'address' => $data['address'],
+            // 'address' => $data['address'],
             'password' => Hash::make($data['password']),
         ]);
 
@@ -55,5 +56,14 @@ class AuthPopupController extends Controller
             'csrf' => csrf_token(), //  send fresh token
         ]);
 
+    }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

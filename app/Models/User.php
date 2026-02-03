@@ -18,11 +18,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'mobile_no',
-        'address',
         'password',
+        'role',
+        'pass_reset_otp',
+        'otp_created_at',
+        'otp_last_sent_at',
     ];
 
     /**

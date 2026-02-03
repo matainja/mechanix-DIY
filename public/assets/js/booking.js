@@ -62,11 +62,7 @@ let selectedDate = null;
 let selectedStartTime = null; // "HH:00"
 let selectedHours = 1;
 
-//Routes for login & R
-const routeEl = document.getElementById("mx-routes");
 
-const LOGIN_URL = routeEl?.dataset?.loginUrl;
-const REGISTER_URL = routeEl?.dataset?.registerUrl;
 
 // ===== Pricing =====
 function getRatePerHour(hours) {
@@ -297,7 +293,7 @@ function renderTimeSlots(dateStr) {
         );
 
         if (!check.ok) {
-            timeGrid.innerHTML = `<div style="grid-column:1/-1;padding:14px;border:1px solid #eee;border-radius:12px;">
+            timeGrid.innerHTML = `<div style="grid-column:1/-1;padding:14px;border:1px solid #eee;border-radius:12px;color:#000;">
         Not available for <b>${hoursNeeded} hours</b> starting 9:00 AM.<br>
         <small>${check.message}</small>
       </div>`;
@@ -731,7 +727,7 @@ async function submitBooking(payload) {
     alert("Booking confirmed! ID: " + data.booking_id);
 
     setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/booking";
     }, 2000);
 }
 
@@ -801,6 +797,7 @@ document.querySelectorAll(".mx-liftbtn").forEach((btn) => {
         }, 200);
     });
 });
+
 
 document.querySelectorAll(".mx-pricecard").forEach((card) => {
     card.addEventListener("click", () => {
@@ -904,12 +901,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const authModalEl = document.getElementById("mxAuthModal");
     const authModal = new bootstrap.Modal(authModalEl);
 
-    const loginForm = document.getElementById("mxLoginForm");
-    const registerForm = document.getElementById("mxRegisterForm");
-
-    const loginErr = document.getElementById("mxLoginErr");
-    const regErr = document.getElementById("mxRegErr");
-
     // 1) Intercept confirm booking
     confirmBtn?.addEventListener("click", function () {
         const check = validateConsecutiveCrossDay(
@@ -932,76 +923,6 @@ document.addEventListener("DOMContentLoaded", function () {
         authModal.show();
     });
 
-    // 2) Login submit (AJAX)
-    loginForm?.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        mxHideErr(loginErr);
-
-        const fd = new FormData(loginForm);
-
-        const res = await fetch(LOGIN_URL, {
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-                "X-CSRF-TOKEN": window.MX_CSRF,
-                Accept: "application/json",
-            },
-            body: fd,
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-            mxShowErr(loginErr, data.message || "Login failed.");
-            return;
-        }
-
-        window.MX_IS_LOGGED_IN = true;
-        if (data.csrf) {
-            window.MX_CSRF = data.csrf;
-
-            const meta = document.querySelector('meta[name="csrf-token"]');
-            if (meta) meta.setAttribute("content", data.csrf);
-        }
-
-        authModal.hide();
-        mxContinueBookingAfterAuth();
-    });
-
-    // 3) Register submit (AJAX)
-    registerForm?.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        mxHideErr(regErr);
-
-        const fd = new FormData(registerForm);
-
-        const res = await fetch(REGISTER_URL, {
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-                "X-CSRF-TOKEN": window.MX_CSRF,
-                Accept: "application/json",
-            },
-            body: fd,
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-            // show first validation message if exists
-            let msg = data.message || "Register failed.";
-            if (data.errors) {
-                const firstKey = Object.keys(data.errors)[0];
-                if (firstKey) msg = data.errors[firstKey][0];
-            }
-            mxShowErr(regErr, msg);
-            return;
-        }
-
-        window.MX_IS_LOGGED_IN = true;
-        authModal.hide();
-        mxContinueBookingAfterAuth();
-    });
 });
 
 // Mobile dropdown lift selector
@@ -1037,7 +958,7 @@ function syncBookButtonsVisibility() {
     const bottomVisible =
         bottomWrap && window.getComputedStyle(bottomWrap).display !== "none";
 
-    console.log("top:", topVisible, "bottom:", bottomVisible);
+    // console.log("top:", topVisible, "bottom:", bottomVisible);
 
     // Default: disable both
     if (topBtn) {

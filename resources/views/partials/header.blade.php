@@ -11,18 +11,22 @@
 
 
         <div class="collapse navbar-collapse justify-content-end mobile-sidebar" id="navbarNav">
+
+            
             <div class="sidebar-close d-lg-none">
-                <button class="btn-close btn-close-white"
-                    type="button"
-                    data-bs-toggle="collapse"
+                <button class="btn-close btn-close-white" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNav">
                 </button>
             </div>
+
+            
             <ul class="navbar-nav">
+
 
                 <!-- Main Links -->
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('rentals') ? 'active' : '' }}" href="{{ route('rentals') }}">
+                    <a class="nav-link {{ request()->routeIs('rentals') ? 'active' : '' }}"
+                        href="{{ route('rentals') }}">
                         RENTALS
                     </a>
                 </li>
@@ -70,12 +74,8 @@
                     <li class="nav-item dropdown mobile-only mt-3">
 
                         <!-- Dropdown button (looks like normal menu item) -->
-                        <a class="nav-link dropdown-toggle mobile-footer-header"
-                            href="#"
-                            id="mobileMoreDropdown"
-                            role="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                        <a class="nav-link dropdown-toggle mobile-footer-header" href="#" id="mobileMoreDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             More
                         </a>
 
@@ -89,6 +89,63 @@
                             </li>
                         </ul>
 
+                    </li>
+                    <!-- AUTH DROPDOWN -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="authDropdown"
+                            data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle fs-4"></i>
+                            <span class="ms-2 d-none d-lg-inline">Account</span>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            @guest
+                                <li>
+                                    <a href="#" class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#mxAuthModal" id="openLogin">
+                                    Login
+                                    </a>
+
+
+                                </li>
+                                <li>
+                          
+                                    <a href="#" class="dropdown-item" id="openRegister" data-bs-toggle="modal"
+                                    data-bs-target="#mxAuthModal">
+               
+                                        Sign Up
+           
+                                    </a>
+
+                                </li>
+                            @endguest
+
+                            @auth
+                                <li>
+                                    <span class="dropdown-item-text">
+                                        {{-- {{ auth()->user()->name }}
+                                         --}}
+                                      Hello {{ strtok(auth()->user()->email, '@') }}
+
+                                    </span>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}" class="text-center">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">
+                                            Logout
+                                        </button>
+                                    </form>
+
+
+                                </li>
+                            @endauth
+
+                        </ul>
                     </li>
 
 
