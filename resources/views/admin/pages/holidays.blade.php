@@ -50,6 +50,7 @@
                 @endif
 
                 <div class="table-responsive">
+                    
                     <table class="table table-striped align-middle mb-0">
                         <thead>
                             <tr>
@@ -61,8 +62,11 @@
                         </thead>
                         <tbody>
                             @forelse($holidays as $holiday)
+                            
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    {{-- <td>{{ $loop->iteration }}</td> --}} 
+                                    <td>{{ $holidays->firstItem() + $loop->index }}</td>
+
                                     <td>{{ $holiday->holiday_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($holiday->holiday_date)->format('d M Y') }}</td>
                                     <td class="text-end">
@@ -85,7 +89,7 @@
                 </div>
 
                 {{-- If you use pagination --}}
-                {{-- <div class="mt-3">{{ $holidays->links() }}</div> --}}
+                <div class="mt-3">{{ $holidays->links('pagination::bootstrap-5') }}</div>
             </div>
         </div>
     </div>
@@ -165,13 +169,15 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">From Date</label>
-                                    <input type="date" name="from_date" class="form-control" required>
+                                    <input type="date" min="{{ date('Y-m-d') }}" name="from_date" class="form-control" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">To Date</label>
-                                    <input type="date" name="to_date" class="form-control" required>
+                                    <input type="date" min="{{ date('Y-m-d') }}" name="to_date" class="form-control" required>
                                 </div>
+
+                                
 
                                 <div class="col-12">
                                     <div class="alert alert-info mb-0">

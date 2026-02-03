@@ -52,8 +52,17 @@
 //       }
 //     });
 //   });
-// });
+// });// =====================================================
+// GLOBAL MODAL INSTANCES (ONLY ONCE - IMPORTANT)
+// =====================================================
+let authModal = null;
+let forgotModal = null;
 
+
+
+// =====================================================
+// Service click redirect
+// =====================================================
 document.addEventListener("click", (e) => {
   const item = e.target.closest(".service-item-custom");
   if (!item) return;
@@ -61,23 +70,50 @@ document.addEventListener("click", (e) => {
   const link = item.dataset.link;
   if (link) window.location.href = link;
 });
-//Routes for login & R
+
+
+// =====================================================
+// Routes
+// =====================================================
 const routeEl = document.getElementById("mx-routes");
 const LOGIN_URL = routeEl?.dataset?.loginUrl;
 const REGISTER_URL = routeEl?.dataset?.registerUrl;
+
+
+
+// =====================================================
+// MAIN DOM READY (ALL INIT HERE)
+// =====================================================
 document.addEventListener("DOMContentLoaded", function () {
 
+    // -------------------------
+    // Init Modals (ONLY ONCE)
+    // -------------------------
+    const authModalEl = document.getElementById("mxAuthModal");
+    const forgotModalEl = document.getElementById("mxForgotModal");
+
+    authModal = authModalEl ? new bootstrap.Modal(authModalEl) : null;
+    forgotModal = forgotModalEl ? new bootstrap.Modal(forgotModalEl) : null;
+
+
+    // -------------------------
+    // Forms & Elements
+    // -------------------------
     const loginForm = document.getElementById("mxLoginForm");
     const registerForm = document.getElementById("mxRegisterForm");
 
     const loginErr = document.getElementById("mxLoginErr");
     const regErr = document.getElementById("mxRegErr");
 
-    const authModalEl = document.getElementById("mxAuthModal");
-    const authModal = authModalEl
-        ? new bootstrap.Modal(authModalEl)
-        : null;
+    const loginTabBtn = document.querySelector('button[data-bs-target="#mxTabLogin"]');
+    const registerTabBtn = document.querySelector('button[data-bs-target="#mxTabRegister"]');
 
+    const openRegisterBtn = document.getElementById("openRegister");
+
+
+    // -------------------------
+    // Helpers
+    // -------------------------
     function mxHideErr(el) {
         if (!el) return;
         el.classList.add("d-none");
@@ -90,8 +126,13 @@ document.addEventListener("DOMContentLoaded", function () {
         el.classList.remove("d-none");
     }
 
+
+
+    // =====================================================
     // LOGIN
+    // =====================================================
     loginForm?.addEventListener("submit", async function (e) {
+
         e.preventDefault();
         mxHideErr(loginErr);
 
@@ -116,13 +157,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         window.MX_IS_LOGGED_IN = true;
         authModal?.hide();
-
-        // redirect
         window.location.href = "/";
     });
 
+
+
+    // =====================================================
     // REGISTER
+    // =====================================================
     registerForm?.addEventListener("submit", async function (e) {
+
         e.preventDefault();
         mxHideErr(regErr);
 
@@ -152,176 +196,113 @@ document.addEventListener("DOMContentLoaded", function () {
 
         window.MX_IS_LOGGED_IN = true;
         authModal?.hide();
-
         window.location.href = "/";
     });
 
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const openRegisterBtn = document.getElementById("openRegister");
-
-    const loginTab = document.getElementById("mxTabLogin");
-    const registerTab = document.getElementById("mxTabRegister");
-
-    const authModalEl = document.getElementById("mxAuthModal");
-    const authModal = authModalEl
-        ? new bootstrap.Modal(authModalEl)
-        : null;
-
-    openRegisterBtn?.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        // open modal
-        authModal?.show();
-
-        // remove active from login
-        loginTab.classList.remove("show", "active");
-
-        // make register active
-        registerTab.classList.add("show", "active");
-    });
-
-});
 
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    const authModalEl = document.getElementById("mxAuthModal");
-    const authModal = authModalEl
-        ? new bootstrap.Modal(authModalEl)
-        : null;
-
-    const loginTabBtn = document.querySelector(
-        'button[data-bs-target="#mxTabLogin"]'
-    );
-    const registerTabBtn = document.querySelector(
-        'button[data-bs-target="#mxTabRegister"]'
-    );
-
-    // LOGIN click → Login tab
+    // =====================================================
+    // OPEN LOGIN / REGISTER TABS
+    // =====================================================
     document.getElementById("openLogin")?.addEventListener("click", function (e) {
         e.preventDefault();
         authModal?.show();
         bootstrap.Tab.getOrCreateInstance(loginTabBtn).show();
     });
 
-    // SIGN UP click → Register tab
-    document.getElementById("openRegister")?.addEventListener("click", function (e) {
+    openRegisterBtn?.addEventListener("click", function (e) {
         e.preventDefault();
         authModal?.show();
         bootstrap.Tab.getOrCreateInstance(registerTabBtn).show();
     });
 
-});
 
 
-document.addEventListener("DOMContentLoaded", function () {
+    // =====================================================
+    // RESET REGISTER WHEN MODAL CLOSE
+    // =====================================================
+    authModalEl?.addEventListener("hidden.bs.modal", function () {
 
-    const authModalEl = document.getElementById("mxAuthModal");
-
-    const registerForm = document.getElementById("mxRegisterForm");
-    const regErr = document.getElementById("mxRegErr");
-
-    const loginTabBtn = document.querySelector(
-        'button[data-bs-target="#mxTabLogin"]'
-    );
-
-    if (!authModalEl) return;
-
-    authModalEl.addEventListener("hidden.bs.modal", function () {
-
-        //  Reset ONLY register form
         registerForm?.reset();
 
-        //  Clear register errors only
         regErr && (regErr.innerText = "");
         regErr?.classList.add("d-none");
 
-        //  Optional: go back to Login tab
         if (loginTabBtn) {
             bootstrap.Tab.getOrCreateInstance(loginTabBtn).show();
         }
     });
 
-});
 
 
-
-let timer = 60;
-
-function startTimer(btn){
-    btn.disabled = true;
-
-    let t = setInterval(() => {
-        timer--;
-        btn.innerText = `Wait ${timer}s`;
-
-        if(timer <= 0){
-            clearInterval(t);
-            btn.disabled = false;
-            btn.innerText = "Resend OTP";
-            timer = 60;
-        }
-    }, 1000);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // ==============================
-    // Setup
-    // ==============================
+    // =====================================================
+    // FORGOT PASSWORD FLOW
+    // =====================================================
 
     const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-    const authModalEl = document.getElementById("mxAuthModal");
-    const forgotModalEl = document.getElementById("mxForgotModal");
-
-    const authModal = authModalEl ? new bootstrap.Modal(authModalEl) : null;
-    const forgotModal = forgotModalEl ? new bootstrap.Modal(forgotModalEl) : null;
-
     const emailInput = document.getElementById("fpEmail");
-
     const sendBtn   = document.getElementById("sendOtpBtn");
     const verifyBtn = document.getElementById("verifyOtpBtn");
     const resetBtn  = document.getElementById("resetPassBtn");
 
 
-    // ==============================
-    // Open Forgot Modal
-    // ==============================
-
     document.getElementById("mxForgotBtn")?.addEventListener("click", () => {
-        
         authModal?.hide();
         forgotModal?.show();
         showStep("stepEmail");
     });
 
 
-    // ==============================
-    // Send OTP
-    // ==============================
 
+    // -------------------------
+    // TIMER (ONLY ONE VERSION)
+    // -------------------------
+    let otpInterval = null;
+
+    function startTimer(btn) {
+
+        if (otpInterval) clearInterval(otpInterval);
+
+        let time = 60;
+
+        btn.disabled = true;
+        btn.innerText = `Wait ${time}s`;
+
+        otpInterval = setInterval(() => {
+
+            time--;
+
+            if (time <= 0) {
+                clearInterval(otpInterval);
+                btn.disabled = false;
+                btn.innerText = "Resend OTP";
+                return;
+            }
+
+            btn.innerText = `Wait ${time}s`;
+
+        }, 1000);
+    }
+
+
+
+    // -------------------------
+    // Send OTP
+    // -------------------------
     sendBtn?.addEventListener("click", async () => {
-    
 
         if (!emailInput.value) return alert("Enter email first");
 
-        sendBtn.disabled = true;
-
         const res = await fetch('/forgot-password/send-otp', {
             method: 'POST',
-            credentials: 'same-origin',   
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrf
             },
             body: JSON.stringify({ email: emailInput.value })
         });
-
-        sendBtn.disabled = false;
 
         if (!res.ok) {
             const data = await res.json().catch(() => ({}));
@@ -333,10 +314,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // ==============================
-    // Verify OTP
-    // ==============================
 
+    // -------------------------
+    // Verify OTP
+    // -------------------------
     verifyBtn?.addEventListener("click", async () => {
 
         const otp = document.getElementById('fpOtp').value;
@@ -356,19 +337,16 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         });
 
-        if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            return alert(data.error || "Invalid / expired OTP");
-        }
+        if (!res.ok) return alert("Invalid / expired OTP");
 
         showStep('stepReset');
     });
 
 
-    // ==============================
-    // Reset Password
-    // ==============================
 
+    // -------------------------
+    // Reset Password
+    // -------------------------
     resetBtn?.addEventListener("click", async () => {
 
         const pass  = document.getElementById('fpPass').value;
@@ -376,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!pass || pass !== pass2) return alert("Passwords don't match");
 
-        const res = await fetch('/forgot-password/reset', {
+        await fetch('/forgot-password/reset', {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -390,11 +368,6 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         });
 
-        if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            return alert(data.error || "Reset failed");
-        }
-
         alert("Password updated successfully 🎉");
 
         forgotModal?.hide();
@@ -402,33 +375,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // ==============================
-    // Helpers
-    // ==============================
 
+    // -------------------------
+    // Step switch helper
+    // -------------------------
     function showStep(id) {
         ['stepEmail','stepOtp','stepReset'].forEach(s =>
             document.getElementById(s)?.classList.add('d-none')
         );
         document.getElementById(id)?.classList.remove('d-none');
-    }
-
-    function startTimer(btn) {
-        let time = 60;
-
-        btn.disabled = true;
-        btn.innerText = `Wait ${time}s`;
-
-        const t = setInterval(() => {
-            time--;
-            btn.innerText = `Wait ${time}s`;
-
-            if (time <= 0) {
-                clearInterval(t);
-                btn.disabled = false;
-                btn.innerText = "Resend OTP";
-            }
-        }, 1000);
     }
 
 });

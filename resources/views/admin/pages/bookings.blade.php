@@ -38,6 +38,10 @@
                             <!-- <th>User</th> -->
                             <th>Booking Date</th>
                             <th>Start Time</th>
+                            <th>Duration (Hours)</th>
+                            <th>Lift Type</th>
+                            <th>Workstation</th>
+                            <th>Rate per Hour</th>
                             <th>Status</th>
                             <th>Total</th>
                         
@@ -49,6 +53,10 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->date)->format('d M Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</td>
+                                <td>{{ $booking->hours }}</td>
+                                <td>{{ $booking->lift_type }}</td>
+                                <td>{{ $booking->workstation }}</td>
+                                <td>${{ number_format($booking->rate_per_hour, 2) }}</td>
                                 <td>
                                     <span class="badge @if($booking->status == 'completed') bg-success @elseif($booking->status == 'pending') bg-warning @else bg-danger @endif">
                                         {{ ucfirst($booking->status) }}
