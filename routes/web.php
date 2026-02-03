@@ -7,6 +7,7 @@ use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\admin\UserController;
 
 
 //Page Controller
@@ -44,7 +45,9 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
 
-        Route::get('/users', [AdminController::class, 'users'])->name('users');
+        // Route::get('/users', [AdminController::class, 'users'])->name('users');
+        Route::get('/users', [UserController::class, 'index'])->name('users');
+
 
         // Holidays
         Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
