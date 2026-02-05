@@ -96,109 +96,141 @@
 </div>
 
 <!-- Add Holiday Modal -->
+<!-- Add Holiday Modal -->
 <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Holiday</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Holidays</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <form action="{{ route('admin.holidays.storeBulk') }}" method="POST">
+          @csrf
+
+          <div class="row g-3">
+
+            {{-- Holiday Type --}}
+            <div class="col-md-6">
+              <label class="form-label">Holiday Type</label>
+              <select id="holidayType" name="holiday_label" class="form-select" required>
+                <option value="">Select Label</option>
+                <option value="National Holiday">National Holiday</option>
+                <option value="Weekend">Weekend</option>
+                <option value="Others">Others</option>
+              </select>
             </div>
 
-            <div class="modal-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabSingle" type="button" role="tab">
-                            Single Date
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabWeekly" type="button" role="tab">
-                            Weekly (e.g., Saturdays for next 4 months)
-                        </button>
-                    </li>
-                </ul>
-
-                <div class="tab-content pt-3">
-                    <!-- Single Date Form -->
-                    <div class="tab-pane fade show active" id="tabSingle" role="tabpanel">
-                        <form action="{{ route('admin.holidays.storeSingle') }}" method="POST">
-                            @csrf
-
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Holiday Name</label>
-                                    <input type="text" name="holiday_name" class="form-control" placeholder="e.g., Christmas" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Holiday Date</label>
-                                    {{-- Bootstrap calendar style: simplest reliable is HTML date input --}}
-                                    <input type="date" name="holiday_date" class="form-control" required>
-                                </div>
-
-                                <div class="col-12 d-flex justify-content-end">
-                                    <button class="btn btn-primary">Save</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Weekly Range Form -->
-                    <div class="tab-pane fade" id="tabWeekly" role="tabpanel">
-                        <form action="{{ route('admin.holidays.storeWeekly') }}" method="POST">
-                            @csrf
-
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Event Name</label>
-                                    <input type="text" name="holiday_name" class="form-control" value="Saturday Closed" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Repeat Day</label>
-                                    <select name="weekday" class="form-select" required>
-                                        <option value="6" selected>Saturday</option>
-                                        <option value="0">Sunday</option>
-                                        <option value="1">Monday</option>
-                                        <option value="2">Tuesday</option>
-                                        <option value="3">Wednesday</option>
-                                        <option value="4">Thursday</option>
-                                        <option value="5">Friday</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">From Date</label>
-                                    <input type="date" min="{{ date('Y-m-d') }}" name="from_date" class="form-control" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">To Date</label>
-                                    <input type="date" min="{{ date('Y-m-d') }}" name="to_date" class="form-control" required>
-                                </div>
-
-                                
-
-                                <div class="col-12">
-                                    <div class="alert alert-info mb-0">
-                                        This will auto-create holidays for every selected weekday between the date range.
-                                        Duplicate dates will be ignored.
-                                    </div>
-                                </div>
-
-                                <div class="col-12 d-flex justify-content-end">
-                                    <button class="btn btn-primary">Generate & Save</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
+            {{-- Custom label --}}
+            <div class="col-md-6 d-none" id="customLabelBox">
+              <label class="form-label">Custom Label</label>
+              <input type="text" name="custom_label" class="form-control" placeholder="Enter custom holiday name">
             </div>
-        </div>
+
+
+            {{-- From Date --}}
+            <div class="col-md-6">
+              <label class="form-label">From Date</label>
+              <input type="date" name="from_date" min="{{ date('Y-m-d') }}" class="form-control">
+            </div>
+
+            {{-- To Date --}}
+            <div class="col-md-6">
+              <label class="form-label">To Date</label>
+              <input type="date" name="to_date" min="{{ date('Y-m-d') }}" class="form-control">
+            </div>
+
+
+            {{-- Repeat weekday dropdown --}}
+            <div class="col-md-6">
+              <label class="form-label">Repeat Day (Optional)</label>
+              <select name="weekday" class="form-select">
+                <option value="">-- No Repeat --</option>
+                <option value="0">Sunday</option>
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+                <option value="6">Saturday</option>
+              </select>
+
+              <small class="text-muted">
+                If selected → repeat every week inside date range
+              </small>
+            </div>
+
+
+            {{-- Manual multiple dates --}}
+            <div class="col-md-12">
+              <label class="form-label">Manual Dates (Optional)</label>
+
+              <input type="text"
+                     id="manualDates"
+                     class="form-control"
+                     placeholder="Click to select multiple dates">
+
+              <small class="text-muted">
+                Select any custom days manually (add/remove freely)
+              </small>
+
+              <input type="hidden" name="manual_dates" id="manualDatesInput">
+            </div>
+
+
+            {{-- Info --}}
+            <div class="col-12">
+              <div class="alert alert-info mb-0">
+                You can:
+                • create holidays by range  
+                • repeat weekly  
+                • OR manually pick dates  
+                • OR combine both  
+              </div>
+            </div>
+
+
+            <div class="col-12 text-end mt-3">
+              <button class="btn btn-primary px-4">Save Holidays</button>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
     </div>
+  </div>
 </div>
+
 
     </div>
   </div>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+
+    // show custom label only when Others selected
+    const type = document.getElementById('holidayType');
+    const customBox = document.getElementById('customLabelBox');
+
+    type.addEventListener('change', () => {
+        customBox.classList.toggle('d-none', type.value !== 'Others');
+    });
+
+
+    // multiple date picker
+    flatpickr("#manualDates", {
+        mode: "multiple",
+        dateFormat: "Y-m-d",
+        onChange: function(selectedDates, dateStr) {
+            document.getElementById('manualDatesInput').value = dateStr;
+        }
+    });
+
+});
+</script>
+
 @endsection

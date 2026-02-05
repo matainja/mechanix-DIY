@@ -50,7 +50,7 @@
                     <tbody>
                         @foreach($bookings as $booking)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                 <td>{{ $bookings->firstItem() + $loop->index }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->date)->format('d M Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</td>
                                 <td>{{ $booking->hours }}</td>
@@ -70,9 +70,12 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="mt-3">{{ $bookings->links('pagination::bootstrap-5') }}</div>
             </div>
+            
         </div>
         <!-- [ Main Content ] end -->
+        
     </div>
 </div>
 @endsection

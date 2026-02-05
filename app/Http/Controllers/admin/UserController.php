@@ -9,7 +9,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->get();
+        $users = User::where('role', 0)->latest()->paginate(10);
+
 
         return view('admin.pages.users', compact('users'));
     }

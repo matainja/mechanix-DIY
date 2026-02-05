@@ -14,7 +14,7 @@ class HolidayController extends Controller
     {
         // You can paginate if you want: Holiday::orderBy('holiday_date','desc')->paginate(20)
         // $holidays = Holiday::orderBy('holiday_date', 'desc')->simplePaginate(10);
-        $holidays = Holiday::orderBy('id', 'asc')->paginate(10);
+        $holidays = Holiday::latest()->paginate(10);
 
 
         return view('admin.pages.holidays', compact('holidays'));
@@ -36,36 +36,74 @@ class HolidayController extends Controller
         return back()->with('success', 'Holiday added successfully.');
     }
 
-    public function storeWeekly(Request $request)
-    {
-        $data = $request->validate([
-            'holiday_name' => 'required|string|max:255',
-            'weekday'      => 'required|integer|min:0|max:6', // 0=Sun ... 6=Sat
-            'from_date'    => 'required|date',
-            'to_date'      => 'required|date|after_or_equal:from_date',
-        ]);
+    public function storeBulk(Request $request)
+{
+    $data = $request->validate([
+        'holiday_label' => 'required|string',
+        'custom_label'  => 'nullable|string|max:255',
+        'from_date'     => 'nullable|date',
+        'to_date'       => 'nullable|date|after_or_equal:from_date',
+        'weekday'       => 'nullable|integer|min:0|max:6',
+        'manual_dates'  => 'nullable|string'
+    ]);
 
-        $from = Carbon::parse($data['from_date'])->startOfDay();
-        $to   = Carbon::parse($data['to_date'])->startOfDay();
+    // Decide final name
+    $name = $data['holiday_label'] === 'Others'
+        ? ($data['custom_label'] ?: 'Holiday')
+        : $data['holiday_label'];
 
-        $period = CarbonPeriod::create($from, $to);
+    $created = 0;
 
-        $created = 0;
+
+    /*
+    =====================================
+    RANGE + REPEAT WEEKDAY
+    =====================================
+    */
+    if ($data['from_date'] && $data['to_date']) {
+
+        $period = \Carbon\CarbonPeriod::create($data['from_date'], $data['to_date']);
+
         foreach ($period as $day) {
-            if ((int)$day->dayOfWeek === (int)$data['weekday']) {
-                $holiday = Holiday::firstOrCreate(
-                    ['holiday_date' => $day->toDateString()],
-                    ['holiday_name' => $data['holiday_name']]
-                );
 
-                if ($holiday->wasRecentlyCreated) {
-                    $created++;
-                }
+            // if weekday selected → only that weekday
+            if ($data['weekday'] !== null) {
+                if ($day->dayOfWeek != $data['weekday']) continue;
             }
-        }
 
-        return back()->with('success', "Generated holidays: {$created}");
+            $holiday = Holiday::firstOrCreate(
+                ['holiday_date' => $day->toDateString()],
+                ['holiday_name' => $name]
+            );
+
+            if ($holiday->wasRecentlyCreated) $created++;
+        }
     }
+
+
+    /*
+    =====================================
+    MANUAL MULTIPLE DATES
+    =====================================
+    */
+    if (!empty($data['manual_dates'])) {
+
+        $dates = explode(',', $data['manual_dates']);
+
+        foreach ($dates as $date) {
+
+            $holiday = Holiday::firstOrCreate(
+                ['holiday_date' => trim($date)],
+                ['holiday_name' => $name]
+            );
+
+            if ($holiday->wasRecentlyCreated) $created++;
+        }
+    }
+
+    return back()->with('success', "Created {$created} holidays successfully 🎉");
+}
+
 
     public function destroy($id)
     {
@@ -73,3 +111,4 @@ class HolidayController extends Controller
         return back()->with('success', 'Holiday deleted successfully.');
     }
 }
+

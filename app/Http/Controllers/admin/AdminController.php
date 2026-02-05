@@ -30,7 +30,7 @@ class AdminController extends Controller
     // Bookings
     public function bookings()
     {
-        $bookings = Booking::all();
+        $bookings = Booking::orderBy('id', 'asc')->paginate(10);
         // dd( $bookings);
         return view('admin.pages.bookings', compact('bookings'));
     }

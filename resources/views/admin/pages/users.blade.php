@@ -50,7 +50,7 @@
                     <tbody>
                         @foreach($users as $user)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                             <td>{{ $users->firstItem() + $loop->index }}</td>
 
                             <td>{{ $user->email }}</td>
 
@@ -58,11 +58,11 @@
 
                             {{-- Role --}}
                             <td>
-                                @if($user->role == 1)
-                                    <span class="badge bg-danger">Admin</span>
-                                @else
+                                {{-- @if($user->role == 1) --}}
+                                    {{-- <span class="badge bg-danger">Admin</span> --}}
+                                {{-- @else --}}
                                     <span class="badge bg-primary">User</span>
-                                @endif
+                                {{-- @endif --}}
                             </td>
 
                             {{-- Email verified --}}
@@ -79,9 +79,11 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="mt-3">{{ $users->links('pagination::bootstrap-5') }}</div>
             </div>
+            
         </div>
-
+     
     </div>
 </div>
 @endsection

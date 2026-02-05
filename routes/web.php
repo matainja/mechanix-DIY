@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\admin\ProductController;
 
 
 //Page Controller
@@ -44,6 +45,20 @@ Route::middleware(['auth', 'admin'])
         Route::get('/', [AdminController::class, 'home'])->name('home');
 
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
+      
+        Route::resource('products', ProductController::class)
+    ->names('products');
+
+Route::delete('product-image/{id}', [ProductController::class, 'deleteImage'])
+    ->name('products.image.delete');
+    Route::post('/products/store', [ProductController::class, 'store'])
+    ->name('products.store');
+    
+ Route::patch('/admin/products/{id}/toggle',
+    [ProductController::class, 'toggle'])
+    ->name('products.toggle');
+
+
 
         // Route::get('/users', [AdminController::class, 'users'])->name('users');
         Route::get('/users', [UserController::class, 'index'])->name('users');
@@ -57,6 +72,7 @@ Route::middleware(['auth', 'admin'])
         Route::post('/holidays/store-weekly', [HolidayController::class, 'storeWeekly'])->name('holidays.storeWeekly');
 
         Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.delete');
+        Route::post('/holidays/bulk', [HolidayController::class, 'storeBulk'])->name('holidays.storeBulk');
 
     });
 
