@@ -45,18 +45,19 @@ Route::middleware(['auth', 'admin'])
         Route::get('/', [AdminController::class, 'home'])->name('home');
 
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
-      
-        Route::resource('products', ProductController::class)
-    ->names('products');
 
-Route::delete('product-image/{id}', [ProductController::class, 'deleteImage'])
-    ->name('products.image.delete');
-    Route::post('/products/store', [ProductController::class, 'store'])
-    ->name('products.store');
-    
- Route::patch('/admin/products/{id}/toggle',
-    [ProductController::class, 'toggle'])
-    ->name('products.toggle');
+        Route::resource('products', ProductController::class)
+            ->names('products');
+
+        Route::delete('/products/{id}', [ProductController::class, 'destroy']) ->name('products.destroy');
+        Route::get('/products/{product}/edit-data', [ProductController::class, 'edit'])->name('admin.products.editData');
+        Route::post('/products/store', [ProductController::class, 'store'])->name('products.store');
+
+        Route::patch(
+            '/admin/products/{id}/toggle',
+            [ProductController::class, 'toggle']
+        )
+            ->name('products.toggle');
 
 
 
@@ -73,7 +74,6 @@ Route::delete('product-image/{id}', [ProductController::class, 'deleteImage'])
 
         Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.delete');
         Route::post('/holidays/bulk', [HolidayController::class, 'storeBulk'])->name('holidays.storeBulk');
-
     });
 
 

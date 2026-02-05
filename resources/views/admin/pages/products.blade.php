@@ -96,31 +96,48 @@
 
                 {{-- Status --}}
                <td>
-    <form action="{{ route('admin.products.toggle', $product->id) }}"
-          method="POST"
-          class="d-inline">
-        @csrf
-        @method('PATCH')
+                    <form action="{{ route('admin.products.toggle', $product->id) }}"
+                          method="POST"
+                          class="d-inline">
+                        @csrf
+                        @method('PATCH')
 
-        <div class="form-check form-switch m-0">
-            <input
-                type="checkbox"
-                class="form-check-input"
-                onchange="this.form.submit()"
-                {{ $product->status ? 'checked' : '' }}
-                style="cursor:pointer; width:45px; height:22px;"
-            >
-        </div>
-    </form>
-</td>
+                        <div class="form-check form-switch m-0">
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                onchange="this.form.submit()"
+                                {{ $product->status ? 'checked' : '' }}
+                                style="cursor:pointer; width:45px; height:22px;"
+                            >
+                        </div>
+                    </form>
+                </td>
 
 
                 {{-- Actions --}}
-                <td>
+                <td style="  gap:20px; display:flex; align-items:center;">
                     <a href="{{ route('admin.products.edit', $product->id) }}"
-                       class="btn btn-sm btn-primary">
-                        Edit
+                      class="text-primary fs-5">
+                        <i class="bi bi-pencil-square"></i>
                     </a>
+
+                     
+                    <form action="{{ route('admin.products.destroy', $product->id) }}" 
+                            method="POST" 
+                            style="display:inline-block"
+                            onsubmit="return confirm('Delete this product?')">
+
+                          @csrf
+                          @method('DELETE')
+
+                     <button type="submit" 
+                              style="background:none;border:none;color:#ec4141;font-size:18px;cursor:pointer;">
+                          <i class="bi bi-trash-fill"></i>
+                      </button>
+
+                      </form>
+
 
                     {{-- <form action="{{ route('admin.products.toggle', $product->id) }}"
                           method="POST"
