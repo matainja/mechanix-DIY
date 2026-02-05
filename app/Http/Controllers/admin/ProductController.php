@@ -99,12 +99,16 @@ class ProductController extends Controller
     | EDIT PAGE
     |--------------------------------------------------------------------------
     */
-    public function edit(Product $product)
-    {
-        $product->load(['prices', 'images']);
+   public function edit(Product $product)
+{
+    // eager load relations
+    $product->load([
+        'prices:id,product_id,price,hours,is_default',
+        'images:id,product_id,image_path,is_default'
+    ]);
 
-        return view('products.edit', compact('product'));
-    }
+    return response()->json($product);
+}
 
 
     /*
@@ -204,6 +208,8 @@ class ProductController extends Controller
         return back()->with('success', 'Image removed');
     }
 
+
+    
 
   public function toggle($id)
 {
