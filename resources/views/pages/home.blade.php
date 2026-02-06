@@ -4,8 +4,6 @@
 
 @section('content')
 
-
-
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-overlay"></div>
@@ -16,9 +14,6 @@
                 <a href="{{ route('rentals') }}" class="btn btn-outline-light btn-lg btn-hero-secondary">View Rentals</a>
             </div>
         </div>
-        <!-- <div class="car-box">
-                    <img src="{{ asset('assets/images/lift-car.png') }}" alt="car" width="50%" />
-                  </div> -->
     </section>
 
     <!-- Services Icons -->
@@ -58,7 +53,6 @@
                     <span>Alignment</span>
                 </a>
             </div>
-
         </div>
     </section>
 
@@ -72,9 +66,10 @@
             </a>
         </div>
     </section>
+
     <!-- Routes for JS -->
-    <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}">
-    </div>
+    <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}"></div>
+
     {{-- Auth Modal --}}
     <div class="modal fade" id="mxAuthModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -82,112 +77,84 @@
 
                 <div class="modal-header border-0">
                     <h5 class="modal-title text-white">Continue to Book</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
 
                     {{-- Tabs --}}
-                    <ul class="nav nav-tabs" role="tablist">
+                    <ul class="nav nav-tabs" id="authTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active text-white bg-dark" data-bs-toggle="tab"
-                                data-bs-target="#mxTabLogin" type="button" role="tab"
-                                style="border:none; border-radius:5px 5px 0 0;">
+                            <button class="nav-link active text-white bg-dark" id="loginTab" data-bs-toggle="tab" data-bs-target="#loginTabPane" type="button" role="tab" aria-controls="loginTabPane" aria-selected="true" style="border:none; border-radius:5px 5px 0 0;">
                                 Login
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link text-white bg-dark" data-bs-toggle="tab" data-bs-target="#mxTabRegister"
-                                type="button" role="tab" style="border:none; border-radius:5px 5px 0 0;">
+                            <button class="nav-link text-white bg-dark" id="registerTab" data-bs-toggle="tab" data-bs-target="#registerTabPane" type="button" role="tab" aria-controls="registerTabPane" aria-selected="false" style="border:none; border-radius:5px 5px 0 0;">
                                 Register
                             </button>
                         </li>
                     </ul>
 
-                    <div class="tab-content pt-3">
+                    <div class="tab-content pt-3" id="authTabsContent">
 
-                        {{-- LOGIN --}}
-                        <div class="tab-pane fade show active" id="mxTabLogin" role="tabpanel">
-                            <div id="mxLoginErr" class="alert alert-danger d-none"></div>
+                        {{-- LOGIN TAB --}}
+                        <div class="tab-pane fade show active" id="loginTabPane" role="tabpanel" aria-labelledby="loginTab">
+                            <div id="loginErrorMsg" class="alert alert-danger d-none"></div>
 
-                            <form id="mxLoginForm">
-
+                            <form id="loginFormMain">
                                 @csrf
                                 <div class="mb-3">
                                     <label class="form-label small text-white">Email</label>
-                                    <input type="email" class="form-control border-0" name="email"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                                        required>
+                                    <input type="email" class="form-control border-0" name="email" id="loginEmail" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label small text-white">Password</label>
-                                    <input type="password" class="form-control border-0" name="password"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                                        required>
+                                    <input type="password" class="form-control border-0" name="password" id="loginPassword" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
                                 </div>
 
                                 <div class="text-end mt-2">
-                                    <a  id="mxForgotBtn" class="small text-danger btn">
+                                    <a href="#" id="forgotPasswordBtn" class="small text-danger btn">
                                         Forgot password?
                                     </a>
                                 </div>
 
-                                <button class="btn w-100 text-white fw-semibold mt-3"
-                                    style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%);
-                                           border:2px solid #791218; height:46px; letter-spacing:1px;">
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border:2px solid #791218; height:46px; letter-spacing:1px;">
                                     Login
                                 </button>
-
                             </form>
                         </div>
 
-                        {{-- REGISTER --}}
-                        <div class="tab-pane fade" id="mxTabRegister" role="tabpanel">
-                            <div id="mxRegErr" class="alert alert-danger d-none"></div>
+                        {{-- REGISTER TAB --}}
+                        <div class="tab-pane fade" id="registerTabPane" role="tabpanel" aria-labelledby="registerTab">
+                            <div id="registerErrorMsg" class="alert alert-danger d-none"></div>
 
-                            <form id="mxRegisterForm">
+                            <form id="registerFormMain">
                                 @csrf
                                 <div class="row g-2">
-
                                     <div class="col-6">
                                         <label class="form-label small text-white">Email</label>
-                                        <input type="email" class="form-control border-0 form-control-sm"
-                                            name="email"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                                            required>
+                                        <input type="email" class="form-control border-0 form-control-sm" name="email" id="registerEmail" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
                                     </div>
 
                                     <div class="col-6">
                                         <label class="form-label small text-white">Mobile</label>
-                                        <input type="text" class="form-control border-0 form-control-sm"
-                                            name="mobile_no"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                                            required>
+                                        <input type="text" class="form-control border-0 form-control-sm" name="mobile_no" id="registerMobile" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
                                     </div>
 
                                     <div class="col-6">
                                         <label class="form-label small text-white">Password</label>
-                                        <input type="password" class="form-control border-0 form-control-sm"
-                                            name="password"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                                            required>
+                                        <input type="password" class="form-control border-0 form-control-sm" name="password" id="registerPassword" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
                                     </div>
 
                                     <div class="col-6">
                                         <label class="form-label small text-white">Confirm</label>
-                                        <input type="password" class="form-control border-0 form-control-sm"
-                                            name="password_confirmation"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                                            required>
+                                        <input type="password" class="form-control border-0 form-control-sm" name="password_confirmation" id="registerPasswordConfirm" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
                                     </div>
-
                                 </div>
 
-                                <button class="btn w-100 text-white fw-semibold mt-3"
-                                    style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%);
-                                           border:2px solid #791218; height:46px; letter-spacing:1px;">
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border:2px solid #791218; height:46px; letter-spacing:1px;">
                                     Create Account
                                 </button>
                             </form>
@@ -201,77 +168,47 @@
     </div>
 
     {{-- Forgot Password Modal --}}
-    <div class="modal fade " id="mxForgotModal" tabindex="-1">
-        <div class="modal-dialog modal-sm"
-            style="background: linear-gradient(180deg,#1f1f1f,#2a2a2a); border-radius:10px;">
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="background: linear-gradient(180deg,#1f1f1f,#2a2a2a); border-radius:10px;">
             <div class="modal-content mt-4 p-4" style="background: transparent; border:none;">
 
-                <!-- Step 1 Email -->
-                <div id="stepEmail">
-                    <h6 class="mb-3">Reset Password</h6>
-
-                    <input type="email" id="fpEmail" class="form-control form-control-sm mb-2"
-                        placeholder="Enter email">
-
-                   <button class="btn btn-primary w-100 btn-sm d-flex align-items-center justify-content-center gap-2"
-        id="sendOtpBtn">
-
-    <span class="btn-text">Send OTP</span>
-
-    <span class="spinner-border spinner-border-sm d-none" id="otpLoader"></span>
-</button>
-
+                <!-- Step 1: Email -->
+                <div id="fpStepEmail">
+                    <h6 class="mb-3 text-white">Reset Password</h6>
+                    <input type="email" id="fpEmailInput" class="form-control form-control-sm mb-2" placeholder="Enter email" style="background:#2d2d2d;color:#fff;border:none;">
+                    <button class="btn btn-primary w-100 btn-sm d-flex align-items-center justify-content-center gap-2" id="fpSendOtpBtn">
+                        <span class="btn-text">Send OTP</span>
+                        <span class="spinner-border spinner-border-sm d-none" id="fpOtpLoader"></span>
+                    </button>
                 </div>
 
-
-                <!-- Step 2 OTP -->
-                <div id="stepOtp" class="d-none">
-                    <label class="form-label small">Please enter the OTP sent to your email</label>
-                    <input type="text" id="fpOtp" class="form-control form-control-sm mb-2 text-center"
-                        placeholder="Enter OTP">
-
-                    <button class="btn btn-success w-100 btn-sm" id="verifyOtpBtn">
+                <!-- Step 2: OTP -->
+                <div id="fpStepOtp" class="d-none">
+                    <label class="form-label small text-white">Please enter the OTP sent to your email</label>
+                    <input type="text" id="fpOtpInput" class="form-control form-control-sm mb-2 text-center" placeholder="Enter OTP" style="background:#2d2d2d;color:#fff;border:none;">
+                    <button class="btn btn-success w-100 btn-sm" id="fpVerifyOtpBtn">
                         Verify OTP
                     </button>
-
-                    <button class="btn btn-link btn-sm w-100" id="resendOtpBtn">
+                    <button class="btn btn-link btn-sm w-100 text-white" id="fpResendOtpBtn">
                         Resend OTP
                     </button>
                 </div>
 
-
-                <!-- Step 3 New Password -->
-                <div id="stepReset" class="d-none text-white w-100"
-                    style="background:#1f1f1f; padding:16px; border-radius:10px;">
-
+                <!-- Step 3: New Password -->
+                <div id="fpStepReset" class="d-none text-white w-100" style="background:#1f1f1f; padding:16px; border-radius:10px;">
                     <label class="form-label small">New Password</label>
-                    <input type="password" id="fpPass" class="form-control border-0 mb-3"
-                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
+                    <input type="password" id="fpNewPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
 
                     <label class="form-label small">Confirm Password</label>
-                    <input type="password" id="fpPass2" class="form-control border-0 mb-3"
-                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
+                    <input type="password" id="fpConfirmPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
 
-                    <button id="resetPassBtn" class="btn w-100 text-white fw-semibold shadow"
-                        style="
-            background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%);
-            border: 2px solid #791218;
-            height:46px;
-            letter-spacing:1px;">
+                    <button id="fpResetPasswordBtn" class="btn w-100 text-white fw-semibold shadow" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border: 2px solid #791218; height:46px; letter-spacing:1px;">
                         Reset Password
                     </button>
-
                 </div>
-
-
-
-
-
 
             </div>
         </div>
     </div>
-
-
 
 @endsection

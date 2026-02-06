@@ -105,7 +105,7 @@
                 <!-- Account Section (Mobile Only) -->
                 @guest
                     <li class="nav-item mobile-only">
-                        <a class="nav-link mobile-menu-item" href="#" data-bs-toggle="modal" data-bs-target="#mxAuthModal" id="openLogin">
+                        <a class="nav-link mobile-menu-item" href="#" id="mobileLoginBtn">
                             <div class="menu-item-content">
                                 <i class="bi bi-box-arrow-in-right menu-icon"></i>
                                 <span>Login</span>
@@ -113,7 +113,7 @@
                         </a>
                     </li>
                     <li class="nav-item mobile-only">
-                        <a class="nav-link mobile-menu-item" href="#" data-bs-toggle="modal" data-bs-target="#mxAuthModal" id="openRegister">
+                        <a class="nav-link mobile-menu-item" href="#" id="mobileRegisterBtn">
                             <div class="menu-item-content">
                                 <i class="bi bi-person-plus menu-icon"></i>
                                 <span>Sign Up</span>
@@ -144,12 +144,12 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         @guest
                             <li>
-                                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#mxAuthModal" id="openLogin">
+                                <a href="#" class="dropdown-item" id="desktopLoginBtn">
                                     Login
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item" id="openRegister" data-bs-toggle="modal" data-bs-target="#mxAuthModal">
+                                <a href="#" class="dropdown-item" id="desktopRegisterBtn">
                                     Sign Up
                                 </a>
                             </li>
@@ -185,88 +185,31 @@
 <div class="header-redline"></div>
 
 <script>
-// Close mobile sidebar when clicking on links
+// Header Navigation Handler
 document.addEventListener('DOMContentLoaded', function() {
     const navbarCollapse = document.getElementById('navbarNav');
-    const mobileLinks = document.querySelectorAll('.mobile-menu-item, .dropdown-sub-item, .mobile-book-btn');
+    const mobileLinks = document.querySelectorAll('.mobile-menu-item, .dropdown-sub-item');
     
+    // Close mobile sidebar when clicking on links
     mobileLinks.forEach(link => {
         link.addEventListener('click', function() {
-            if (window.innerWidth < 992) {
-                const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
-                bsCollapse.hide();
+            if (window.innerWidth < 992 && navbarCollapse) {
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                }
             }
         });
     });
-
-    // Handle modal triggers - open register tab when clicking Sign Up
-    const registerMobileTrigger = document.getElementById('openRegisterMobile');
-    const registerDesktopTrigger = document.getElementById('openRegister');
-    
-    if (registerMobileTrigger) {
-        registerMobileTrigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Switch to register tab
-            const registerTab = document.querySelector('#mxAuthModal .nav-tabs a[href="#register"]');
-            if (registerTab) {
-                const tab = new bootstrap.Tab(registerTab);
-                tab.show();
-            }
-            // Close sidebar
-            const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
-            bsCollapse.hide();
-        });
-    }
-
-    if (registerDesktopTrigger) {
-        registerDesktopTrigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Switch to register tab
-            const registerTab = document.querySelector('#mxAuthModal .nav-tabs a[href="#register"]');
-            if (registerTab) {
-                const tab = new bootstrap.Tab(registerTab);
-                tab.show();
-            }
-        });
-    }
-
-    // Handle login triggers - ensure login tab is shown
-    const loginMobileTrigger = document.getElementById('openLoginMobile');
-    const loginDesktopTrigger = document.getElementById('openLogin');
-    
-    if (loginMobileTrigger) {
-        loginMobileTrigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Switch to login tab
-            const loginTab = document.querySelector('#mxAuthModal .nav-tabs a[href="#login"]');
-            if (loginTab) {
-                const tab = new bootstrap.Tab(loginTab);
-                tab.show();
-            }
-            // Close sidebar
-            const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
-            bsCollapse.hide();
-        });
-    }
-
-    if (loginDesktopTrigger) {
-        loginDesktopTrigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Switch to login tab
-            const loginTab = document.querySelector('#mxAuthModal .nav-tabs a[href="#login"]');
-            if (loginTab) {
-                const tab = new bootstrap.Tab(loginTab);
-                tab.show();
-            }
-        });
-    }
 
     // Rotate arrow on dropdown toggle
     const dropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function() {
             const arrow = this.querySelector('.dropdown-arrow');
-            arrow.classList.toggle('rotated');
+            if (arrow) {
+                arrow.classList.toggle('rotated');
+            }
         });
     });
 });
