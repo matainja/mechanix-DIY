@@ -64,17 +64,20 @@ class ProductController extends Controller
 
             /* ---------- save prices ---------- */
             if ($request->prices) {
-                foreach ($request->prices as $key=> $p) {
+                $defaultPrice = $request->default_price ?? 0; // Get selected default or use 0
+                
+                foreach ($request->prices as $key => $p) {
                     $product->prices()->create([
                         'hours' => $p['hours'],
                         'price' => $p['price'],
-                        'is_default' => $key == 0 ? 1 : 0,
+                        'is_default' => $key == $defaultPrice ? 1 : 0,
                     ]);
                 }
             }
 
             /* ---------- save images ---------- */
             if ($request->hasFile('images')) {
+                $defaultImage = $request->default_image ?? 0; // Get selected default or use 0
 
                 foreach ($request->file('images') as $key => $file) {
 
@@ -82,8 +85,7 @@ class ProductController extends Controller
 
                     $product->images()->create([
                         'image_path' => $path,
-                         
-                        'is_default' => $key == 0 // first image default
+                        'is_default' => $key == $defaultImage ? 1 : 0
                     ]);
                 }
             }
@@ -96,19 +98,19 @@ class ProductController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | EDIT PAGE
+    | EDIT PAGE (Returns JSON for modal)
     |--------------------------------------------------------------------------
     */
-   public function edit(Product $product)
-{
-    // eager load relations
-    $product->load([
-        'prices:id,product_id,price,hours,is_default',
-        'images:id,product_id,image_path,is_default'
-    ]);
+    public function edit(Product $product)
+    {
+        // eager load relations
+        $product->load([
+            'prices:id,product_id,price,hours,is_default',
+            'images:id,product_id,image_path,is_default'
+        ]);
 
-    return response()->json($product);
-}
+        return response()->json($product);
+    }
 
 
     /*
@@ -130,18 +132,19 @@ class ProductController extends Controller
             $product->update([
                 'name' => $request->name,
                 'description' => $request->description,
-                'status' => $request->status ?? 1
             ]);
 
             /* ---------- refresh prices ---------- */
             $product->prices()->delete();
 
             if ($request->prices) {
+                $defaultPrice = $request->default_price ?? 0; // Get selected default or use 0
+                
                 foreach ($request->prices as $key => $p) {
                     $product->prices()->create([
                         'hours' => $p['hours'],
                         'price' => $p['price'],
-                        'is_default' => $key == 0 ? 1 : 0
+                        'is_default' => $key == $defaultPrice ? 1 : 0
                     ]);
                 }
             }
@@ -160,17 +163,18 @@ class ProductController extends Controller
                 }
             }
 
-            /* ---------- change default image ---------- */
-            if ($request->default_image) {
+            /* ---------- change default image for existing images ---------- */
+            if ($request->default_image_existing) {
 
                 $product->images()->update(['is_default' => 0]);
 
-                Image::where('id', $request->default_image)
+                Image::where('id', $request->default_image_existing)
                     ->update(['is_default' => 1]);
             }
         });
 
-        return back()->with('success', 'Product updated successfully');
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product updated successfully');
     }
 
 
@@ -194,7 +198,7 @@ class ProductController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | DELETE SINGLE IMAGE (AJAX optional)
+    | DELETE SINGLE IMAGE (AJAX)
     |--------------------------------------------------------------------------
     */
     public function deleteImage($id)
@@ -205,24 +209,27 @@ class ProductController extends Controller
 
         $image->delete();
 
-        return back()->with('success', 'Image removed');
+        return response()->json(['success' => true]);
     }
 
 
     
 
-  public function toggle($id)
-{
-    $product = Product::findOrFail($id);
+    /*
+    |--------------------------------------------------------------------------
+    | TOGGLE STATUS
+    |--------------------------------------------------------------------------
+    */
+    public function toggle($id)
+    {
+        $product = Product::findOrFail($id);
 
-    $product->update([
-        'status' => !$product->status
-    ]);
+        $product->update([
+            'status' => !$product->status
+        ]);
 
-    return back()->with('success', 'Status updated');
+        return back()->with('success', 'Status updated');
+    }
+
+
 }
-
-
-}
-
-

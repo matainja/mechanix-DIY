@@ -25,22 +25,23 @@
         <!-- [ breadcrumb ] end -->
 
         <!-- [ Main Content ] start -->
-        <div class="card">
-            <div class="card-header">
+        <div class="card ">
+            <div class="card-header  d-flex justify-content-between align-items-center">
                 <h5>All Bookings</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body table-responsive"> 
                 <!-- Table for displaying bookings -->
-                <table class="table table-striped">
-                    <thead>
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
                         <tr>
                             <th>#</th>
                             <!-- <th>User</th> -->
                             <th>Booking Date</th>
+                            <th>Workstation</th>
                             <th>Start Time</th>
                             <th>Duration (Hours)</th>
                             <th>Lift Type</th>
-                            <th>Workstation</th>
+                            
                             <th>Rate per Hour</th>
                             <th>Status</th>
                             <th>Total</th>
@@ -52,10 +53,11 @@
                             <tr>
                                  <td>{{ $bookings->firstItem() + $loop->index }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->date)->format('d M Y') }}</td>
+                                <td>{{ $booking->workstation }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</td>
                                 <td>{{ $booking->hours }}</td>
                                 <td>{{ $booking->lift_type }}</td>
-                                <td>{{ $booking->workstation }}</td>
+                                
                                 <td>${{ number_format($booking->rate_per_hour, 2) }}</td>
                                 <td>
                                     <span class="badge @if($booking->status == 'completed') bg-success @elseif($booking->status == 'pending') bg-warning @else bg-danger @endif">

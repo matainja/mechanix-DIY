@@ -35,7 +35,6 @@ Route::get('/booking/calendar-data', [BookingController::class, 'calendarData'])
 Route::get('/coming-soon', [PageController::class, 'comingSoon'])->name('coming');
 
 
-
 //admin
 Route::middleware(['auth', 'admin'])
     ->prefix('admin')
@@ -46,36 +45,23 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
 
-        Route::resource('products', ProductController::class)
-            ->names('products');
+        // Products - using resource route (creates index, create, store, show, edit, update, destroy)
+        Route::resource('products', ProductController::class);
+        
+        // Additional product routes
+        Route::patch('/products/{id}/toggle', [ProductController::class, 'toggle'])->name('products.toggle');
+        Route::delete('/products/images/{id}', [ProductController::class, 'deleteImage'])->name('products.images.delete');
 
-        Route::delete('/products/{id}', [ProductController::class, 'destroy']) ->name('products.destroy');
-        Route::get('/products/{product}/edit-data', [ProductController::class, 'edit'])->name('admin.products.editData');
-        Route::post('/products/store', [ProductController::class, 'store'])->name('products.store');
-
-        Route::patch(
-            '/admin/products/{id}/toggle',
-            [ProductController::class, 'toggle']
-        )
-            ->name('products.toggle');
-
-
-
-        // Route::get('/users', [AdminController::class, 'users'])->name('users');
+        // Users
         Route::get('/users', [UserController::class, 'index'])->name('users');
-
 
         // Holidays
         Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
-
         Route::post('/holidays/store-single', [HolidayController::class, 'storeSingle'])->name('holidays.storeSingle');
-
         Route::post('/holidays/store-weekly', [HolidayController::class, 'storeWeekly'])->name('holidays.storeWeekly');
-
         Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.delete');
         Route::post('/holidays/bulk', [HolidayController::class, 'storeBulk'])->name('holidays.storeBulk');
     });
-
 
 //Loin & Register Popup
 

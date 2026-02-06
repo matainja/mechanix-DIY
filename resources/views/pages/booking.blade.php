@@ -95,44 +95,108 @@
             <!-- Main content -->
             <div class="mx-main">
 
-                <!-- LEFT: pricing + lift preview -->
-                <div class="mx-left" id="liftSection">
-                    <div class="mx-pricecard mx-selected" id="hoursSection" data-hours="1">
-                        <span class="mx-hours">1 Hour</span>
-                        <span class="mx-price">$45</span>
-                    </div>
+           {{-- LEFT: pricing + lift preview --}}
+<div class="mx-left" id="liftSection">
 
-                    <div class="mx-pricecard" data-hours="9">
-                        <span class="mx-hours">9 Hours</span>
-                        <span class="mx-price">$40 / hour</span>
-                    </div>
+    {{-- ============================= --}}
+    {{-- IF PRODUCT SELECTED → DB DATA --}}
+    {{-- ============================= --}}
+    @if($product)
 
-                    <div class="mx-pricecard" data-hours="18">
-                        <span class="mx-hours">18 Hours</span>
-                        <span class="mx-price">$35 / hour</span>
-                    </div>
+        @foreach($product->prices as $price)
+            <div
+                class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
+                data-hours="{{ $price->hours }}"
+                data-price="{{ $price->price }}"
+            >
+                <span class="mx-hours">
+                    {{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}
+                </span>
+
+                <span class="mx-price">
+                    $ {{ $price->price }}
+                    @if($price->hours > 1)
+                        / hour
+                    @endif
+                </span>
+            </div>
+        @endforeach
 
 
-                    <div class="mx-liftpreview">
+        @php
+            $defaultImage =
+                $product->images->firstWhere('is_default',1)
+                ?? $product->images->first();
+        @endphp
 
-                        <div class="mx-liftimg">
-                            <img id="mxLiftPreviewImg" src="{{ asset('assets/images/icons/lift-red.png') }}"
-                                alt="Lift preview">
-                        </div>
+        <div class="mx-liftpreview">
+            <div class="mx-liftimg">
+                <img
+                    id="mxLiftPreviewImg"
+                    src="{{ $defaultImage ? asset('storage/'.$defaultImage->image_path) : asset('assets/images/no-image.png') }}"
+                    alt="{{ $product->name }}"
+                >
+            </div>
 
-                        <ul class="mx-liftpoints" id="mxLiftPoints">
-                            <li>Heavy-duty four-post support</li>
-                            <li>Ideal for storage & repairs</li>
-                            <li>Stable and safe platform</li>
-                        </ul>
+            <ul class="mx-liftpoints" id="mxLiftPoints">
+                @foreach(explode("\n", $product->description ?? '') as $line)
+                    @if(trim($line))
+                        <li>{{ $line }}</li>
+                    @endif
+                @endforeach
+            </ul>
+        </div>
 
-                    </div>
 
-                    <div class="mx-leftbottom" id="leftupButton">
-                        <button class="mx-bookbig" id="openDayCalendar">Book Now</button>
+    {{-- ================================= --}}
+    {{-- NO PRODUCT → SHOW OLD STATIC UI --}}
+    {{-- ================================= --}}
+    @else
 
-                    </div>
-                </div>
+        <div class="mx-pricecard mx-selected" data-hours="1" data-price="45">
+            <span class="mx-hours">1 Hour</span>
+            <span class="mx-price">$45</span>
+        </div>
+
+        <div class="mx-pricecard" data-hours="9" data-price="40">
+            <span class="mx-hours">9 Hours</span>
+            <span class="mx-price">$40 / hour</span>
+        </div>
+
+        <div class="mx-pricecard" data-hours="18" data-price="35">
+            <span class="mx-hours">18 Hours</span>
+            <span class="mx-price">$35 / hour</span>
+        </div>
+
+        <div class="mx-liftpreview">
+            <div class="mx-liftimg">
+                <img
+                    id="mxLiftPreviewImg"
+                    src="{{ asset('assets/images/icons/lift-red.png') }}"
+                    alt="Lift preview"
+                >
+            </div>
+
+            <ul class="mx-liftpoints" id="mxLiftPoints">
+                <li>Heavy-duty four-post support</li>
+                <li>Ideal for storage & repairs</li>
+                <li>Stable and safe platform</li>
+            </ul>
+        </div>
+
+    @endif
+
+
+    {{-- ================= BOOK BUTTON ================= --}}
+    <div class="mx-leftbottom" id="leftupButton">
+        <button class="mx-bookbig" id="openDayCalendar">
+            Book Now
+        </button>
+    </div>
+
+</div>
+
+
 
                 <!-- RIGHT: calendar -->
                 <div class="mx-right" id="calendarSection">

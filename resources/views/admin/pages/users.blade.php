@@ -30,18 +30,18 @@
         </div>
 
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5>All Users</h5>
             </div>
 
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Email</th>
                             <th>Mobile</th>
-                            <th>Role</th>
+                            {{-- <th>Role</th> --}}
                             {{-- <th>Verified</th> --}}
                             <th>Joined</th>
                         </tr>
@@ -57,13 +57,13 @@
                             <td>{{ $user->mobile_no ?? '-' }}</td>
 
                             {{-- Role --}}
-                            <td>
+                            {{-- <td> --}}
                                 {{-- @if($user->role == 1) --}}
                                     {{-- <span class="badge bg-danger">Admin</span> --}}
                                 {{-- @else --}}
-                                    <span class="badge bg-primary">User</span>
+                                    {{-- <span class="badge bg-primary">User</span> --}}
                                 {{-- @endif --}}
-                            </td>
+                            {{-- </td> --}}
 
                             {{-- Email verified --}}
                             {{-- <td>

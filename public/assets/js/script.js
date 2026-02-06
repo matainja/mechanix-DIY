@@ -312,6 +312,19 @@ document.addEventListener("DOMContentLoaded", function () {
         showStep('stepOtp');
         startTimer(sendBtn);
     });
+    // loader for send otp button
+        const btn = document.getElementById("sendOtpBtn");
+        const loader = document.getElementById("otpLoader");
+        const text = btn.querySelector(".btn-text");
+
+        btn.addEventListener("click", async function () {
+
+            // show loader
+            btn.disabled = true;
+            loader.classList.remove("d-none");
+            text.innerText = "Sending...";
+
+        });
 
 
 
@@ -385,5 +398,8 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         document.getElementById(id)?.classList.remove('d-none');
     }
+
+
+    
 
 });

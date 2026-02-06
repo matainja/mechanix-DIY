@@ -129,7 +129,7 @@
                                 </div>
 
                                 <div class="text-end mt-2">
-                                    <a href="#" id="mxForgotBtn" class="small text-danger">
+                                    <a  id="mxForgotBtn" class="small text-danger btn">
                                         Forgot password?
                                     </a>
                                 </div>
@@ -213,14 +213,20 @@
                     <input type="email" id="fpEmail" class="form-control form-control-sm mb-2"
                         placeholder="Enter email">
 
-                    <button class="btn btn-primary w-100 btn-sm" id="sendOtpBtn">
-                        Send OTP
-                    </button>
+                   <button class="btn btn-primary w-100 btn-sm d-flex align-items-center justify-content-center gap-2"
+        id="sendOtpBtn">
+
+    <span class="btn-text">Send OTP</span>
+
+    <span class="spinner-border spinner-border-sm d-none" id="otpLoader"></span>
+</button>
+
                 </div>
 
 
                 <!-- Step 2 OTP -->
                 <div id="stepOtp" class="d-none">
+                    <label class="form-label small">Please enter the OTP sent to your email</label>
                     <input type="text" id="fpOtp" class="form-control form-control-sm mb-2 text-center"
                         placeholder="Enter OTP">
 

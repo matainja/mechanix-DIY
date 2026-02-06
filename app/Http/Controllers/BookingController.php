@@ -11,16 +11,24 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Models\Holiday;
 use Illuminate\Support\Facades\DB;
+use App\Models\Product;
+
 
 
 class BookingController extends Controller
 {
-    public function index()
-    {
+  public function index(Request $request)
+{
+    $product = null;
 
-        // Booking page
-        return view('pages.booking');
+    if ($request->filled('product_id')) {
+        $product = Product::with(['prices', 'images'])
+            ->find($request->product_id); 
     }
+
+    return view('pages.booking', compact('product'));
+}
+
 
 
     public function store(StoreBookingRequest $request)
