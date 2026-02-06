@@ -315,9 +315,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // loader for send otp button
         const btn = document.getElementById("sendOtpBtn");
         const loader = document.getElementById("otpLoader");
-        const text = btn.querySelector(".btn-text");
+        const text = btn?.querySelector(".btn-text");
 
-        btn.addEventListener("click", async function () {
+        btn?.addEventListener("click", async function () {
 
             // show loader
             btn.disabled = true;
