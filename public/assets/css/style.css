@@ -826,3 +826,54 @@ body {
 #mxAuthModal .btn-close:hover {
     opacity: 1;
 }
+
+/* Unavailable rental card styling */
+.rental-card.rental-unavailable {
+    opacity: 0.75;
+}
+
+.rental-img-disabled {
+    position: relative;
+}
+
+.rental-img-disabled img {
+    filter: grayscale(80%);
+    opacity: 0.6;
+}
+
+.unavailable-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+}
+
+.unavailable-badge {
+    background: #dc3545;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Disabled button */
+.rental-btn-disabled {
+    background-color: #6c757d !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.rental-btn-disabled:hover {
+    background-color: #6c757d !important;
+    transform: none !important;
+}

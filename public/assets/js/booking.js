@@ -66,10 +66,17 @@ let selectedHours = 1;
 
 // ===== Pricing =====
 function getRatePerHour(hours) {
-    if (hours >= 18) return 35;
-    if (hours >= 9) return 40;
-    return 45;
+    const rates = window.PRODUCT_PRICES;
+
+    for (let r of rates) {
+        if (hours >= r.hours) {
+            return r.price;
+        }
+    }
+
+    return 0;
 }
+
 
 function formatMoney(n) {
     return `$${n.toFixed(0)}`;
@@ -648,11 +655,15 @@ continueBtn.addEventListener("click", () => {
     if (!selectedDate || !selectedStartTime) return;
 
     openModal();
+    const card = document.querySelector('.mx-selected');
 
+const total = card.dataset.total;
+
+totalText.textContent = `$${total}`;
     //  lock modal hours to selected package (1 / 9 / 18)
-    selectedHours = selectedPackHours;
-    //  update modal UI using the chosen start time + chosen package
-    setHours(selectedHours);
+    // selectedHours = selectedPackHours;
+    // //  update modal UI using the chosen start time + chosen package
+    // setHours(selectedHours);
 });
 
 // packRadios().forEach(r => {

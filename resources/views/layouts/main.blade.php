@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     {{-- Page-specific CSS (optional) --}}
     @stack('styles')

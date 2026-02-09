@@ -9,6 +9,7 @@ use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -17,14 +18,14 @@ class ProductController extends Controller
     | LIST PRODUCTS
     |--------------------------------------------------------------------------
     */
-        public function index()
-        {
-            $products = Product::with(['images', 'prices'])
-                ->latest()
-                ->paginate(10);
+    public function index()
+    {
+        $products = Product::with(['images', 'prices'])
+            ->latest()
+            ->paginate(10);
 
-            return view('admin.pages.products', compact('products'));
-        }
+        return view('admin.pages.products', compact('products'));
+    }
 
 
 
@@ -49,9 +50,32 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'prices.*.hours' => 'required|integer|min:1',
-            'prices.*.price' => 'required|numeric|min:0',
+            'prices.*.price' => 'required|numeric|min:0|max:10000',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp'
+        ], [
+
+            //  custom messages
+            'name.required' => 'Product name is required',
+
+            'prices.*.hours.required' => 'Hours is required',
+            'prices.*.hours.integer' => 'Hours must be a number',
+            'prices.*.hours.min' => 'Hours must be at least 1',
+
+            'prices.*.price.required' => 'Price is required',
+            'prices.*.price.numeric' => 'Price must be a valid number',
+            'prices.*.price.min' => 'Price cannot be negative',
+            'prices.*.price.max' => 'Price cannot exceed $10,000',
+
+            'images.*.image' => 'Only images are allowed',
+            'images.*.mimes' => 'Allowed formats: jpg, jpeg, png, webp',
+        ], [
+
+            //  friendly field names (removes prices.0.price ugly text)
+            'prices.*.price' => 'Price',
+            'prices.*.hours' => 'Hours',
+            'images.*' => 'Image'
         ]);
+
 
         DB::transaction(function () use ($request) {
 
@@ -65,11 +89,12 @@ class ProductController extends Controller
             /* ---------- save prices ---------- */
             if ($request->prices) {
                 $defaultPrice = $request->default_price ?? 0; // Get selected default or use 0
-                
+
                 foreach ($request->prices as $key => $p) {
                     $product->prices()->create([
                         'hours' => $p['hours'],
-                        'price' => $p['price'],
+                        'price' => round((float)$p['price'], 2),
+
                         'is_default' => $key == $defaultPrice ? 1 : 0,
                     ]);
                 }
@@ -120,11 +145,30 @@ class ProductController extends Controller
     */
     public function update(Request $request, Product $product)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'prices.*.hours' => 'required|integer|min:1',
-            'prices.*.price' => 'required|numeric|min:0'
+            'prices.*.price' => 'required|numeric|min:0|max:10000',
+        ], [
+            'name.required' => 'Product name is required',
+
+            'prices.*.hours.required' => 'Hours is required',
+            'prices.*.hours.min' => 'Hours must be at least 1',
+
+            'prices.*.price.required' => 'Price is required',
+            'prices.*.price.numeric' => 'Price must be a number',
+            'prices.*.price.max' => 'Price cannot exceed $10,000',
+            'prices.*.price.min' => 'Price cannot be negative',
         ]);
+
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput()
+                // ->with('open_modal', 'edit')
+                ->with('edit_product_id', $product->id); // 👈 send id
+        }
 
         DB::transaction(function () use ($request, $product) {
 
@@ -139,11 +183,12 @@ class ProductController extends Controller
 
             if ($request->prices) {
                 $defaultPrice = $request->default_price ?? 0; // Get selected default or use 0
-                
+
                 foreach ($request->prices as $key => $p) {
                     $product->prices()->create([
                         'hours' => $p['hours'],
-                        'price' => $p['price'],
+                        'price' => round((float)$p['price'], 2),
+
                         'is_default' => $key == $defaultPrice ? 1 : 0
                     ]);
                 }
@@ -183,17 +228,17 @@ class ProductController extends Controller
     | DELETE PRODUCT
     |--------------------------------------------------------------------------
     */
-    public function destroy(Product $product)
-    {
-        // delete images from storage
-        foreach ($product->images as $img) {
-            Storage::disk('public')->delete($img->image_path);
-        }
+    // public function destroy(Product $product)
+    // {
+    //     // delete images from storage
+    //     foreach ($product->images as $img) {
+    //         Storage::disk('public')->delete($img->image_path);
+    //     }
 
-        $product->delete();
+    //     $product->delete();
 
-        return back()->with('success', 'Product deleted successfully');
-    }
+    //     return back()->with('success', 'Product deleted successfully');
+    // }
 
 
     /*
@@ -213,7 +258,7 @@ class ProductController extends Controller
     }
 
 
-    
+
 
     /*
     |--------------------------------------------------------------------------
@@ -230,6 +275,4 @@ class ProductController extends Controller
 
         return back()->with('success', 'Status updated');
     }
-
-
 }

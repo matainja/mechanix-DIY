@@ -108,6 +108,7 @@
                 class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
                 data-hours="{{ $price->hours }}"
                 data-price="{{ $price->price }}"
+                data-total="{{ $price->price * $price->hours }}"
             >
                 <span class="mx-hours">
                     {{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}
