@@ -9,7 +9,7 @@
                 <span class="footer-separator">|</span>
                 <a href="{{ route('contact') }}">Contact Us</a>
                 <span class="footer-separator">|</span>
-                <a href="{{ route('privacy-policy') }}">Privacy Policy</a>
+                <a href="{{ route('privacy') }}">Privacy Policy</a>
                 <span class="footer-separator">|</span>
             </div>
 
