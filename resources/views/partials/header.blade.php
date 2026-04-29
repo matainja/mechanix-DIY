@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid px-4">
         <a class="navbar-brand" href="{{ route('home') }}">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="Mechanix Logo" class="logo-img">
+            <img src="{{ asset('assets/images/logomain.png') }}" alt="Mechanix Logo" class="logo-img">
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
