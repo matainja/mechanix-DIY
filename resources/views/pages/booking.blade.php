@@ -65,27 +65,27 @@
             <!-- Lift type buttons row -->
             <div class="mx-liftbar">
                 <button class="mx-liftbtn active " data-lift="four">
-                    <img src="{{ asset('assets/images/icons/fourpost.jpg') }}" class="mx-ic" alt="">
+                    <img src="{{ asset('assets/images/icons/four-post.png') }}" class="mx-ic" alt="">
                     <span>Four-Post Lift</span>
                 </button>
 
                 <button class="mx-liftbtn mx-redmark" data-lift="two">
-                    <img src="{{ asset('assets/images/icons/twopost.jpg') }}" class="mx-ic" alt="">
+                    <img src="{{ asset('assets/images/icons/two-post.png') }}" class="mx-ic" alt="">
                     <span>Two-Post Lift</span>
                 </button>
 
                 <button class="mx-liftbtn" data-lift="scissor">
-                    <img src="{{ asset('assets/images/icons/scissor.jpg') }}" class="mx-ic" alt="">
+                    <img src="{{ asset('assets/images/icons/scissor.png') }}" class="mx-ic" alt="">
                     <span>Scissor Lift</span>
                 </button>
 
                 <button class="mx-liftbtn" data-lift="flat">
-                    <img src="{{ asset('assets/images/icons/motocycle.jpg') }}" class="mx-ic" alt="">
+                    <img src="{{ asset('assets/images/icons/moto-lift.png') }}" class="mx-ic" alt="">
                     <span>Motorcycle Lift</span>
                 </button>
 
                 <button class="mx-liftbtn" data-lift="flat2">
-                    <img src="{{ asset('assets/images/icons/alignmentrack.jpg') }}" class="mx-ic" alt="">
+                    <img src="{{ asset('assets/images/icons/alignment-rack.png') }}" class="mx-ic" alt="">
                     <span>Alignment rack</span>
                 </button>
             </div>
