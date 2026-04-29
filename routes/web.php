@@ -37,7 +37,7 @@ Route::get('/coming-soon', [PageController::class, 'comingSoon'])->name('coming'
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/membership', [PageController::class, 'membership'])->name('membership');
 Route::get('/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy-policy');
-
+// testing
 
 //admin
 Route::middleware(['auth', 'admin'])
