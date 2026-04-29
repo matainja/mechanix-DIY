@@ -7,9 +7,9 @@
 
             <div class="footer-center mx-4">
                 <span class="footer-separator">|</span>
-                <a href="#">Contact Us</a>
+                <a href="{{ route('contact') }}">Contact Us</a>
                 <span class="footer-separator">|</span>
-                <a href="#">Privacy Policy</a>
+                <a href="{{ route('privacy-policy') }}">Privacy Policy</a>
                 <span class="footer-separator">|</span>
             </div>
 

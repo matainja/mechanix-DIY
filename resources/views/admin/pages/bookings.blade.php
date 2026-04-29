@@ -51,7 +51,9 @@
                     <tbody>
                         @foreach($bookings as $booking)
                             <tr>
-                                 <td>{{ $bookings->firstItem() + $loop->index }}</td>
+                                <td>
+                                    {{ $bookings->total() - ($bookings->firstItem() + $loop->index - 1) }}
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($booking->date)->format('d M Y') }}</td>
                                 <td>{{ $booking->workstation }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</td>

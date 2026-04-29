@@ -125,7 +125,7 @@
                     </button>
 
                      
-                    {{-- <form action="{{ route('admin.products.destroy', $product->id) }}" 
+                    <form action="{{ route('admin.products.destroy', $product->id) }}" 
                             method="POST" 
                             style="display:inline-block"
                             onsubmit="return confirm('Delete this product?')">
@@ -138,7 +138,7 @@
                           <i class="bi bi-trash-fill"></i>
                       </button>
 
-                      </form> --}}
+                      </form>
                 </td>
 
             </tr>

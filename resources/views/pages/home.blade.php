@@ -67,7 +67,7 @@
         <div class="container text-center">
             <h2 class="membership-title">Join Our VIP Membership</h2>
             <p class="membership-subtitle">Exclusive Benefits & Discounts</p>
-            <a href="{{ route('coming') }}" class="btn btn-primary btn-lg btn-member">
+            <a href="{{ route('membership') }}" class="btn btn-primary btn-lg btn-member">
                 <span>Become a Member</span>
             </a>
         </div>

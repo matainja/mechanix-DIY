@@ -40,7 +40,7 @@
                 </li>
 
                 <li class="nav-item desktop-only">
-                    <a class="nav-link {{ request()->routeIs('coming') ? 'active' : '' }}" href="{{ route('coming') }}">
+                    <a class="nav-link {{ request()->routeIs('membership') ? 'active' : '' }}" href="{{ route('membership') }}">
                         MEMBERSHIP
                     </a>
                 </li>
@@ -129,6 +129,21 @@
                 @endguest
 
                 @auth
+                
+                {{-- admin dashboard route --}}
+
+
+
+
+                {{-- <br>
+                  <li class="nav-item mobile-only">
+    <a class="nav-link mobile-menu-item" href="{{ route('admin.home') }}">
+        <div class="menu-item-content">
+            <i class="bi bi-speedometer2 menu-icon"></i>
+            <span>Admin Dashboard</span>
+        </div>
+    </a>
+</li> --}}
                     <li class="nav-item mobile-only">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -173,11 +188,16 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li>
-                                <a href="{{ route('admin.home') }}" class="dropdown-item">
-                                    Admin Dashboard
-                                </a>
-                            </li><br>
+                            {{-- admin dashboard --}}
+                            {{-- <li>
+            <a href="{{ route('admin.home') }}" class="dropdown-item">
+              <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
+            </a>
+          </li>  --}}
+          
+          <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}" class="text-center">
                                     @csrf

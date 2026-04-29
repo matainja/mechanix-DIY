@@ -68,3 +68,87 @@
         min-height: calc(100vh - 119px);
     }
     }
+/* contact us css */
+
+
+    .contact-info p {
+  margin: 6px 0;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.map-box {
+  width: 100%;
+  height: 220px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+.map-box iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* membership css */
+.membership-list {
+  padding-left: 18px;
+  margin-bottom: 15px;
+  opacity: 0.85;
+}
+.membership-list li {
+  margin-bottom: 6px;
+}
+
+.pricing-card {
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+}
+
+.plan-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 15px;
+  color: #ff3b3b;
+}
+
+.price span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ccc;
+}
+
+.featured {
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  box-shadow: 0 20px 50px rgba(255, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+/* privacy policy css */
+
+.policy-section {
+  margin-bottom: 18px;
+}
+
+.policy-section h5 {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #ff3b3b;
+}
+
+.policy-section p {
+  font-size: 14px;
+  opacity: 0.85;
+  line-height: 1.6;
+}
