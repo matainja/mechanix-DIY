@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Mechanix D.I.Y.')</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/car--v1.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{--  Google Fonts --}}
@@ -32,6 +33,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     {{-- Page-specific CSS (optional) --}}
     @stack('styles')

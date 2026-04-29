@@ -19,4 +19,19 @@ class PageController extends Controller
     {
         return view('pages.coming-soon');
     }
+
+    public function membership()
+    {
+        return view('pages.membership');
+    }
+
+    public function contact()
+    {
+        return view('pages.contactus');
+    }
+    
+    public function privacyPolicy()
+    {
+        return view('pages.privacypolicy');
+    }
 }

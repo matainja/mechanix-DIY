@@ -14,9 +14,8 @@ class RentalController extends Controller
     public function index()
     {
         $rentals = Product::with(['images', 'prices'])
-            ->where('status', 1) // only enabled products
             ->latest()
-            ->get();
+            ->get(); // Remove the where('status', 1) filter to show all products
 
         return view('pages.rentals', compact('rentals'));
     }
@@ -27,13 +26,18 @@ class RentalController extends Controller
     | DETAILS PAGE
     |--------------------------------------------------------------------------
     */
-  public function details($id)
-{
-    $rental = Product::with(['images','prices'])
-        ->where('status', 1)
-        ->findOrFail($id);
+    public function details($id)
+    {
+        $rental = Product::with(['images','prices'])
+            ->findOrFail($id); // Remove status filter here too
 
-    return view('pages.rental-details', compact('rental'));
-}
+        // Check if product is available on details page
+        if ($rental->status != 1) {
+            // Redirect back with message or show unavailable message
+            return view('pages.rental-details', compact('rental'))
+                ->with('unavailable', true);
+        }
 
+        return view('pages.rental-details', compact('rental'));
+    }
 }

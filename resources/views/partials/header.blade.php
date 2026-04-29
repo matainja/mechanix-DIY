@@ -15,7 +15,8 @@
                 <div class="mobile-welcome">
                     Welcome Guest
                 </div>
-                <button class="btn-close btn-close-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"></button>
+                <button class="btn-close btn-close-white" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"></button>
             </div>
 
             <ul class="navbar-nav">
@@ -32,13 +33,14 @@
 
                 <!-- Desktop Main Links -->
                 <li class="nav-item desktop-only">
-                    <a class="nav-link {{ request()->routeIs('rentals') ? 'active' : '' }}" href="{{ route('rentals') }}">
+                    <a class="nav-link {{ request()->routeIs('rentals') ? 'active' : '' }}"
+                        href="{{ route('rentals') }}">
                         RENTALS
                     </a>
                 </li>
 
                 <li class="nav-item desktop-only">
-                    <a class="nav-link {{ request()->routeIs('coming') ? 'active' : '' }}" href="{{ route('coming') }}">
+                    <a class="nav-link {{ request()->routeIs('membership') ? 'active' : '' }}" href="{{ route('membership') }}">
                         MEMBERSHIP
                     </a>
                 </li>
@@ -52,7 +54,8 @@
                 <!-- Rentals Dropdown (Mobile Only) -->
                 <li class="nav-item mobile-only">
                     <div class="mobile-dropdown">
-                        <button class="mobile-dropdown-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#rentalsDropdown">
+                        <button class="mobile-dropdown-toggle" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#rentalsDropdown">
                             <div class="menu-item-content">
                                 <i class="bi bi-tools menu-icon"></i>
                                 <span>Rentals</span>
@@ -82,7 +85,8 @@
                 <!-- More Dropdown (Mobile Only) -->
                 <li class="nav-item mobile-only">
                     <div class="mobile-dropdown">
-                        <button class="mobile-dropdown-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#moreDropdown">
+                        <button class="mobile-dropdown-toggle" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#moreDropdown">
                             <div class="menu-item-content">
                                 <i class="bi bi-grid menu-icon"></i>
                                 <span>More</span>
@@ -105,7 +109,12 @@
                 <!-- Account Section (Mobile Only) -->
                 @guest
                     <li class="nav-item mobile-only">
+<<<<<<< HEAD
                         <a class="nav-link mobile-menu-item" href="#" id="mobileLoginBtn">
+=======
+                        <a class="nav-link mobile-menu-item" href="#" data-bs-toggle="modal"
+                            data-bs-target="#mxAuthModal" id="openLogin">
+>>>>>>> e59a296c10be094eda4006ee09005e494fcafbfd
                             <div class="menu-item-content">
                                 <i class="bi bi-box-arrow-in-right menu-icon"></i>
                                 <span>Login</span>
@@ -113,7 +122,12 @@
                         </a>
                     </li>
                     <li class="nav-item mobile-only">
+<<<<<<< HEAD
                         <a class="nav-link mobile-menu-item" href="#" id="mobileRegisterBtn">
+=======
+                        <a class="nav-link mobile-menu-item" href="#" data-bs-toggle="modal"
+                            data-bs-target="#mxAuthModal" id="openRegister">
+>>>>>>> e59a296c10be094eda4006ee09005e494fcafbfd
                             <div class="menu-item-content">
                                 <i class="bi bi-person-plus menu-icon"></i>
                                 <span>Sign Up</span>
@@ -123,6 +137,21 @@
                 @endguest
 
                 @auth
+                
+                {{-- admin dashboard route --}}
+
+
+
+
+                {{-- <br>
+                  <li class="nav-item mobile-only">
+    <a class="nav-link mobile-menu-item" href="{{ route('admin.home') }}">
+        <div class="menu-item-content">
+            <i class="bi bi-speedometer2 menu-icon"></i>
+            <span>Admin Dashboard</span>
+        </div>
+    </a>
+</li> --}}
                     <li class="nav-item mobile-only">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -136,7 +165,8 @@
 
                 <!-- AUTH DROPDOWN (Desktop Only) -->
                 <li class="nav-item dropdown desktop-only">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="authDropdown" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="authDropdown"
+                        data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle fs-4"></i>
                         <span class="ms-2">Account</span>
                     </a>
@@ -144,12 +174,22 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         @guest
                             <li>
+<<<<<<< HEAD
                                 <a href="#" class="dropdown-item" id="desktopLoginBtn">
+=======
+                                <a href="#" class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#mxAuthModal" id="openLogin">
+>>>>>>> e59a296c10be094eda4006ee09005e494fcafbfd
                                     Login
                                 </a>
                             </li>
                             <li>
+<<<<<<< HEAD
                                 <a href="#" class="dropdown-item" id="desktopRegisterBtn">
+=======
+                                <a href="#" class="dropdown-item" id="openRegister" data-bs-toggle="modal"
+                                    data-bs-target="#mxAuthModal">
+>>>>>>> e59a296c10be094eda4006ee09005e494fcafbfd
                                     Sign Up
                                 </a>
                             </li>
@@ -162,6 +202,16 @@
                                 </span>
                             </li>
                             <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            {{-- admin dashboard --}}
+                            {{-- <li>
+            <a href="{{ route('admin.home') }}" class="dropdown-item">
+              <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
+            </a>
+          </li>  --}}
+          
+          <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
@@ -185,6 +235,7 @@
 <div class="header-redline"></div>
 
 <script>
+<<<<<<< HEAD
 // Header Navigation Handler
 document.addEventListener('DOMContentLoaded', function() {
     const navbarCollapse = document.getElementById('navbarNav');
@@ -214,3 +265,100 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+=======
+    // Close mobile sidebar when clicking on links
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbarCollapse = document.getElementById('navbarNav');
+        const mobileLinks = document.querySelectorAll(
+        '.mobile-menu-item, .dropdown-sub-item, .mobile-book-btn');
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 992) {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                        toggle: false
+                    });
+                    bsCollapse.hide();
+                }
+            });
+        });
+
+        // Handle modal triggers - open register tab when clicking Sign Up
+        const registerMobileTrigger = document.getElementById('openRegisterMobile');
+        const registerDesktopTrigger = document.getElementById('openRegister');
+
+        if (registerMobileTrigger) {
+            registerMobileTrigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Switch to register tab
+                const registerTab = document.querySelector(
+                '#mxAuthModal .nav-tabs a[href="#register"]');
+                if (registerTab) {
+                    const tab = new bootstrap.Tab(registerTab);
+                    tab.show();
+                }
+                // Close sidebar
+                const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                    toggle: false
+                });
+                bsCollapse.hide();
+            });
+        }
+
+        if (registerDesktopTrigger) {
+            registerDesktopTrigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Switch to register tab
+                const registerTab = document.querySelector(
+                '#mxAuthModal .nav-tabs a[href="#register"]');
+                if (registerTab) {
+                    const tab = new bootstrap.Tab(registerTab);
+                    tab.show();
+                }
+            });
+        }
+
+        // Handle login triggers - ensure login tab is shown
+        const loginMobileTrigger = document.getElementById('openLoginMobile');
+        const loginDesktopTrigger = document.getElementById('openLogin');
+
+        if (loginMobileTrigger) {
+            loginMobileTrigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Switch to login tab
+                const loginTab = document.querySelector('#mxAuthModal .nav-tabs a[href="#login"]');
+                if (loginTab) {
+                    const tab = new bootstrap.Tab(loginTab);
+                    tab.show();
+                }
+                // Close sidebar
+                const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                    toggle: false
+                });
+                bsCollapse.hide();
+            });
+        }
+
+        if (loginDesktopTrigger) {
+            loginDesktopTrigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Switch to login tab
+                const loginTab = document.querySelector('#mxAuthModal .nav-tabs a[href="#login"]');
+                if (loginTab) {
+                    const tab = new bootstrap.Tab(loginTab);
+                    tab.show();
+                }
+            });
+        }
+
+        // Rotate arrow on dropdown toggle
+        const dropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const arrow = this.querySelector('.dropdown-arrow');
+                arrow.classList.toggle('rotated');
+            });
+        });
+    });
+</script>
+>>>>>>> e59a296c10be094eda4006ee09005e494fcafbfd

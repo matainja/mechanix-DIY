@@ -3,6 +3,7 @@
 @section('title', 'Products')
 
 @section('content')
+
 <div class="pc-container">
     <div class="pc-content">
 <!-- [ breadcrumb ] start -->
@@ -177,7 +178,15 @@
 
       <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-
+         @if ($errors->any())
+            <div class="alert alert-danger mx-3 mt-3">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="modal-body">
 
           <div class="row g-3">
@@ -276,6 +285,15 @@
 
       <form id="editProductForm" method="POST" enctype="multipart/form-data">
         @csrf
+        @if ($errors->any())
+            <div class="alert alert-danger mx-3 mt-3">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         @method('PUT')
 
         <div class="modal-body">
@@ -344,6 +362,21 @@
   </div>
 </div>
 
+@if ($errors->any() && session('edit_product_id'))
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        editProduct({{ session('edit_product_id') }});
+
+    });
+
+</script>
+@elseif($errors->any())
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        new bootstrap.Modal(document.getElementById('addProductModal')).show();
+    });
+</script>
+@endif
 
 <script>
 let priceIndex = 1;
