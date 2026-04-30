@@ -79,7 +79,7 @@ body { font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Ar
 .rental-img img {
   width: 100%;        /* allows scaling up */
   height: 100%;       /* fill container */
-  object-fit: contain; /* no crop */
+  /* object-fit: contain; no crop */
 }
 
 .rental-title{
