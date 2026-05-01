@@ -14,6 +14,16 @@ body {
   display: block;
 }
 
+@media (max-width: 1920px) {
+.hero-section {
+  
+  height: 685px;
+
+  
+}
+
+}
+
 .navbar {
   background-image: url("../images/dark-grey-texture.png");
   background-size: cover;
@@ -312,15 +322,7 @@ body {
         display: none;
     }
 }
-@media (max-width: 1920px) {
-.hero-section {
-  
-  height: 685px;
 
-  
-}
-
-}
 
 .hero-section {
   position: relative;
