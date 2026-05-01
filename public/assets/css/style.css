@@ -312,6 +312,15 @@ body {
         display: none;
     }
 }
+@media (min-width: 1920px) {
+.hero-section {
+  
+  height: 685px;
+
+  
+}
+
+}
 
 .hero-section {
   position: relative;
