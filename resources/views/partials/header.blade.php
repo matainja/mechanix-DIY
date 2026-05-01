@@ -71,11 +71,11 @@
                             <i class="bi bi-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="collapse mobile-dropdown-menu" id="rentalsDropdown">
-                            <a href="{{ route('rentals') }}" class="dropdown-sub-item">Lift & Tool Rentals</a>
-                            <a href="{{ route('coming') }}" class="dropdown-sub-item">Speciality Tools</a>
-                            <a href="{{ route('coming') }}" class="dropdown-sub-item">Technician On Site</a>
-                            <a href="{{ route('coming') }}" class="dropdown-sub-item">AC Service</a>
-                            <a href="{{ route('coming') }}" class="dropdown-sub-item">Alignment</a>
+                            <a href="{{ route('commonpage') }}#lift-rentals" class="dropdown-sub-item">Lift & Tool Rentals</a>
+                            <a href="{{ route('commonpage') }}#speciality-tools" class="dropdown-sub-item">Speciality Tools</a>
+                            <a href="{{ route('commonpage') }}#technician-site" class="dropdown-sub-item">Technician On Site</a>
+                            <a href="{{ route('rentals') }}" class="dropdown-sub-item">Hourly Rentals</a>
+                            <a href="{{ asset('assets/images/icons/alignment.png') }}" class="dropdown-sub-item">Basic Tools Provided</a>
                         </div>
                     </div>
                 </li>

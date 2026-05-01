@@ -34,7 +34,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item d-flex align-items-center gap-2" data-lift="two"
-                                data-icon="{{ asset('assets/images/icons/two-post.png') }}" href="#">
+                                data-icon="{{ asset('assets/images/icons/Media (6).jpg') }}" href="#">
                                 Two-Post Lift
                             </a>
                         </li>

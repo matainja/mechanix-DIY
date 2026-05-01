@@ -55,7 +55,7 @@
  
                 <span class="service-divider">|</span>
  
-                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#speciality-tools">
+                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#Discounted-parts">
                     <img src="{{ asset('assets/images/tool-rental.png') }}" alt="Tool Rentals" />
                     <span>Discounted Parts Available</span>
                 </a>
@@ -70,13 +70,13 @@
                 <span class="service-divider">|</span>
  
                 <a class="service-item-custom service-link" href="{{ route('rentals') }}">
-                    <img src="{{ asset('assets/images/ac-2.png') }}" alt="AC Service" />
+                    <img src="{{ asset('assets/images/ac-2.png') }}" alt="hourly rental" />
                     <span>Hourly Rental</span>
                 </a>
  
                 <span class="service-divider">|</span>
  
-                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#alignment">
+                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#basic-tool">
                     <img src="{{ asset('assets/images/icons/alignment.png') }}" alt="Alignment" />
                     <span>Basic Tools Provided</span>
                 </a>
