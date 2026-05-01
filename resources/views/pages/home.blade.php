@@ -17,11 +17,19 @@
             </div>
         </div>
     </section> -->
-    <section class="hero-section">
+   <section class="hero-section">
 
     <!-- Image wrapper -->
     <div class="hero-image">
-        <img src="{{ asset('assets/images/mechanix-banner-01 1.jpg') }}" alt="Hero Image">
+        <picture>
+            <!-- Mobile image -->
+            <source media="(max-width: 768px)" 
+                    srcset="{{ asset('assets/images/mechanix-banner-mob.jpg') }}">
+
+            <!-- Desktop image -->
+            <img src="{{ asset('assets/images/mechanix-banner-01 1.jpg') }}" 
+                 alt="Hero Image">
+        </picture>
     </div>
 
     <div class="hero-overlay"></div>

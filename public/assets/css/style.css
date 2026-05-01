@@ -21,15 +21,9 @@ body {
 
   
 }
-
-@media (max-width: 768px) {
-  .hero-section {
-    background-image: url('../images/mechanix-banner-mob.jpg');
-    background-position: center;
-  }
 }
 
-}
+
 
 .navbar {
   background-image: url("../images/dark-grey-texture.png");
