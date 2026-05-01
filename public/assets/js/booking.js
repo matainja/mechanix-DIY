@@ -1417,7 +1417,7 @@ $(function () {
     ================================================================ */
     const LIFT_DATA = {
         four:    { img:'assets/images/rentals/fourpost.jpg',      points:['Heavy-duty four-post support','Perfect for long-hour jobs','Maximum stability & safety'] },
-        two:     { img:'assets/images/rentals/twopost.jpg',       points:['Quick vehicle access','Ideal for mechanical repairs','Compact and space efficient'] },
+        two:     { img:'assets/images/rentals/Media (6).jpg',       points:['Quick vehicle access','Ideal for mechanical repairs','Compact and space efficient'] },
         scissor: { img:'assets/images/rentals/scissor.jpg',        points:['Low profile design','Fast lifting operation','Great for tire & brake work'] },
         flat:    { img:'assets/images/rentals/motocycle.jpg',      points:['Designed for motorcycles','Easy loading & unloading','Stable flat platform'] },
         flat2:   { img:'assets/images/rentals/allignmentrack.jpg', points:['Precision wheel alignment','Extended ramp length','Perfect for alignment jobs'] }
