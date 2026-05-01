@@ -71,7 +71,7 @@
                             <i class="bi bi-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="collapse mobile-dropdown-menu" id="rentalsDropdown">
-                            <a href="{{ route('coming') }}" class="dropdown-sub-item">Lift Rentals & Tool Rentals</a>
+                            <a href="{{ route('rentals') }}" class="dropdown-sub-item">Lift & Tool Rentals</a>
                             <a href="{{ route('coming') }}" class="dropdown-sub-item">Speciality Tools</a>
                             <a href="{{ route('coming') }}" class="dropdown-sub-item">Technician On Site</a>
                             <a href="{{ route('coming') }}" class="dropdown-sub-item">AC Service</a>
@@ -82,7 +82,7 @@
 
                 <!-- Membership (Mobile Only) -->
                 <li class="nav-item mobile-only">
-                    <a class="nav-link mobile-menu-item" href="{{ route('coming') }}">
+                    <a class="nav-link mobile-menu-item" href="{{ route('membership') }}">
                         <div class="menu-item-content">
                             <i class="bi bi-award menu-icon"></i>
                             <span> Membership</span>
@@ -102,11 +102,11 @@
                             <i class="bi bi-chevron-down dropdown-arrow"></i>
                         </button>
                         <div class="collapse mobile-dropdown-menu" id="moreDropdown">
-                            <a href="#" class="dropdown-sub-item">
+                            <a href="{{route('contact')}}" class="dropdown-sub-item">
                                 <i class="bi bi-telephone sub-icon"></i>
                                 Contact Us
                             </a>
-                            <a href="#" class="dropdown-sub-item">
+                            <a href="{{route('privacy')}}" class="dropdown-sub-item">
                                 <i class="bi bi-shield-check sub-icon"></i>
                                 Privacy Policy
                             </a>
