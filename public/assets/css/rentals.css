@@ -13,7 +13,7 @@ body { font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Ar
   background: #0b0b0b;
   overflow: hidden;
   z-index: 0;
-  min-height: 95vh;
+  min-height: 85vh;
 }
 
 /* texture layer */
