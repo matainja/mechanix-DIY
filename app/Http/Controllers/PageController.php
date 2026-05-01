@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class PageController extends Controller
 {
@@ -34,4 +36,13 @@ class PageController extends Controller
     {
         return view('pages.privacypolicy');
     }
+        public function commonpage()
+    {
+         $rentals = Product::with(['images', 'prices'])
+            ->latest()
+            ->get(); // Remove the where('status', 1) filter to show all products
+ 
+        return view('pages.commonpage', compact('rentals'));
+    }
+
 }

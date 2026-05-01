@@ -36,41 +36,41 @@
 
 </section>
 
-    <!-- Services Icons -->
+     <!-- Services Icons -->
     <section class="services-icons">
         <div class="container">
             <div class="services-row">
-                <a class="service-item-custom service-link" href="{{ route('coming') }}">
+                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#lift-rentals">
                     <img src="{{ asset('assets/images/icons/lift-tool-rental.png') }}" alt="Lift Rentals" />
                     <span>Lift Rentals & Tool Rentals</span>
                 </a>
-
+ 
                 <span class="service-divider">|</span>
-
-                <a class="service-item-custom service-link" href="{{ route('coming') }}">
+ 
+                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#speciality-tools">
                     <img src="{{ asset('assets/images/tool-rental.png') }}" alt="Tool Rentals" />
-                    <span>Speciality Tools</span>
+                    <span>Discounted Parts Available</span>
                 </a>
-
+ 
                 <span class="service-divider">|</span>
-
-                <a class="service-item-custom service-link" href="{{ route('coming') }}">
+ 
+                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#technician-site">
                     <img src="{{ asset('assets/images/icons/technician.png') }}" alt="Technician" />
-                    <span>Technician On Site</span>
+                    <span>Mechanic On Site</span>
                 </a>
-
+ 
                 <span class="service-divider">|</span>
-
-                <a class="service-item-custom service-link" href="{{ route('coming') }}">
+ 
+                <a class="service-item-custom service-link" href="{{ route('rentals') }}">
                     <img src="{{ asset('assets/images/ac-2.png') }}" alt="AC Service" />
-                    <span>AC Service</span>
+                    <span>Hourly Rental</span>
                 </a>
-
+ 
                 <span class="service-divider">|</span>
-
-                <a class="service-item-custom service-link" href="{{ route('coming') }}">
+ 
+                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#alignment">
                     <img src="{{ asset('assets/images/icons/alignment.png') }}" alt="Alignment" />
-                    <span>Alignment</span>
+                    <span>Basic Tools Provided</span>
                 </a>
             </div>
         </div>

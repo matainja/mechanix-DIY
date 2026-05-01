@@ -34,8 +34,8 @@
                 <!-- Desktop Main Links -->
 
  <li class="nav-item desktop-only">
-                    <a class="nav-link {{ request()->routeIs('membership') ? 'active' : '' }}" href="{{ route('membership') }}">
-                        Speciality Tools
+                    <a class="nav-link {{ request()->routeIs('membership') ? 'active' : '' }}" href="{{ route('commonpage') }}#speciality-tools">
+                        SPECIALITY TOOLS
                     </a>
                 </li>
 
