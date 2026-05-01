@@ -14,10 +14,10 @@ body {
   display: block;
 }
 
-@media (max-width: 1920px) {
+@media (max-width: 1930px) {
 .hero-section {
   
-  height: 685px;
+  height: 685px !important;
 
   
 }
