@@ -75,7 +75,7 @@
                             <a href="{{ route('commonpage') }}#speciality-tools" class="dropdown-sub-item">Speciality Tools</a>
                             <a href="{{ route('commonpage') }}#technician-site" class="dropdown-sub-item">Technician On Site</a>
                             <a href="{{ route('rentals') }}" class="dropdown-sub-item">Hourly Rentals</a>
-                            <a href="{{ asset('assets/images/icons/alignment.png') }}" class="dropdown-sub-item">Basic Tools Provided</a>
+                            <a href="{{ route('commonpage') }}#basic-tool" class="dropdown-sub-item">Basic Tools Provided</a>
                         </div>
                     </div>
                 </li>
