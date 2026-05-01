@@ -5,16 +5,19 @@
 @section('content')
 
     <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            <h1 class="hero-title">Your Car, Your Rules, Your Skills</h1>
-            <div class="hero-buttons">
-                <a href="{{ route('booking') }}" class="btn btn-primary btn-lg btn-hero-primary">Book Now</a>
-                <a href="{{ route('rentals') }}" class="btn btn-outline-light btn-lg btn-hero-secondary">View Rentals</a>
-            </div>
+  <section class="hero-section" style="background-image: url('{{ asset('assets/images/mechanix-banner-5.jpg') }}');">
+
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content">
+        <h1 class="hero-title">Your Car, Your Rules, Your Skills</h1>
+        <div class="hero-buttons">
+            <a href="{{ route('booking') }}" class="btn btn-primary btn-lg btn-hero-primary">Book Now</a>
+            <a href="{{ route('rentals') }}" class="btn btn-outline-light btn-lg btn-hero-secondary">View Rentals</a>
         </div>
-    </section>
+    </div>
+
+</section>
 
     <!-- Services Icons -->
     <section class="services-icons">

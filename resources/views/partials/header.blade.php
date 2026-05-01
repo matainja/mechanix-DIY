@@ -32,6 +32,13 @@
                 </li>
 
                 <!-- Desktop Main Links -->
+
+ <li class="nav-item desktop-only">
+                    <a class="nav-link {{ request()->routeIs('membership') ? 'active' : '' }}" href="{{ route('membership') }}">
+                        Speciality Tools
+                    </a>
+                </li>
+
                 <li class="nav-item desktop-only">
                     <a class="nav-link {{ request()->routeIs('rentals') ? 'active' : '' }}"
                         href="{{ route('rentals') }}">
@@ -44,6 +51,7 @@
                         MEMBERSHIP
                     </a>
                 </li>
+               
 
                 <li class="nav-item desktop-only">
                     <a class="btn btn-book-now w-100 mt-2" href="{{ route('booking') }}">
