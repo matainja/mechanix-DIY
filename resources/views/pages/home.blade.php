@@ -21,7 +21,7 @@
 
     <!-- Image wrapper -->
     <div class="hero-image">
-        <img src="{{ asset('assets/images/mechanix-banner-01.jpg') }}" alt="Hero Image">
+        <img src="{{ asset('assets/images/mechanix-banner-01 1.jpg') }}" alt="Hero Image">
     </div>
 
     <div class="hero-overlay"></div>

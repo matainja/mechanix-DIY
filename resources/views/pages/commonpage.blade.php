@@ -12,7 +12,7 @@
 
     {{-- SECTION 1 --}}
     <section id="lift-rentals" class="service-section">
-        <h2 class="section-title">Lift Rentals & Tool Rentals</h2>
+        <h2 class="section-title">Lift  & Tool Rentals</h2>
 
         @forelse($rentals as $rental)
 
