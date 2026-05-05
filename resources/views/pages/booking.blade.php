@@ -330,7 +330,7 @@
                             Start: <b id="mxPickedTimeText">None</b>
                         </div>
                         <button type="button" class="mx-confirmBtn" id="mxContinueBtn" disabled>
-                            Continue
+                            Continue To Booking
                         </button>
                     </div>
                 </div>
