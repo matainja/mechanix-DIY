@@ -514,7 +514,27 @@
 .flatpickr-current-month input.numInput {
     color: #fff !important;
     font-weight: 700 !important;
+    background: transparent !important;
 }
+/* FIX: Month dropdown options visible */
+.flatpickr-current-month select option {
+    color: #1e293b !important;
+    background: #fff !important;
+    font-weight: 600 !important;
+}
+.flatpickr-monthDropdown-months {
+    background: #fff !important;
+    color: #1e293b !important;
+    /* border: 1px solid #e2e8f0 !important; */
+    border-radius: 6px !important;
+}
+.flatpickr-monthDropdown-months option {
+    color: #1e293b !important;
+    background: #fff !important;
+}
+/* .flatpickr-monthDropdown-months:hover {
+    background: #f8fafc !important;
+} */
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg { fill: rgba(255,255,255,.7) !important; }
 .flatpickr-prev-month:hover svg,
@@ -1268,7 +1288,7 @@
    DEMO RIBBON
    ===================================================================== */
 .mx-demo-ribbon {
-    position: fixed; bottom: 16px; right: 16px;
+    position: fixed;  right: 16px;
     background: linear-gradient(135deg, #e8282b, #b71c1c);
     color: #fff;
     font-family: var(--font-cond);
