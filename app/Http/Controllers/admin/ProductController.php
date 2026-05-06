@@ -228,17 +228,17 @@ class ProductController extends Controller
     | DELETE PRODUCT
     |--------------------------------------------------------------------------
     */
-    // public function destroy(Product $product)
-    // {
-    //     // delete images from storage
-    //     foreach ($product->images as $img) {
-    //         Storage::disk('public')->delete($img->image_path);
-    //     }
+    public function destroy(Product $product)
+    {
+        // delete images from storage
+        foreach ($product->images as $img) {
+            Storage::disk('public')->delete($img->image_path);
+        }
 
-    //     $product->delete();
+        $product->delete();
 
-    //     return back()->with('success', 'Product deleted successfully');
-    // }
+        return back()->with('success', 'Product deleted successfully');
+    }
 
 
     /*
