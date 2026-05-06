@@ -39,7 +39,7 @@ public function index(Request $request)
     // Pass all active lift products with their prices for direct booking mode
     $allLiftProducts = Product::with('prices')
         ->where('status', 1)
-        ->whereIn('id', [15, 16, 20, 18, 21]) // your lift product IDs
+        ->whereIn('id', [15, 16, 18, 21,20]) // your lift product IDs
         ->get();
 
     return view('pages.booking', compact('product', 'allLiftProducts'));
