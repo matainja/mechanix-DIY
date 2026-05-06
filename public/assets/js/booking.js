@@ -563,7 +563,7 @@ $(function () {
        by the blade, so users never see or interact with it.
     ================================================================ */
     var LIFT_DATA = {
-        four:    { img: 'assets/images/rentals/fourpost.jpg',       points: ['Heavy-duty four-post support','Perfect for long-hour jobs','Maximum stability & safety'] },
+        four:    { img: 'assets/images/rentals/Media (8).jpg',       points: ['Heavy-duty four-post support','Perfect for long-hour jobs','Maximum stability & safety'] },
         two:     { img: 'assets/images/rentals/Media (6).jpg',      points: ['Quick vehicle access','Ideal for mechanical repairs','Compact and space efficient'] },
         scissor: { img: 'assets/images/rentals/scissor.jpg',        points: ['Low profile design','Fast lifting operation','Great for tire & brake work'] },
         flat:    { img: 'assets/images/rentals/motocycle.jpg',       points: ['Designed for motorcycles','Easy loading & unloading','Stable flat platform'] },
