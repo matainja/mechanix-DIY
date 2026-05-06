@@ -31,24 +31,18 @@ class BookingController extends Controller
 
 public function index(Request $request)
 {
-    if ($request->filled('product_id')) {
-        $product = Product::with(['prices' => function ($q) {
-                $q->where('is_active', 1)->orderBy('hours');
-            }, 'images'])
-            ->findOrFail($request->product_id);
-
-        return view('pages.booking', compact('product'));
+    $product = null;
+    if ($request->product_id) {
+        $product = Product::with(['prices', 'images'])->findOrFail($request->product_id);
     }
 
-    // ✅ FETCH LIFT PRODUCTS ONLY
-    $allLiftProducts = Product::with(['prices' => function ($q) {
-            $q->where('is_active', 1)->orderBy('hours');
-        }, 'images'])
+    // Pass all active lift products with their prices for direct booking mode
+    $allLiftProducts = Product::with('prices')
         ->where('status', 1)
-        ->where('category_id', 2) // 👈 VERY IMPORTANT
+        ->whereIn('id', [15, 16, 17, 18, 23]) // your lift product IDs
         ->get();
 
-    return view('pages.booking', compact('allLiftProducts'));
+    return view('pages.booking', compact('product', 'allLiftProducts'));
 }
 
     public function store(StoreBookingRequest $request)
