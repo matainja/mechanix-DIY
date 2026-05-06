@@ -11,14 +11,26 @@ class RentalController extends Controller
     | LIST RENTALS (cards page)
     |--------------------------------------------------------------------------
     */
-    public function index()
-    {
-        $rentals = Product::with(['images', 'prices'])
-            ->latest()
-            ->get(); // Remove the where('status', 1) filter to show all products
+    // public function index()
+    // {
+    //     $rentals = Product::with(['images', 'prices'])
+    //         ->latest()
+    //         ->get(); // Remove the where('status', 1) filter to show all products
 
-        return view('pages.rentals', compact('rentals'));
-    }
+    //     return view('pages.rentals', compact('rentals'));
+    // }
+
+
+    public function index()
+{
+    $rentals = Product::with(['images', 'prices'])
+        ->where('category_id', 2)
+        ->where('status', 1) // 👈 only active
+        ->latest()
+        ->get();
+
+    return view('pages.rentals', compact('rentals'));
+}
 
 
     /*
