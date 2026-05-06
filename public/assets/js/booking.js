@@ -618,6 +618,7 @@ $(function () {
     $('#openDayCalendar').on('click', function () {
         if (!selectedDate) return;
         if (!PRODUCT_MODE && !selectedLift) return;  // direct mode gate
+         $(this).prop('disabled', true).removeClass('enabled');
         $('.mx-gridWrap, .mx-legendMini').hide();
         showTimeView();
         renderTimeSlots(selectedDate);

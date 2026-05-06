@@ -641,10 +641,10 @@
 /* Selected day */
 .flatpickr-day.selected,
 .flatpickr-day.selected:hover {
-    background: linear-gradient(135deg, #e8282b 0%, #b71c1c 100%) !important;
-    border-color: #e8282b !important;
+    background: linear-gradient(135deg, #00c853 0%, #2e7d32 100%) !important;
+    border-color: #00c853 !important;
     color: #fff !important;
-    box-shadow: 0 4px 14px rgba(232,40,43,.45) !important;
+    box-shadow: 0 4px 14px rgba(0, 200, 83, .45) !important;
     transform: scale(1.08) !important;
     z-index: 2;
 }
@@ -817,10 +817,10 @@
 
 /* ── Selected ── */
 .mx-slot.available.selected {
-    background: linear-gradient(135deg, #e8282b 0%, #b71c1c 100%);
-    border-color: #e8282b;
+    background: linear-gradient(135deg, #00c853 0%, #2e7d32 100%);
+    border-color: #00c853;
     color: #fff;
-    box-shadow: 0 8px 24px rgba(232,40,43,.35);
+    box-shadow: 0 8px 24px rgba(0, 200, 83, .35);
     transform: translateY(-3px) scale(1.02);
 }
 .mx-slot.available.selected .mx-slot-badge.free {

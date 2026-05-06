@@ -4,11 +4,11 @@
 
 @section('content')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/booking.css') }}">
-@endpush
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('assets/css/booking.css') }}">
+    @endpush
 
-{{--
+    {{--
     TWO MODES:
     A) $product  → came from Rentals page with a product_id
                    Lift is already known from the product.
@@ -19,701 +19,769 @@
                    User must choose a lift AND a date.
 --}}
 
-@php
-    /*
-     * Map product names / lift_type field to our internal lift keys.
-     * Adjust the mapping to match whatever your DB stores.
-     */
-    $liftKeyMap = [
-        'four'    => 'four',
-        'four-post' => 'four',
-        'fourpost'  => 'four',
-        'two'     => 'two',
-        'two-post'  => 'two',
-        'twopost'   => 'two',
-        'scissor' => 'scissor',
-        'flat'    => 'flat',
-        'motorcycle' => 'flat',
-        'moto'    => 'flat',
-        'flat2'   => 'flat2',
-        'alignment' => 'flat2',
-    ];
-
-    $productLiftKey  = null;
-    $productLiftName = null;
-
-    if ($product ?? null) {
-        // Try lift_type column first, then fall back to matching the product name
-        $rawLift = strtolower(trim($product->lift_type ?? $product->name ?? ''));
-        foreach ($liftKeyMap as $needle => $key) {
-            if (str_contains($rawLift, $needle)) {
-                $productLiftKey  = $key;
-                break;
-            }
-        }
-        // Lift display names
-        $liftNames = [
-            'four'    => 'Four-Post Lift',
-            'two'     => 'Two-Post Lift',
-            'scissor' => 'Scissor Lift',
-            'flat'    => 'Motorcycle Lift',
-            'flat2'   => 'Alignment Rack',
+    @php
+        /*
+         * Map product names / lift_type field to our internal lift keys.
+         * Adjust the mapping to match whatever your DB stores.
+         */
+        $liftKeyMap = [
+            'four' => 'four',
+            'four-post' => 'four',
+            'fourpost' => 'four',
+            'two' => 'two',
+            'two-post' => 'two',
+            'twopost' => 'two',
+            'scissor' => 'scissor',
+            'flat' => 'flat',
+            'motorcycle' => 'flat',
+            'moto' => 'flat',
+            'flat2' => 'flat2',
+            'alignment' => 'flat2',
         ];
-        $productLiftName = $liftNames[$productLiftKey] ?? ($product->name ?? 'Lift');
-    }
 
-    $isProductMode = ($product ?? null) && $productLiftKey;
+        $productLiftKey = null;
+        $productLiftName = null;
 
-    $defaultImage = ($product ?? null)
-        ? ($product->images->firstWhere('is_default', 1) ?? $product->images->first())
-        : null;
-@endphp
+        if ($product ?? null) {
+            // Try lift_type column first, then fall back to matching the product name
+            $rawLift = strtolower(trim($product->lift_type ?? ($product->name ?? '')));
+            foreach ($liftKeyMap as $needle => $key) {
+                if (str_contains($rawLift, $needle)) {
+                    $productLiftKey = $key;
+                    break;
+                }
+            }
+            // Lift display names
+            $liftNames = [
+                'four' => 'Four-Post Lift',
+                'two' => 'Two-Post Lift',
+                'scissor' => 'Scissor Lift',
+                'flat' => 'Motorcycle Lift',
+                'flat2' => 'Alignment Rack',
+            ];
+            $productLiftName = $liftNames[$productLiftKey] ?? ($product->name ?? 'Lift');
+        }
 
-<section class="mx-body">
+        $isProductMode = ($product ?? null) && $productLiftKey;
 
-    {{-- ================================================================
+        $defaultImage =
+            $product ?? null ? $product->images->firstWhere('is_default', 1) ?? $product->images->first() : null;
+    @endphp
+
+    <section class="mx-body">
+
+        {{-- ================================================================
          TOP BAR: workstation tabs + liftbar
          In product mode: hide liftbar / lift-prompt (lift already known)
     ================================================================ --}}
-    <div>
-        {{-- Workstation tabs --}}
-        <div class="mx-workstations" id="mxWorkstations">
-            <div class="mx-w-title active" data-ws="1">Workstation</div>
+        <div>
+            {{-- Workstation tabs --}}
+            <div class="mx-workstations" id="mxWorkstations">
+                <div class="mx-w-title active" data-ws="1">Workstation</div>
+            </div>
+
+            @if (!$isProductMode)
+                {{-- ── DIRECT-BOOKING MODE: show lift selector ── --}}
+
+                {{-- Mobile dropdown --}}
+                <div class="mx-lift-dropdown d-md-none mb-3">
+                    <div class="dropdown">
+                        <button class="mx-liftbtn dropdown-toggle w-100 d-flex align-items-center justify-content-between"
+                            type="button" id="mxLiftDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            Select Lift Type
+                        </button>
+                        <ul class="dropdown-menu w-100" id="mxLiftDropdownMenu">
+                            <li><a class="dropdown-item" data-lift="four" href="#">Four-Post Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="two" href="#">Two-Post Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="scissor" href="#">Scissor Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="flat" href="#">Motorcycle Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="flat2" href="#">Alignment Rack</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- Desktop lift bar — no "active" baked in; JS handles it --}}
+                <div class="mx-liftbar">
+                    <button class="mx-liftbtn" data-lift="four">
+                        <img src="{{ asset('assets/images/icons/four-post.png') }}" class="mx-ic" alt="">
+                        <span>Four-Post Lift</span>
+                    </button>
+                    <button class="mx-liftbtn mx-redmark" data-lift="two">
+                        <img src="{{ asset('assets/images/icons/two-post.png') }}" class="mx-ic" alt="">
+                        <span>Two-Post Lift</span>
+                    </button>
+                    <button class="mx-liftbtn" data-lift="scissor">
+                        <img src="{{ asset('assets/images/icons/scissor.png') }}" class="mx-ic" alt="">
+                        <span>Scissor Lift</span>
+                    </button>
+                    <button class="mx-liftbtn" data-lift="flat">
+                        <img src="{{ asset('assets/images/icons/moto-lift.png') }}" class="mx-ic" alt="">
+                        <span>Motorcycle Lift</span>
+                    </button>
+                    <button class="mx-liftbtn" data-lift="flat2">
+                        <img src="{{ asset('assets/images/icons/alignment-rack.png') }}" class="mx-ic" alt="">
+                        <span>Alignment Rack</span>
+                    </button>
+                </div>
+
+                {{-- Prompt banner (hidden once lift is chosen) --}}
+                <div class="mx-lift-prompt" id="mxLiftPrompt">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    Please select a lift type above to begin your booking
+                </div>
+            @else
+                {{-- ── PRODUCT MODE: show a "you selected" badge instead ── --}}
+                <div class="mx-product-liftbadge" id="mxLiftPrompt">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Booking: <strong>{{ $productLiftName }}</strong>
+                    &nbsp;—&nbsp;
+                    <a href="{{ route('rentals') }}" class="mx-product-change">Change product</a>
+                </div>
+
+                {{-- Hidden inputs so JS can read the auto-selected lift key --}}
+                <div id="mxProductMeta" data-product-mode="1" data-lift-key="{{ $productLiftKey }}"
+                    data-lift-name="{{ $productLiftName }}" data-product-id="{{ $product->id }}">
+                </div>
+            @endif
         </div>
 
-        @if(!$isProductMode)
-            {{-- ── DIRECT-BOOKING MODE: show lift selector ── --}}
-
-            {{-- Mobile dropdown --}}
-            <div class="mx-lift-dropdown d-md-none mb-3">
-                <div class="dropdown">
-                    <button
-                        class="mx-liftbtn dropdown-toggle w-100 d-flex align-items-center justify-content-between"
-                        type="button" id="mxLiftDropdownBtn"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Select Lift Type
-                    </button>
-                    <ul class="dropdown-menu w-100" id="mxLiftDropdownMenu">
-                        <li><a class="dropdown-item" data-lift="four"    href="#">Four-Post Lift</a></li>
-                        <li><a class="dropdown-item" data-lift="two"     href="#">Two-Post Lift</a></li>
-                        <li><a class="dropdown-item" data-lift="scissor" href="#">Scissor Lift</a></li>
-                        <li><a class="dropdown-item" data-lift="flat"    href="#">Motorcycle Lift</a></li>
-                        <li><a class="dropdown-item" data-lift="flat2"   href="#">Alignment Rack</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            {{-- Desktop lift bar — no "active" baked in; JS handles it --}}
-            <div class="mx-liftbar">
-                <button class="mx-liftbtn" data-lift="four">
-                    <img src="{{ asset('assets/images/icons/four-post.png') }}" class="mx-ic" alt="">
-                    <span>Four-Post Lift</span>
-                </button>
-                <button class="mx-liftbtn mx-redmark" data-lift="two">
-                    <img src="{{ asset('assets/images/icons/two-post.png') }}" class="mx-ic" alt="">
-                    <span>Two-Post Lift</span>
-                </button>
-                <button class="mx-liftbtn" data-lift="scissor">
-                    <img src="{{ asset('assets/images/icons/scissor.png') }}" class="mx-ic" alt="">
-                    <span>Scissor Lift</span>
-                </button>
-                <button class="mx-liftbtn" data-lift="flat">
-                    <img src="{{ asset('assets/images/icons/moto-lift.png') }}" class="mx-ic" alt="">
-                    <span>Motorcycle Lift</span>
-                </button>
-                <button class="mx-liftbtn" data-lift="flat2">
-                    <img src="{{ asset('assets/images/icons/alignment-rack.png') }}" class="mx-ic" alt="">
-                    <span>Alignment Rack</span>
-                </button>
-            </div>
-
-            {{-- Prompt banner (hidden once lift is chosen) --}}
-            <div class="mx-lift-prompt" id="mxLiftPrompt">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                Please select a lift type above to begin your booking
-            </div>
-
-        @else
-            {{-- ── PRODUCT MODE: show a "you selected" badge instead ── --}}
-            <div class="mx-product-liftbadge" id="mxLiftPrompt">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                Booking: <strong>{{ $productLiftName }}</strong>
-                &nbsp;—&nbsp;
-                <a href="{{ route('rentals') }}" class="mx-product-change">Change product</a>
-            </div>
-
-            {{-- Hidden inputs so JS can read the auto-selected lift key --}}
-            <div id="mxProductMeta"
-                 data-product-mode="1"
-                 data-lift-key="{{ $productLiftKey }}"
-                 data-lift-name="{{ $productLiftName }}"
-                 data-product-id="{{ $product->id }}">
-            </div>
-        @endif
-    </div>
-
-    {{-- ================================================================
+        {{-- ================================================================
          MAIN CONTENT
     ================================================================ --}}
-    <div class="mx-wrap container-fluid">
-        <div class="mx-main">
+        <div class="mx-wrap container-fluid">
+            <div class="mx-main">
 
-            {{-- ── LEFT: pricing cards + preview ── --}}
-            <div class="mx-left" id="liftSection">
+                {{-- ── LEFT: pricing cards + preview ── --}}
+                <div class="mx-left" id="liftSection">
 
-                @if($isProductMode)
-                    {{-- PRODUCT MODE: show only this product's prices --}}
-                    @foreach($product->prices as $price)
-                        <div
-                            class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
-                            data-hours="{{ $price->hours }}"
-                            data-price="{{ $price->price }}"
-                            data-total="{{ $price->price * $price->hours }}"
-                        >
-                            <span class="mx-hours">
-                                {{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}
-                            </span>
-                            <span class="mx-price">
-                                ${{ $price->price }}
-                                @if($price->hours > 1) / hour @endif
-                            </span>
-                        </div>
-                    @endforeach
-
-                    {{-- Product image — shown immediately, no placeholder --}}
-                    <div class="mx-liftpreview">
-                        <div class="mx-liftimg" id="mxLiftImgWrap">
-                            <img
-                                id="mxLiftPreviewImg"
-                                src="{{ $defaultImage ? asset('storage/'.$defaultImage->image_path) : asset('assets/images/no-image.png') }}"
-                                alt="{{ $product->name }}"
-                            >
-                        </div>
-                        <ul class="mx-liftpoints" id="mxLiftPoints">
-                            @foreach(explode("\n", $product->description ?? '') as $line)
-                                @if(trim($line))<li>{{ trim($line) }}</li>@endif
-                            @endforeach
-                        </ul>
-                    </div>
-
-                @elseif($product ?? null)
-                    {{-- Product exists but lift key could not be mapped — treat as product mode without lift isolation --}}
-                    @foreach($product->prices as $price)
-                        <div
-                            class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
-                            data-hours="{{ $price->hours }}"
-                            data-price="{{ $price->price }}"
-                            data-total="{{ $price->price * $price->hours }}"
-                        >
-                            <span class="mx-hours">{{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}</span>
-                            <span class="mx-price">${{ $price->price }}@if($price->hours > 1) / hour @endif</span>
-                        </div>
-                    @endforeach
-                    <div class="mx-liftpreview">
-                        <div class="mx-liftimg" id="mxLiftImgWrap">
-                            <img id="mxLiftPreviewImg"
-                                 src="{{ $defaultImage ? asset('storage/'.$defaultImage->image_path) : asset('assets/images/no-image.png') }}"
-                                 alt="{{ $product->name }}">
-                        </div>
-                        <ul class="mx-liftpoints" id="mxLiftPoints">
-                            @foreach(explode("\n", $product->description ?? '') as $line)
-                                @if(trim($line))<li>{{ trim($line) }}</li>@endif
-                            @endforeach
-                        </ul>
-                    </div>
-
-                @else
-                    {{-- DIRECT BOOKING MODE: static price cards + placeholder --}}
-                    <div class="mx-pricecard mx-selected" data-hours="1" data-price="45">
-                        <span class="mx-hours">1 Hour</span>
-                        <span class="mx-price">$45</span>
-                    </div>
-                    <div class="mx-pricecard" data-hours="9" data-price="40">
-                        <span class="mx-hours">9 Hours</span>
-                        <span class="mx-price">$35 / hour</span>
-                    </div>
-                    <a href="{{ route('membership') }}" class="mx-pricecard-link">
-                        <div class="mx-pricecard" data-hours="18" data-price="35">
-                            <span class="mx-hours">18 Hours</span>
-                            <span class="mx-price">Members Only</span>
-                        </div>
-                    </a>
-
-                    {{-- Placeholder: shown until a lift is clicked --}}
-                    <div class="mx-liftpreview">
-                        <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
-                            <div class="mx-liftimg-placeholder" id="mxLiftPlaceholder">
-                                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"
-                                     stroke="#cbd5e1" stroke-width="1.5">
-                                    <rect x="3" y="3" width="18" height="18" rx="3"/>
-                                    <path d="M3 9h18M9 21V9"/>
-                                </svg>
-                                <p>Select a lift type to preview</p>
+                    @if ($isProductMode)
+                        {{-- PRODUCT MODE: show only this product's prices --}}
+                        @foreach ($product->prices as $price)
+                            <div class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
+                                data-hours="{{ $price->hours }}" data-price="{{ $price->price }}"
+                                data-total="{{ $price->price * $price->hours }}">
+                                <span class="mx-hours">
+                                    {{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}
+                                </span>
+                                <span class="mx-price">
+                                    ${{ $price->price }}
+                                    @if ($price->hours > 1)
+                                        / hour
+                                    @endif
+                                </span>
                             </div>
-                            <img
-                                id="mxLiftPreviewImg"
-                                src="{{ asset('assets/images/icons/lift-red.png') }}"
-                                alt="Lift preview"
-                                style="display:none;"
-                            >
-                        </div>
-                        <ul class="mx-liftpoints" id="mxLiftPoints">
-                            <li>Select a lift type above to see details</li>
-                        </ul>
-                    </div>
-                @endif
+                        @endforeach
 
-                {{-- Book Now button (desktop) --}}
-                <div class="mx-leftbottom" id="leftupButton">
-                    <button class="mx-bookbig" id="openDayCalendar" disabled>Book Now</button>
-                    <p class="mx-book-hint" id="mxBookHintTop">
-                        @if($isProductMode)
-                            Please pick an available date on the calendar.
-                        @else
-                            Please select a lift type and a date to continue.
-                        @endif
-                    </p>
-                </div>
-            </div>
-
-            {{-- ── RIGHT: calendar + time-slot view ── --}}
-            <div class="mx-right" id="calendarSection">
-
-                <div class="calendar-box">
-                    <input id="bookingDate" type="text" placeholder="Select date" readonly />
-                </div>
-
-                <div class="calendar-wrap" id="calendarWrap"></div>
-
-                {{-- Legend --}}
-                <div class="mx-legendMini">
-                    <span><i class="mx-box green"></i> Available</span>
-                    <span><i class="mx-box yellow"></i> Filling Fast</span>
-                    <span><i class="mx-box orange"></i> Almost Full</span>
-                    <span><i class="mx-box red"></i> Booked</span>
-                    <span><i class="mx-box grey"></i> Unavailable</span>
-                </div>
-
-                {{-- Time-slot view (hidden until Book Now is clicked) --}}
-                <div class="mx-timeView" id="mxTimeView" style="display:none;">
-                    <div class="mx-timeTop">
-                        <button type="button" class="mx-backBtn" id="mxBackToDate">
-                            <i class="fa-solid fa-arrow-left"></i> Change date
-                        </button>
-                        <div class="mx-timeTitle">
-                            Select a start time for <span id="mxSelectedDateText">----</span>
-                        </div>
-                    </div>
-
-                    {{-- Slot legend strip --}}
-                    <div class="mx-slot-legend">
-                        <span class="mx-slot-leg-item">
-                            <span class="mx-slot-leg-dot available"></span>Available
-                        </span>
-                        <span class="mx-slot-leg-item">
-                            <span class="mx-slot-leg-dot booked"></span>Booked
-                        </span>
-                    </div>
-
-                    <div class="mx-timeGrid" id="mxTimeGrid"></div>
-
-                    <div class="mx-timeBottom">
-                        <div class="mx-pickedInfo">
-                            Start: <b id="mxPickedTimeText">None</b>
-                        </div>
-                        <button type="button" class="mx-confirmBtn" id="mxContinueBtn" disabled>
-                            Continue To Booking
-                        </button>
-                    </div>
-                </div>
-
-                {{-- Hours / confirmation modal --}}
-                <div id="mxSlotModal" class="mx-modal-overlay" aria-hidden="true">
-                    <div class="mx-modal-card" role="dialog" aria-modal="true" aria-labelledby="mxModalTitle">
-                        <div class="mx-modal-head">
-                            <div>
-                                <div id="mxModalTitle" class="mx-modal-title">Confirm Booking</div>
-                                <div class="mx-modal-sub">Adjust hours if needed — must be consecutive.</div>
+                        {{-- Product image — shown immediately, no placeholder --}}
+                        <div class="mx-liftpreview">
+                            <div class="mx-liftimg" id="mxLiftImgWrap">
+                                <img id="mxLiftPreviewImg"
+                                    src="{{ $defaultImage ? asset('storage/' . $defaultImage->image_path) : asset('assets/images/no-image.png') }}"
+                                    alt="{{ $product->name }}">
                             </div>
-                            <button type="button" class="mx-modal-x" id="mxModalClose" aria-label="Close">×</button>
+                            <ul class="mx-liftpoints" id="mxLiftPoints">
+                                @foreach (explode("\n", $product->description ?? '') as $line)
+                                    @if (trim($line))
+                                        <li>{{ trim($line) }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
                         </div>
-                        <div class="mx-modal-body">
-                            <div class="mx-info-row">
-                                <div class="mx-info-label">Selected</div>
-                                <div class="mx-info-value" id="mxSlotText">—</div>
+                    @elseif($product ?? null)
+                        {{-- Product exists but lift key could not be mapped — treat as product mode without lift isolation --}}
+                        @foreach ($product->prices as $price)
+                            <div class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
+                                data-hours="{{ $price->hours }}" data-price="{{ $price->price }}"
+                                data-total="{{ $price->price * $price->hours }}">
+                                <span class="mx-hours">{{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}</span>
+                                <span class="mx-price">${{ $price->price }}@if ($price->hours > 1)
+                                        / hour
+                                    @endif
+                                </span>
                             </div>
-                            <div class="mx-info-row">
-                                <div class="mx-info-label">Hours</div>
-                                <div class="mx-info-value">
-                                    <button type="button" class="mx-gbtn" id="mxHMinus">−</button>
-                                    <span id="mxSelectedHours" class="mx-hours-pill">1</span>
-                                    <button type="button" class="mx-gbtn" id="mxHPlus">+</button>
+                        @endforeach
+                        <div class="mx-liftpreview">
+                            <div class="mx-liftimg" id="mxLiftImgWrap">
+                                <img id="mxLiftPreviewImg"
+                                    src="{{ $defaultImage ? asset('storage/' . $defaultImage->image_path) : asset('assets/images/no-image.png') }}"
+                                    alt="{{ $product->name }}">
+                            </div>
+                            <ul class="mx-liftpoints" id="mxLiftPoints">
+                                @foreach (explode("\n", $product->description ?? '') as $line)
+                                    @if (trim($line))
+                                        <li>{{ trim($line) }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        {{-- DIRECT BOOKING MODE: static price cards + placeholder --}}
+                        <div class="mx-pricecard mx-selected" data-hours="1" data-price="45">
+                            <span class="mx-hours">1 Hour</span>
+                            <span class="mx-price">$45</span>
+                        </div>
+                        <div class="mx-pricecard" data-hours="9" data-price="40">
+                            <span class="mx-hours">9 Hours</span>
+                            <span class="mx-price">$35 / hour</span>
+                        </div>
+                        <a href="{{ route('membership') }}" class="mx-pricecard-link">
+                            <div class="mx-pricecard" data-hours="18" data-price="35">
+                                <span class="mx-hours">18 Hours</span>
+                                <span class="mx-price">Members Only</span>
+                            </div>
+                        </a>
+
+                        {{-- Placeholder: shown until a lift is clicked --}}
+                        <div class="mx-liftpreview">
+                            <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
+                                <div class="mx-liftimg-placeholder" id="mxLiftPlaceholder">
+                                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none"
+                                        stroke="#cbd5e1" stroke-width="1.5">
+                                        <rect x="3" y="3" width="18" height="18" rx="3" />
+                                        <path d="M3 9h18M9 21V9" />
+                                    </svg>
+                                    <p>Select a lift type to preview</p>
                                 </div>
+                                <img id="mxLiftPreviewImg" src="{{ asset('assets/images/icons/lift-red.png') }}"
+                                    alt="Lift preview" style="display:none;">
                             </div>
-                            <div class="mx-hint" id="mxHintText">Continuous booking required.</div>
-                            <div class="mx-total">Total: <b id="mxTotalText">$0</b></div>
+                            <ul class="mx-liftpoints" id="mxLiftPoints">
+                                <li>Select a lift type above to see details</li>
+                            </ul>
                         </div>
-                        <div class="mx-modal-actions">
-                            <button type="button" class="mx-btn-outline" id="mxModalCancel">Cancel</button>
-                            <button type="button" class="mx-btn-solid"   id="mxModalConfirm">Confirm</button>
-                        </div>
+                    @endif
+
+                    {{-- Book Now button (desktop) --}}
+                    <div class="mx-leftbottom" id="leftupButton">
+                        <button class="mx-bookbig" id="openDayCalendar" disabled>Book Now</button>
+                        <p class="mx-book-hint" id="mxBookHintTop">
+                            @if ($isProductMode)
+                                Please pick an available date on the calendar.
+                            @else
+                                Please select a lift type and a date to continue.
+                            @endif
+                        </p>
                     </div>
                 </div>
 
-                <div class="mx-gridWrap">
-                    <div class="mx-gridHead" id="mxGridHead"></div>
-                    <div class="mx-gridBody" id="mxGridBody"></div>
+                {{-- ── RIGHT: calendar + time-slot view ── --}}
+                <div class="mx-right" id="calendarSection">
+
+                    <div class="calendar-box">
+                        <input id="bookingDate" type="text" placeholder="Select date" readonly />
+                    </div>
+
+                    <div class="calendar-wrap" id="calendarWrap"></div>
+
+                    {{-- Legend --}}
+                    <div class="mx-legendMini">
+                        <span><i class="mx-box green"></i> Available</span>
+                        <span><i class="mx-box yellow"></i> Filling Fast</span>
+                        <span><i class="mx-box orange"></i> Almost Full</span>
+                        <span><i class="mx-box red"></i> Booked</span>
+                        <span><i class="mx-box grey"></i> Unavailable</span>
+                    </div>
+
+                    {{-- Time-slot view (hidden until Book Now is clicked) --}}
+                    <div class="mx-timeView" id="mxTimeView" style="display:none;">
+                        <div class="mx-timeTop">
+                            <button type="button" class="mx-backBtn" id="mxBackToDate">
+                                <i class="fa-solid fa-arrow-left"></i> Change date
+                            </button>
+                            <div class="mx-timeTitle">
+                                Select a start time for <span id="mxSelectedDateText">----</span>
+                            </div>
+                        </div>
+
+                        {{-- Slot legend strip --}}
+                        <div class="mx-slot-legend">
+                            <span class="mx-slot-leg-item">
+                                <span class="mx-slot-leg-dot available"></span>Available
+                            </span>
+                            <span class="mx-slot-leg-item">
+                                <span class="mx-slot-leg-dot booked"></span>Booked
+                            </span>
+                        </div>
+
+                        <div class="mx-timeGrid" id="mxTimeGrid"></div>
+
+                        <div class="mx-timeBottom">
+                            <div class="mx-pickedInfo">
+                                Start: <b id="mxPickedTimeText">None</b>
+                            </div>
+                            <button type="button" class="mx-confirmBtn" id="mxContinueBtn" disabled>
+                                Continue To Booking
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Hours / confirmation modal --}}
+                    <div id="mxSlotModal" class="mx-modal-overlay" aria-hidden="true">
+                        <div class="mx-modal-card" role="dialog" aria-modal="true" aria-labelledby="mxModalTitle">
+                            <div class="mx-modal-head">
+                                <div>
+                                    <div id="mxModalTitle" class="mx-modal-title">Confirm Booking</div>
+                                    <div class="mx-modal-sub">Adjust hours if needed — must be consecutive.</div>
+                                </div>
+                                <button type="button" class="mx-modal-x" id="mxModalClose"
+                                    aria-label="Close">×</button>
+                            </div>
+                            <div class="mx-modal-body">
+                                <div class="mx-info-row">
+                                    <div class="mx-info-label">Selected</div>
+                                    <div class="mx-info-value" id="mxSlotText">—</div>
+                                </div>
+                                <div class="mx-info-row">
+                                    <div class="mx-info-label">Hours</div>
+                                    <div class="mx-info-value">
+                                        <button type="button" class="mx-gbtn" id="mxHMinus">−</button>
+                                        <span id="mxSelectedHours" class="mx-hours-pill">1</span>
+                                        <button type="button" class="mx-gbtn" id="mxHPlus">+</button>
+                                    </div>
+                                </div>
+                                <div class="mx-hint" id="mxHintText">Continuous booking required.</div>
+                                <div class="mx-total">Total: <b id="mxTotalText">$0</b></div>
+                            </div>
+                            <div class="mx-modal-actions">
+                                <button type="button" class="mx-btn-outline" id="mxModalCancel">Cancel</button>
+                                <button type="button" class="mx-btn-solid" id="mxModalConfirm">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mx-gridWrap">
+                        <div class="mx-gridHead" id="mxGridHead"></div>
+                        <div class="mx-gridBody" id="mxGridBody"></div>
+                    </div>
+
+                    {{-- Mobile Book Now button --}}
+                    <div class="mx-leftbottom cal-sub-btn" id="bookclose">
+                        <button class="mx-bookbig" id="openDayCalendarMb" disabled>Book Now</button>
+                        <p class="mx-book-hint" id="mxBookHintBottom">
+                            @if ($isProductMode)
+                                Please pick an available date on the calendar.
+                            @else
+                                Please select a lift type and a date to continue.
+                            @endif
+                        </p>
+                    </div>
                 </div>
 
-                {{-- Mobile Book Now button --}}
-                <div class="mx-leftbottom cal-sub-btn" id="bookclose">
-                    <button class="mx-bookbig" id="openDayCalendarMb" disabled>Book Now</button>
-                    <p class="mx-book-hint" id="mxBookHintBottom">
-                        @if($isProductMode)
-                            Please pick an available date on the calendar.
-                        @else
-                            Please select a lift type and a date to continue.
-                        @endif
-                    </p>
-                </div>
             </div>
-
         </div>
-    </div>
 
-    {{-- ================================================================
+        {{-- ================================================================
          SUMMARY MODAL
     ================================================================ --}}
-    <div id="mxSummaryModal" class="mx-modal-overlay" aria-hidden="true">
-        <div class="mx-modal-card mx-summary-card" role="dialog" aria-modal="true" aria-labelledby="mxSummaryTitle">
-            <div class="mx-modal-head">
-                <div>
-                    <div id="mxSummaryTitle" class="mx-modal-title">Booking Summary</div>
-                    <div class="mx-modal-sub">Review your details before payment.</div>
+        <div id="mxSummaryModal" class="mx-modal-overlay" aria-hidden="true">
+            <div class="mx-modal-card mx-summary-card" role="dialog" aria-modal="true"
+                aria-labelledby="mxSummaryTitle">
+                <div class="mx-modal-head">
+                    <div>
+                        <div id="mxSummaryTitle" class="mx-modal-title">Booking Summary</div>
+                        <div class="mx-modal-sub">Review your details before payment.</div>
+                    </div>
+                    <button type="button" class="mx-modal-x" id="mxSummaryClose" aria-label="Close">×</button>
                 </div>
-                <button type="button" class="mx-modal-x" id="mxSummaryClose" aria-label="Close">×</button>
+                <div class="mx-modal-body">
+                    <div class="mx-receipt">
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">Workstation</span>
+                            <span class="mx-receipt-value" id="mxsWorkstation">—</span>
+                        </div>
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">Lift Type</span>
+                            <span class="mx-receipt-value" id="mxsLift">—</span>
+                        </div>
+                        <div class="mx-receipt-divider"></div>
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">Date</span>
+                            <span class="mx-receipt-value" id="mxsDate">—</span>
+                        </div>
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">Start Time</span>
+                            <span class="mx-receipt-value" id="mxsStart">—</span>
+                        </div>
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">Duration</span>
+                            <span class="mx-receipt-value" id="mxsDuration">—</span>
+                        </div>
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">End Time</span>
+                            <span class="mx-receipt-value" id="mxsEnd">—</span>
+                        </div>
+                        <div class="mx-receipt-divider"></div>
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">Rate</span>
+                            <span class="mx-receipt-value" id="mxsRate">—</span>
+                        </div>
+                        <div class="mx-receipt-row">
+                            <span class="mx-receipt-label">Hours</span>
+                            <span class="mx-receipt-value" id="mxsHours">—</span>
+                        </div>
+                        <div class="mx-receipt-row mx-receipt-total">
+                            <span class="mx-receipt-label">Total</span>
+                            <span class="mx-receipt-value" id="mxsTotal">—</span>
+                        </div>
+                    </div>
+                    <p class="mx-summary-note">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Payment is collected on the next screen. Booking is confirmed only after successful payment.
+                    </p>
+                </div>
+                <div class="mx-modal-actions">
+                    <button type="button" class="mx-btn-outline" id="mxSummaryBack">
+                        <i class="fa-solid fa-arrow-left"></i> Edit
+                    </button>
+                    <button type="button" class="mx-btn-solid" id="mxSummaryPay">
+                        Pay Now &nbsp;<i class="fa-solid fa-lock"></i>
+                    </button>
+                </div>
             </div>
-            <div class="mx-modal-body">
-                <div class="mx-receipt">
+        </div>
+
+        {{-- ================================================================
+         PAY MODAL
+    ================================================================ --}}
+        <div id="mxPayModal" class="mx-modal-overlay" aria-hidden="true">
+            <div class="mx-modal-card mx-pay-card" role="dialog" aria-modal="true" aria-labelledby="mxPayTitle">
+                <div class="mx-modal-head">
+                    <div>
+                        <div id="mxPayTitle" class="mx-modal-title">Secure Payment</div>
+                        <div class="mx-modal-sub">Amount due: <strong id="mxPayAmount">$0</strong></div>
+                    </div>
+                    <button type="button" class="mx-modal-x" id="mxPayClose" aria-label="Close">×</button>
+                </div>
+                <div class="mx-modal-body">
+                    <div class="mxs-pay-tabs">
+                        <button type="button" class="mxs-pay-tab active" data-tab="card">
+                            <i class="fa-regular fa-credit-card"></i> Card
+                        </button>
+                        <button type="button" class="mxs-pay-tab" data-tab="upi">
+                            <i class="fa-solid fa-mobile-screen-button"></i> UPI
+                        </button>
+                        <button type="button" class="mxs-pay-tab" data-tab="netbanking">
+                            <i class="fa-solid fa-building-columns"></i> Net Banking
+                        </button>
+                    </div>
+
+                    <div id="mxPayError" class="mx-pay-error d-none"></div>
+
+                    {{-- Card Panel --}}
+                    <div class="mxs-pay-panel active" id="mxPayPanel-card">
+                        <div class="mx-card-preview">
+                            <div class="mx-card-chip"></div>
+                            <div class="mx-card-number-display" id="mxCardDisplay">•••• •••• •••• ••••</div>
+                            <div class="mx-card-bottom">
+                                <div>
+                                    <div class="mx-card-meta-label">Card Holder</div>
+                                    <div class="mx-card-meta-value" id="mxCardNameDisplay">YOUR NAME</div>
+                                </div>
+                                <div>
+                                    <div class="mx-card-meta-label">Expires</div>
+                                    <div class="mx-card-meta-value" id="mxCardExpDisplay">MM / YY</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mx-pay-fields">
+                            <div class="mx-field-wrap full">
+                                <label>Card Number</label>
+                                <input type="text" id="mxCardNum" class="mx-pay-input"
+                                    placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric">
+                            </div>
+                            <div class="mx-field-wrap full">
+                                <label>Cardholder Name</label>
+                                <input type="text" id="mxCardName" class="mx-pay-input" placeholder="Name on card">
+                            </div>
+                            <div class="mx-field-wrap half">
+                                <label>Expiry</label>
+                                <input type="text" id="mxCardExp" class="mx-pay-input" placeholder="MM / YY"
+                                    maxlength="7" inputmode="numeric">
+                            </div>
+                            <div class="mx-field-wrap half">
+                                <label>CVV</label>
+                                <input type="password" id="mxCardCvv" class="mx-pay-input" placeholder="•••"
+                                    maxlength="3" inputmode="numeric">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- UPI Panel --}}
+                    <div class="mxs-pay-panel" id="mxPayPanel-upi">
+                        <div class="mx-upi-wrap">
+                            <i class="fa-solid fa-mobile-screen-button mx-upi-icon"></i>
+                            <p class="mx-upi-label">Enter your UPI ID</p>
+                            <input type="text" class="mx-pay-input" id="mxUpiId" placeholder="yourname@upi"
+                                style="max-width:280px;margin:0 auto;display:block;">
+                            <p class="mx-upi-hint">e.g. name@okaxis, name@ybl, name@paytm</p>
+                        </div>
+                    </div>
+
+                    {{-- Net Banking Panel --}}
+                    <div class="mxs-pay-panel" id="mxPayPanel-netbanking">
+                        <div class="mx-nb-grid">
+                            @foreach (['SBI', 'HDFC', 'ICICI', 'Axis', 'Kotak', 'Yes Bank', 'PNB', 'BOB'] as $bank)
+                                <label class="mx-nb-option">
+                                    <input type="radio" name="mxBank"
+                                        value="{{ strtolower(str_replace(' ', '', $bank)) }}">
+                                    <span>{{ $bank }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="mx-modal-actions">
+                    <div class="mx-secure-badge">
+                        <i class="fa-solid fa-shield-halved"></i> 256-bit SSL secured
+                    </div>
+                    <button type="button" class="mx-btn-solid mx-pay-btn" id="mxPayNowBtn">
+                        <span id="mxPayBtnText">Pay <span id="mxPayBtnAmt">$0</span></span>
+                        <span id="mxPaySpinner" class="mx-spinner d-none"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- ================================================================
+         SUCCESS MODAL
+    ================================================================ --}}
+        <div id="mxSuccessModal" class="mx-modal-overlay" aria-hidden="true">
+            <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true"
+                aria-labelledby="mxSuccessTitle">
+                <div class="mx-success-anim">
+                    <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                        <path class="mx-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                    </svg>
+                </div>
+                <div id="mxSuccessTitle" class="mx-success-title">Booking Confirmed!</div>
+                <div class="mx-success-sub">Your booking ID is <strong id="mxSuccessBookingId">—</strong></div>
+                <div class="mx-receipt mx-success-receipt">
                     <div class="mx-receipt-row">
                         <span class="mx-receipt-label">Workstation</span>
-                        <span class="mx-receipt-value" id="mxsWorkstation">—</span>
+                        <span class="mx-receipt-value" id="mxrWorkstation">—</span>
                     </div>
                     <div class="mx-receipt-row">
-                        <span class="mx-receipt-label">Lift Type</span>
-                        <span class="mx-receipt-value" id="mxsLift">—</span>
+                        <span class="mx-receipt-label">Lift</span>
+                        <span class="mx-receipt-value" id="mxrLift">—</span>
                     </div>
                     <div class="mx-receipt-divider"></div>
                     <div class="mx-receipt-row">
                         <span class="mx-receipt-label">Date</span>
-                        <span class="mx-receipt-value" id="mxsDate">—</span>
+                        <span class="mx-receipt-value" id="mxrDate">—</span>
                     </div>
                     <div class="mx-receipt-row">
-                        <span class="mx-receipt-label">Start Time</span>
-                        <span class="mx-receipt-value" id="mxsStart">—</span>
+                        <span class="mx-receipt-label">Start</span>
+                        <span class="mx-receipt-value" id="mxrStart">—</span>
                     </div>
                     <div class="mx-receipt-row">
                         <span class="mx-receipt-label">Duration</span>
-                        <span class="mx-receipt-value" id="mxsDuration">—</span>
+                        <span class="mx-receipt-value" id="mxrDuration">—</span>
                     </div>
                     <div class="mx-receipt-row">
-                        <span class="mx-receipt-label">End Time</span>
-                        <span class="mx-receipt-value" id="mxsEnd">—</span>
+                        <span class="mx-receipt-label">End</span>
+                        <span class="mx-receipt-value" id="mxrEnd">—</span>
                     </div>
                     <div class="mx-receipt-divider"></div>
                     <div class="mx-receipt-row">
                         <span class="mx-receipt-label">Rate</span>
-                        <span class="mx-receipt-value" id="mxsRate">—</span>
-                    </div>
-                    <div class="mx-receipt-row">
-                        <span class="mx-receipt-label">Hours</span>
-                        <span class="mx-receipt-value" id="mxsHours">—</span>
+                        <span class="mx-receipt-value" id="mxrRate">—</span>
                     </div>
                     <div class="mx-receipt-row mx-receipt-total">
-                        <span class="mx-receipt-label">Total</span>
-                        <span class="mx-receipt-value" id="mxsTotal">—</span>
+                        <span class="mx-receipt-label">Total Paid</span>
+                        <span class="mx-receipt-value" id="mxrTotal">—</span>
                     </div>
                 </div>
-                <p class="mx-summary-note">
-                    <i class="fa-solid fa-circle-info"></i>
-                    Payment is collected on the next screen. Booking is confirmed only after successful payment.
-                </p>
-            </div>
-            <div class="mx-modal-actions">
-                <button type="button" class="mx-btn-outline" id="mxSummaryBack">
-                    <i class="fa-solid fa-arrow-left"></i> Edit
-                </button>
-                <button type="button" class="mx-btn-solid" id="mxSummaryPay">
-                    Pay Now &nbsp;<i class="fa-solid fa-lock"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    {{-- ================================================================
-         PAY MODAL
-    ================================================================ --}}
-    <div id="mxPayModal" class="mx-modal-overlay" aria-hidden="true">
-        <div class="mx-modal-card mx-pay-card" role="dialog" aria-modal="true" aria-labelledby="mxPayTitle">
-            <div class="mx-modal-head">
-                <div>
-                    <div id="mxPayTitle" class="mx-modal-title">Secure Payment</div>
-                    <div class="mx-modal-sub">Amount due: <strong id="mxPayAmount">$0</strong></div>
-                </div>
-                <button type="button" class="mx-modal-x" id="mxPayClose" aria-label="Close">×</button>
-            </div>
-            <div class="mx-modal-body">
-                <div class="mxs-pay-tabs">
-                    <button type="button" class="mxs-pay-tab active" data-tab="card">
-                        <i class="fa-regular fa-credit-card"></i> Card
+                <div class="mx-modal-actions mx-success-actions">
+                    <button type="button" class="mx-btn-outline" id="mxPrintBtn">
+                        <i class="fa-solid fa-print"></i> Print Receipt
                     </button>
-                    <button type="button" class="mxs-pay-tab" data-tab="upi">
-                        <i class="fa-solid fa-mobile-screen-button"></i> UPI
+                    <button type="button" class="mx-btn-solid" onclick="location.reload()">Done</button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    {{-- Demo ribbon --}}
+    <div class="mx-demo-ribbon" aria-label="Demo Mode">DEMO<small>Work in progress</small></div>
+
+    {{-- Auth state (read by JS) --}}
+    <div id="mx-auth-state" data-logged-in="{{ auth()->check() ? '1' : '0' }}"></div>
+     <!-- Routes for JS -->
+    <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}"></div>
+
+    {{-- Auth Modal --}}
+    <div class="modal fade" id="mxAuthModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background:#1f1f1f; color:#fff; border-radius:10px;">
+
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-white">Continue to Book</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    {{-- Tabs --}}
+                    <ul class="nav nav-tabs" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active text-white bg-dark" id="loginTab" data-bs-toggle="tab" data-bs-target="#loginTabPane" type="button" role="tab" aria-controls="loginTabPane" aria-selected="true" style="border:none; border-radius:5px 5px 0 0;">
+                                Login
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-white bg-dark" id="registerTab" data-bs-toggle="tab" data-bs-target="#registerTabPane" type="button" role="tab" aria-controls="registerTabPane" aria-selected="false" style="border:none; border-radius:5px 5px 0 0;">
+                                Register
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content pt-3" id="authTabsContent">
+
+                        {{-- LOGIN TAB --}}
+                        <div class="tab-pane fade show active" id="loginTabPane" role="tabpanel" aria-labelledby="loginTab">
+                            <div id="loginErrorMsg" class="alert alert-danger d-none"></div>
+
+                            <form id="loginFormMain">
+                                @csrf
+                                <div class="mb-3">
+                                    <label class="form-label small text-white">Email</label>
+                                    <input type="email" class="form-control border-0" name="email" id="loginEmail" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small text-white">Password</label>
+                                    <input type="password" class="form-control border-0" name="password" id="loginPassword" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                </div>
+
+                                <div class="text-end mt-2">
+                                    <a href="#" id="forgotPasswordBtn" class="small text-danger btn">
+                                        Forgot password?
+                                    </a>
+                                </div>
+
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border:2px solid #791218; height:46px; letter-spacing:1px;">
+                                    Login
+                                </button>
+                            </form>
+                        </div>
+
+                        {{-- REGISTER TAB --}}
+                        <div class="tab-pane fade" id="registerTabPane" role="tabpanel" aria-labelledby="registerTab">
+                            <div id="registerErrorMsg" class="alert alert-danger d-none"></div>
+
+                            <form id="registerFormMain">
+                                @csrf
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Email</label>
+                                        <input type="email" class="form-control border-0 form-control-sm" name="email" id="registerEmail" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Mobile</label>
+                                        <input type="text" class="form-control border-0 form-control-sm" name="mobile_no" id="registerMobile" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Password</label>
+                                        <input type="password" class="form-control border-0 form-control-sm" name="password" id="registerPassword" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Confirm</label>
+                                        <input type="password" class="form-control border-0 form-control-sm" name="password_confirmation" id="registerPasswordConfirm" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border:2px solid #791218; height:46px; letter-spacing:1px;">
+                                    Create Account
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {{-- Forgot Password Modal --}}
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="background: linear-gradient(180deg,#1f1f1f,#2a2a2a); border-radius:10px;">
+            <div class="modal-content mt-4 p-4" style="background: transparent; border:none;">
+
+                <!-- Step 1: Email -->
+                <div id="fpStepEmail">
+                    <h6 class="mb-3 text-white">Reset Password</h6>
+                    <input type="email" id="fpEmailInput" class="form-control form-control-sm mb-2" placeholder="Enter email" style="background:#2d2d2d;color:#fff;border:none;">
+                    <button class="btn btn-primary w-100 btn-sm d-flex align-items-center justify-content-center gap-2" id="fpSendOtpBtn">
+                        <span class="btn-text">Send OTP</span>
+                        <span class="spinner-border spinner-border-sm d-none" id="fpOtpLoader"></span>
                     </button>
-                    <button type="button" class="mxs-pay-tab" data-tab="netbanking">
-                        <i class="fa-solid fa-building-columns"></i> Net Banking
+                </div>
+
+                <!-- Step 2: OTP -->
+                <div id="fpStepOtp" class="d-none">
+                    <label class="form-label small text-white">Please enter the OTP sent to your email</label>
+                    <input type="text" id="fpOtpInput" class="form-control form-control-sm mb-2 text-center" placeholder="Enter OTP" style="background:#2d2d2d;color:#fff;border:none;">
+                    <button class="btn btn-success w-100 btn-sm" id="fpVerifyOtpBtn">
+                        Verify OTP
+                    </button>
+                    <button class="btn btn-link btn-sm w-100 text-white" id="fpResendOtpBtn">
+                        Resend OTP
                     </button>
                 </div>
 
-                <div id="mxPayError" class="mx-pay-error d-none"></div>
+                <!-- Step 3: New Password -->
+                <div id="fpStepReset" class="d-none text-white w-100" style="background:#1f1f1f; padding:16px; border-radius:10px;">
+                    <label class="form-label small">New Password</label>
+                    <input type="password" id="fpNewPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
 
-                {{-- Card Panel --}}
-                <div class="mxs-pay-panel active" id="mxPayPanel-card">
-                    <div class="mx-card-preview">
-                        <div class="mx-card-chip"></div>
-                        <div class="mx-card-number-display" id="mxCardDisplay">•••• •••• •••• ••••</div>
-                        <div class="mx-card-bottom">
-                            <div>
-                                <div class="mx-card-meta-label">Card Holder</div>
-                                <div class="mx-card-meta-value" id="mxCardNameDisplay">YOUR NAME</div>
-                            </div>
-                            <div>
-                                <div class="mx-card-meta-label">Expires</div>
-                                <div class="mx-card-meta-value" id="mxCardExpDisplay">MM / YY</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mx-pay-fields">
-                        <div class="mx-field-wrap full">
-                            <label>Card Number</label>
-                            <input type="text" id="mxCardNum" class="mx-pay-input"
-                                   placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric">
-                        </div>
-                        <div class="mx-field-wrap full">
-                            <label>Cardholder Name</label>
-                            <input type="text" id="mxCardName" class="mx-pay-input" placeholder="Name on card">
-                        </div>
-                        <div class="mx-field-wrap half">
-                            <label>Expiry</label>
-                            <input type="text" id="mxCardExp" class="mx-pay-input"
-                                   placeholder="MM / YY" maxlength="7" inputmode="numeric">
-                        </div>
-                        <div class="mx-field-wrap half">
-                            <label>CVV</label>
-                            <input type="password" id="mxCardCvv" class="mx-pay-input"
-                                   placeholder="•••" maxlength="3" inputmode="numeric">
-                        </div>
-                    </div>
+                    <label class="form-label small">Confirm Password</label>
+                    <input type="password" id="fpConfirmPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
+
+                    <button id="fpResetPasswordBtn" class="btn w-100 text-white fw-semibold shadow" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border: 2px solid #791218; height:46px; letter-spacing:1px;">
+                        Reset Password
+                    </button>
                 </div>
 
-                {{-- UPI Panel --}}
-                <div class="mxs-pay-panel" id="mxPayPanel-upi">
-                    <div class="mx-upi-wrap">
-                        <i class="fa-solid fa-mobile-screen-button mx-upi-icon"></i>
-                        <p class="mx-upi-label">Enter your UPI ID</p>
-                        <input type="text" class="mx-pay-input" id="mxUpiId"
-                               placeholder="yourname@upi" style="max-width:280px;margin:0 auto;display:block;">
-                        <p class="mx-upi-hint">e.g. name@okaxis, name@ybl, name@paytm</p>
-                    </div>
-                </div>
-
-                {{-- Net Banking Panel --}}
-                <div class="mxs-pay-panel" id="mxPayPanel-netbanking">
-                    <div class="mx-nb-grid">
-                        @foreach(['SBI','HDFC','ICICI','Axis','Kotak','Yes Bank','PNB','BOB'] as $bank)
-                            <label class="mx-nb-option">
-                                <input type="radio" name="mxBank" value="{{ strtolower(str_replace(' ','',$bank)) }}">
-                                <span>{{ $bank }}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            <div class="mx-modal-actions">
-                <div class="mx-secure-badge">
-                    <i class="fa-solid fa-shield-halved"></i> 256-bit SSL secured
-                </div>
-                <button type="button" class="mx-btn-solid mx-pay-btn" id="mxPayNowBtn">
-                    <span id="mxPayBtnText">Pay <span id="mxPayBtnAmt">$0</span></span>
-                    <span id="mxPaySpinner" class="mx-spinner d-none"></span>
-                </button>
             </div>
         </div>
     </div>
+{{--auth modals--}}
 
-    {{-- ================================================================
-         SUCCESS MODAL
-    ================================================================ --}}
-    <div id="mxSuccessModal" class="mx-modal-overlay" aria-hidden="true">
-        <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true" aria-labelledby="mxSuccessTitle">
-            <div class="mx-success-anim">
-                <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
-                    <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-                    <path class="mx-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-                </svg>
-            </div>
-            <div id="mxSuccessTitle" class="mx-success-title">Booking Confirmed!</div>
-            <div class="mx-success-sub">Your booking ID is <strong id="mxSuccessBookingId">—</strong></div>
-            <div class="mx-receipt mx-success-receipt">
-                <div class="mx-receipt-row">
-                    <span class="mx-receipt-label">Workstation</span>
-                    <span class="mx-receipt-value" id="mxrWorkstation">—</span>
-                </div>
-                <div class="mx-receipt-row">
-                    <span class="mx-receipt-label">Lift</span>
-                    <span class="mx-receipt-value" id="mxrLift">—</span>
-                </div>
-                <div class="mx-receipt-divider"></div>
-                <div class="mx-receipt-row">
-                    <span class="mx-receipt-label">Date</span>
-                    <span class="mx-receipt-value" id="mxrDate">—</span>
-                </div>
-                <div class="mx-receipt-row">
-                    <span class="mx-receipt-label">Start</span>
-                    <span class="mx-receipt-value" id="mxrStart">—</span>
-                </div>
-                <div class="mx-receipt-row">
-                    <span class="mx-receipt-label">Duration</span>
-                    <span class="mx-receipt-value" id="mxrDuration">—</span>
-                </div>
-                <div class="mx-receipt-row">
-                    <span class="mx-receipt-label">End</span>
-                    <span class="mx-receipt-value" id="mxrEnd">—</span>
-                </div>
-                <div class="mx-receipt-divider"></div>
-                <div class="mx-receipt-row">
-                    <span class="mx-receipt-label">Rate</span>
-                    <span class="mx-receipt-value" id="mxrRate">—</span>
-                </div>
-                <div class="mx-receipt-row mx-receipt-total">
-                    <span class="mx-receipt-label">Total Paid</span>
-                    <span class="mx-receipt-value" id="mxrTotal">—</span>
-                </div>
-            </div>
-            <div class="mx-modal-actions mx-success-actions">
-                <button type="button" class="mx-btn-outline" id="mxPrintBtn">
-                    <i class="fa-solid fa-print"></i> Print Receipt
-                </button>
-                <button type="button" class="mx-btn-solid" onclick="location.reload()">Done</button>
-            </div>
-        </div>
-    </div>
-
-</section>
-
-{{-- Demo ribbon --}}
-<div class="mx-demo-ribbon" aria-label="Demo Mode">DEMO<small>Work in progress</small></div>
-
-{{-- Auth state (read by JS) --}}
-<div id="mx-auth-state" data-logged-in="{{ auth()->check() ? '1' : '0' }}"></div>
-<div id="mx-routes"
-     data-login-url="{{ route('popup.login') }}"
-     data-register-url="{{ route('popup.register') }}"></div>
-
-{{-- Bootstrap Auth Modal --}}
-<div class="modal fade" id="mxAuthModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Continue to Book</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" data-bs-toggle="tab"
-                                data-bs-target="#mxTabLogin" type="button" role="tab">Login</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab"
-                                data-bs-target="#mxTabRegister" type="button" role="tab">Register</button>
-                    </li>
-                </ul>
-                <div class="tab-content pt-3">
-                    <div class="tab-pane fade show active" id="mxTabLogin" role="tabpanel">
-                        <div id="mxLoginErr" class="alert alert-danger d-none"></div>
-                        <form id="mxLoginForm">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password" required>
-                            </div>
-                            <button class="btn btn-primary w-100" type="submit">Login</button>
-                        </form>
-                    </div>
-                    <div class="tab-pane fade" id="mxTabRegister" role="tabpanel">
-                        <div id="mxRegErr" class="alert alert-danger d-none"></div>
-                        <form id="mxRegisterForm">
-                            @csrf
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label small">Email</label>
-                                    <input type="email" class="form-control form-control-sm" name="email" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Mobile</label>
-                                    <input type="text" class="form-control form-control-sm" name="mobile_no" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Password</label>
-                                    <input type="password" class="form-control form-control-sm" name="password" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Confirm</label>
-                                    <input type="password" class="form-control form-control-sm"
-                                           name="password_confirmation" required>
-                                </div>
-                            </div>
-                            <button class="btn btn-success w-100 mt-3">Create account</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- Live card preview --}}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    var cn = document.getElementById('mxCardNum');
-    var nm = document.getElementById('mxCardName');
-    var ex = document.getElementById('mxCardExp');
-    if (!cn) return;
-    cn.addEventListener('input', function () {
-        var v = this.value.replace(/\D/g,'').padEnd(16,'•').slice(0,16).match(/.{1,4}/g);
-        document.getElementById('mxCardDisplay').textContent = v ? v.join(' ') : '•••• •••• •••• ••••';
-    });
-    nm.addEventListener('input', function () {
-        document.getElementById('mxCardNameDisplay').textContent = this.value.toUpperCase() || 'YOUR NAME';
-    });
-    ex.addEventListener('input', function () {
-        document.getElementById('mxCardExpDisplay').textContent = this.value || 'MM / YY';
-    });
-});
-</script>
+    {{-- Live card preview --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var cn = document.getElementById('mxCardNum');
+            var nm = document.getElementById('mxCardName');
+            var ex = document.getElementById('mxCardExp');
+            if (!cn) return;
+            cn.addEventListener('input', function() {
+                var v = this.value.replace(/\D/g, '').padEnd(16, '•').slice(0, 16).match(/.{1,4}/g);
+                document.getElementById('mxCardDisplay').textContent = v ? v.join(' ') :
+                    '•••• •••• •••• ••••';
+            });
+            nm.addEventListener('input', function() {
+                document.getElementById('mxCardNameDisplay').textContent = this.value.toUpperCase() ||
+                    'YOUR NAME';
+            });
+            ex.addEventListener('input', function() {
+                document.getElementById('mxCardExpDisplay').textContent = this.value || 'MM / YY';
+            });
+        });
+    </script>
 
 @endsection
 
