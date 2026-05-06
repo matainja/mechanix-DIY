@@ -235,7 +235,7 @@
                     'two-post lift'  => 'two',  'two post lift'  => 'two',
                     'scissor lift'   => 'scissor',
                     'motorcycle lift'=> 'flat',
-                    'alignment rack' => 'flat2',
+                    'alignment' => 'flat2',
                 ];
                 $lpKey = null;
                 $lpNameLower = strtolower(trim($lp->name));
