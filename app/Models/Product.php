@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -6,7 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = ['name','description','status'];
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'status',
+        'category_id',
+        'type',
+        'slug',
+    ];
+
+    /* ================= RELATIONS ================= */
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     public function prices()
     {
@@ -22,11 +39,9 @@ class Product extends Model
     {
         return $this->hasOne(Image::class)->where('is_default', 1);
     }
-     public function defaultPrice()
+
+    public function defaultPrice()
     {
         return $this->hasOne(Price::class)->where('is_default', true);
     }
-
-    
 }
-

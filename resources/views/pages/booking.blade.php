@@ -222,42 +222,74 @@
                                 @endforeach
                             </ul>
                         </div>
-                    @else
-                        {{-- DIRECT BOOKING MODE: static price cards + placeholder --}}
-                        <div class="mx-pricecard mx-selected" data-hours="1" data-price="45">
-                            <span class="mx-hours">1 Hour</span>
-                            <span class="mx-price">$45</span>
-                        </div>
-                        <div class="mx-pricecard" data-hours="9" data-price="40">
-                            <span class="mx-hours">9 Hours</span>
-                            <span class="mx-price">$35 / hour</span>
-                        </div>
-                        <a href="{{ route('membership') }}" class="mx-pricecard-link">
-                            <div class="mx-pricecard" data-hours="18" data-price="35">
-                                <span class="mx-hours">18 Hours</span>
-                                <span class="mx-price">Members Only</span>
-                            </div>
-                        </a>
+                   @else
+    {{-- DIRECT BOOKING MODE: price cards rendered by JS after lift selection --}}
 
-                        {{-- Placeholder: shown until a lift is clicked --}}
-                        <div class="mx-liftpreview">
-                            <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
-                                <div class="mx-liftimg-placeholder" id="mxLiftPlaceholder">
-                                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none"
-                                        stroke="#cbd5e1" stroke-width="1.5">
-                                        <rect x="3" y="3" width="18" height="18" rx="3" />
-                                        <path d="M3 9h18M9 21V9" />
-                                    </svg>
-                                    <p>Select a lift type to preview</p>
-                                </div>
-                                <img id="mxLiftPreviewImg" src="{{ asset('assets/images/icons/lift-red.png') }}"
-                                    alt="Lift preview" style="display:none;">
-                            </div>
-                            <ul class="mx-liftpoints" id="mxLiftPoints">
-                                <li>Select a lift type above to see details</li>
-                            </ul>
-                        </div>
-                    @endif
+    {{-- Embed all lift prices as JSON for JS to consume --}}
+    <script id="mxAllLiftPrices" type="application/json">
+    {
+        @foreach($allLiftProducts as $lp)
+            @php
+                $liftKeyMap = [
+                    'four-post lift' => 'four', 'four post lift' => 'four',
+                    'two-post lift'  => 'two',  'two post lift'  => 'two',
+                    'scissor lift'   => 'scissor',
+                    'motorcycle lift'=> 'flat',
+                    'alignment rack' => 'flat2',
+                ];
+                $lpKey = null;
+                $lpNameLower = strtolower(trim($lp->name));
+                foreach ($liftKeyMap as $needle => $key) {
+                    if (str_contains($lpNameLower, $needle)) { $lpKey = $key; break; }
+                }
+            @endphp
+            @if($lpKey)
+                "{{ $lpKey }}": {
+                    "name": "{{ $lp->name }}",
+                    "prices": [
+                        @foreach($lp->prices as $price)
+                            {
+                               "hours": {{ (int) $price->hours }},
+                                "price": {{ (float) $price->price }},
+                                "total": {{ (float) ($price->price * $price->hours) }},
+                                "is_membership": {{ (int) ($price->is_membership ?? 0) }}
+                                
+                            }{{ !$loop->last ? ',' : '' }}
+                        @endforeach
+                    ]
+                }{{ !$loop->last ? ',' : '' }}
+            @endif
+        @endforeach
+    }
+    </script>
+    
+
+    {{-- Price cards placeholder — JS fills this div --}}
+    <div id="mxPriceCardsWrap">
+        <div class="mx-lift-price-placeholder text-muted small py-3">
+            Select a lift type above to see pricing.
+        </div>
+    </div>
+
+    {{-- Image/detail placeholder --}}
+    <div class="mx-liftpreview">
+        <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
+            <div class="mx-liftimg-placeholder" id="mxLiftPlaceholder">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none"
+                    stroke="#cbd5e1" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <path d="M3 9h18M9 21V9" />
+                </svg>
+                <p>Select a lift type to preview</p>
+            </div>
+            <img id="mxLiftPreviewImg" src="{{ asset('assets/images/icons/lift-red.png') }}"
+                alt="Lift preview" style="display:none;">
+        </div>
+        <ul class="mx-liftpoints" id="mxLiftPoints">
+            <li>Select a lift type above to see details</li>
+        </ul>
+    </div>
+@endif
 
                     {{-- Book Now button (desktop) --}}
                     <div class="mx-leftbottom" id="leftupButton">

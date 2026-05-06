@@ -17,19 +17,33 @@ use App\Models\Product;
 
 class BookingController extends Controller
 {
-  public function index(Request $request)
+//   public function index(Request $request)
+// {
+//     $product = null;
+
+//     if ($request->filled('product_id')) {
+//         $product = Product::with(['prices', 'images'])
+//             ->find($request->product_id); 
+//     }
+
+//     return view('pages.booking', compact('product'));
+// }
+
+public function index(Request $request)
 {
     $product = null;
-
-    if ($request->filled('product_id')) {
-        $product = Product::with(['prices', 'images'])
-            ->find($request->product_id); 
+    if ($request->product_id) {
+        $product = Product::with(['prices', 'images'])->findOrFail($request->product_id);
     }
 
-    return view('pages.booking', compact('product'));
+    // Pass all active lift products with their prices for direct booking mode
+    $allLiftProducts = Product::with('prices')
+        ->where('status', 1)
+        ->whereIn('id', [15, 16, 17, 18, 23]) // your lift product IDs
+        ->get();
+
+    return view('pages.booking', compact('product', 'allLiftProducts'));
 }
-
-
 
     public function store(StoreBookingRequest $request)
     {
@@ -68,6 +82,7 @@ class BookingController extends Controller
             $booking = Booking::create([
                 'user_id' => auth()->id(),
                 'date' => $date,
+                'product_id' => $request->product_id, //  ADDed THIS
                 'start_time' => $request->start,
                 'hours' => $hours,
                 'lift_type' => $request->lift,

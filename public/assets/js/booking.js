@@ -558,59 +558,130 @@ $(function () {
     });
 
     /* ================================================================
-       ② LIFT BUTTONS  (direct-booking mode only)
-       In product mode this block still runs but the liftbar is hidden
-       by the blade, so users never see or interact with it.
-    ================================================================ */
-    var LIFT_DATA = {
-        four:    { img: 'assets/images/rentals/Media (8).jpg',       points: ['Heavy-duty four-post support','Perfect for long-hour jobs','Maximum stability & safety'] },
-        two:     { img: 'assets/images/rentals/Media (6).jpg',      points: ['Quick vehicle access','Ideal for mechanical repairs','Compact and space efficient'] },
-        scissor: { img: 'assets/images/rentals/scissor.jpg',        points: ['Low profile design','Fast lifting operation','Great for tire & brake work'] },
-        flat:    { img: 'assets/images/rentals/motocycle.jpg',       points: ['Designed for motorcycles','Easy loading & unloading','Stable flat platform'] },
-        flat2:   { img: 'assets/images/rentals/allignmentrack.jpg', points: ['Precision wheel alignment','Extended ramp length','Perfect for alignment jobs'] }
-    };
+   ② LIFT BUTTONS  (direct-booking mode only)
+   In product mode this block still runs but the liftbar is hidden
+   by the blade, so users never see or interact with it.
+================================================================ */
+var LIFT_DATA = {
+    four:    { img: 'assets/images/rentals/Media (8).jpg',       points: ['Heavy-duty four-post support','Perfect for long-hour jobs','Maximum stability & safety'] },
+    two:     { img: 'assets/images/rentals/Media (6).jpg',       points: ['Quick vehicle access','Ideal for mechanical repairs','Compact and space efficient'] },
+    scissor: { img: 'assets/images/rentals/scissor.jpg',         points: ['Low profile design','Fast lifting operation','Great for tire & brake work'] },
+    flat:    { img: 'assets/images/rentals/motocycle.jpg',        points: ['Designed for motorcycles','Easy loading & unloading','Stable flat platform'] },
+    flat2:   { img: 'assets/images/rentals/allignmentrack.jpg',  points: ['Precision wheel alignment','Extended ramp length','Perfect for alignment jobs'] }
+};
 
-    if (!PRODUCT_MODE) {
-        /* Clear any accidentally baked-in active class */
-        $('.mx-liftbtn').removeClass('active');
+/* ----------------------------------------------------------------
+   renderLiftPriceCards — reads the JSON blob embedded by the blade
+   and rebuilds #mxPriceCardsWrap for the chosen lift key.
+   No-ops silently in product mode (wrapper div doesn't exist).
+---------------------------------------------------------------- */
+function renderLiftPriceCards(liftKey) {
+    var wrap = document.getElementById('mxPriceCardsWrap');
+    if (!wrap) return;                         // product mode — not needed
 
-        $(document).on('click', '.mx-liftbtn', function () {
-            $('.mx-liftbtn').removeClass('active');
-            $(this).addClass('active');
-            selectedLift = $(this).data('lift');
+    var raw = document.getElementById('mxAllLiftPrices');
+    if (!raw) return;
 
-            /* Show lift image + bullet points */
-            var lift = LIFT_DATA[selectedLift];
-            if (lift) {
-                $('#mxLiftPlaceholder').hide();
-                $('#mxLiftPreviewImg').attr('src', lift.img).show();
-                $('#mxLiftPoints').html(lift.points.map(function (p) { return '<li>' + p + '</li>'; }).join(''));
-            }
-            /* Hide the prompt banner */
-            $('#mxLiftPrompt').addClass('hidden');
+    var allPrices = {};
+    try { allPrices = JSON.parse(raw.textContent); } catch (e) { return; }
 
-            /* Repaint calendar with this lift's slot data */
-            if (fpInstance) fpInstance.redraw();
-
-            /* Re-render time slots if already viewing the time grid */
-            if (selectedDate && $('#mxTimeView').is(':visible')) renderTimeSlots(selectedDate);
-
-            /* Invalidate selected date if it's no longer available for this lift */
-            if (selectedDate && !isDateAvailableByPackage(selectedDate, selectedPackHours, selectedLift)) {
-                selectedDate = null;
-            }
-
-            updateBookBtnState();
-            setTimeout(function () { scrollToEl($('#hoursSection')[0]); }, 200);
-        });
-
-        $(document).on('click', '#mxLiftDropdownMenu .dropdown-item', function (e) {
-            e.preventDefault();
-            $('#mxLiftDropdownBtn').text($(this).text().trim());
-            $('.mx-liftbtn[data-lift="' + $(this).data('lift') + '"]').trigger('click');
-        });
+    var liftData = allPrices[liftKey];
+    if (!liftData || !liftData.prices || !liftData.prices.length) {
+        wrap.innerHTML = '<p style="color:var(--color-text-secondary);font-size:13px;padding:8px 0;">No pricing available for this lift.</p>';
+        return;
     }
-    /* In PRODUCT MODE: selectedLift is already set to AUTO_LIFT_KEY above — done. */
+
+    wrap.innerHTML = liftData.prices.map(function (p, i) {
+        var label    = p.hours === 1 ? '1 Hour' : p.hours + ' Hours';
+       var priceStr = p.is_membership
+            ? 'Members Only'
+            : (p.hours > 1 ? '$' + p.price + ' / hour' : '$' + p.price);
+
+        var card = '<div class="mx-pricecard ' + (i === 0 && !p.is_membership ? 'mx-selected' : '') + '"' +
+                   ' data-hours="' + p.hours + '"' +
+                   ' data-price="' + p.price + '"' +
+                   ' data-total="' + (p.price * p.hours) + '">' +
+                   '<span class="mx-hours">' + label + '</span>' +
+                   '<span class="mx-price">' + priceStr + '</span>' +
+                   '</div>';
+
+        return p.is_membership
+            ? '<a href="/membership" class="mx-pricecard-link">' + card + '</a>'
+            : card;
+    }).join('');
+
+
+// ✅ ALWAYS ADD MEMBERSHIP AT BOTTOM
+wrap.innerHTML += `
+<a href="/membership" class="mx-pricecard-link">
+    <div class="mx-pricecard mx-membership">
+        <span class="mx-hours">18 Hours</span>
+        <span class="mx-price">Members Only</span>
+    </div>
+</a>
+`;
+
+    /* Re-initialise selectedPackHours from the first non-member card */
+    var $first = $(wrap).find('.mx-pricecard.mx-selected').first();
+    if ($first.length) {
+        selectedPackHours = parseInt($first.data('hours'), 10) || 1;
+        selectedHours     = selectedPackHours;
+        toggleHourControls(selectedPackHours === 9 || selectedPackHours === 18);
+        if (fpInstance) fpInstance.redraw();
+    }
+
+    /* Re-attach click handlers to the freshly rendered cards */
+    $(wrap).find('.mx-pricecard').not($(wrap).find('a .mx-pricecard')).on('click', function () {
+        selectPackage(parseInt($(this).data('hours'), 10) || 1);
+        setTimeout(function () { scrollToEl($('#calendarSection')[0]); }, 200);
+    });
+}
+
+if (!PRODUCT_MODE) {
+    /* Clear any accidentally baked-in active class */
+    $('.mx-liftbtn').removeClass('active');
+
+    $(document).on('click', '.mx-liftbtn', function () {
+        $('.mx-liftbtn').removeClass('active');
+        $(this).addClass('active');
+        selectedLift = $(this).data('lift');
+
+        /* ── Swap price cards from DB data ── */
+        renderLiftPriceCards(selectedLift);
+
+        /* Show lift image + bullet points */
+        var lift = LIFT_DATA[selectedLift];
+        if (lift) {
+            $('#mxLiftPlaceholder').hide();
+            $('#mxLiftPreviewImg').attr('src', lift.img).show();
+            $('#mxLiftPoints').html(lift.points.map(function (p) { return '<li>' + p + '</li>'; }).join(''));
+        }
+
+        /* Hide the prompt banner */
+        $('#mxLiftPrompt').addClass('hidden');
+
+        /* Repaint calendar with this lift's slot data */
+        if (fpInstance) fpInstance.redraw();
+
+        /* Re-render time slots if already viewing the time grid */
+        if (selectedDate && $('#mxTimeView').is(':visible')) renderTimeSlots(selectedDate);
+
+        /* Invalidate selected date if it's no longer available for this lift */
+        if (selectedDate && !isDateAvailableByPackage(selectedDate, selectedPackHours, selectedLift)) {
+            selectedDate = null;
+        }
+
+        updateBookBtnState();
+        setTimeout(function () { scrollToEl($('#hoursSection')[0]); }, 200);
+    });
+
+    $(document).on('click', '#mxLiftDropdownMenu .dropdown-item', function (e) {
+        e.preventDefault();
+        $('#mxLiftDropdownBtn').text($(this).text().trim());
+        $('.mx-liftbtn[data-lift="' + $(this).data('lift') + '"]').trigger('click');
+    });
+}
+/* In PRODUCT MODE: selectedLift is already set to AUTO_LIFT_KEY above — done. */
 
     /* ================================================================
        BOOK NOW → time-slot view
