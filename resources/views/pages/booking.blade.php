@@ -740,14 +740,15 @@
                         id="mxgLift">—</span></div>
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span class="mx-receipt-value"
                         id="mxgDate">—</span></div>
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Time</span><span class="mx-receipt-value"
-                        id="mxgTime">—</span></div>
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span class="mx-receipt-value"
-                        id="mxgDuration">—</span></div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Booking Time</span><span
+                        class="mx-receipt-value" id="mxgTime">—</span></div>
                 <div class="mx-receipt-row">
                     <span class="mx-receipt-label">Slot Timing</span>
                     <span class="mx-receipt-value" id="mxgSlotTiming">—</span>
                 </div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span class="mx-receipt-value"
+                        id="mxgDuration">—</span></div>
+
 
                 <div class="mx-receipt-row">
                     <span class="mx-receipt-label">Total Amount</span>
