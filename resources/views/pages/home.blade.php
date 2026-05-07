@@ -24,10 +24,10 @@
         <picture>
             <!-- Mobile image -->
             <source media="(max-width: 768px)" 
-                    srcset="{{ asset('assets/images/mechanix-banner-mob-02.jpg') }}">
+                    srcset="{{ asset('assets/images/mechanix-banner-mob-new-2.jpg') }}">
 
             <!-- Desktop image -->
-            <img src="{{ asset('assets/images/mechanix-banner-desktop-new.jpg') }}" 
+            <img src="{{ asset('assets/images/mechanix-banner-desktop-new-2.jpg') }}" 
                  alt="Hero Image">
         </picture>
     </div>
@@ -50,7 +50,7 @@
             <div class="services-row">
                 <a class="service-item-custom service-link" href="{{ route('commonpage') }}#lift-rentals">
                     <img src="{{ asset('assets/images/icons/lift-tool-rental.png') }}" alt="Lift Rentals" />
-                    <span>Lift Rentals & Tool Rentals</span>
+                    <span>Lift & Tool Rentals</span>
                 </a>
  
                 <span class="service-divider">|</span>
