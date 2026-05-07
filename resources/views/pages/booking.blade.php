@@ -10,36 +10,45 @@
 
     @php
         $liftKeyMap = [
-            'four' => 'four', 'four-post' => 'four', 'fourpost' => 'four',
-            'two'  => 'two',  'two-post'  => 'two',  'twopost'  => 'two',
-            'scissor'    => 'scissor',
-            'flat'       => 'flat', 'motorcycle' => 'flat', 'moto' => 'flat',
-            'flat2'      => 'flat2', 'alignment' => 'flat2',
+            'four' => 'four',
+            'four-post' => 'four',
+            'fourpost' => 'four',
+            'two' => 'two',
+            'two-post' => 'two',
+            'twopost' => 'two',
+            'scissor' => 'scissor',
+            'flat' => 'flat',
+            'motorcycle' => 'flat',
+            'moto' => 'flat',
+            'flat2' => 'flat2',
+            'alignment' => 'flat2',
         ];
 
-        $productLiftKey  = null;
+        $productLiftKey = null;
         $productLiftName = null;
 
         if ($product ?? null) {
             $rawLift = strtolower(trim($product->lift_type ?? ($product->name ?? '')));
             foreach ($liftKeyMap as $needle => $key) {
-                if (str_contains($rawLift, $needle)) { $productLiftKey = $key; break; }
+                if (str_contains($rawLift, $needle)) {
+                    $productLiftKey = $key;
+                    break;
+                }
             }
             $liftNames = [
-                'four'    => 'Four-Post Lift',
-                'two'     => 'Two-Post Lift',
+                'four' => 'Four-Post Lift',
+                'two' => 'Two-Post Lift',
                 'scissor' => 'Scissor Lift',
-                'flat'    => 'Motorcycle Lift',
-                'flat2'   => 'Alignment Rack',
+                'flat' => 'Motorcycle Lift',
+                'flat2' => 'Alignment Rack',
             ];
             $productLiftName = $liftNames[$productLiftKey] ?? ($product->name ?? 'Lift');
         }
 
         $isProductMode = ($product ?? null) && $productLiftKey;
 
-        $defaultImage = $product ?? null
-            ? $product->images->firstWhere('is_default', 1) ?? $product->images->first()
-            : null;
+        $defaultImage =
+            $product ?? null ? $product->images->firstWhere('is_default', 1) ?? $product->images->first() : null;
 
         /*
          * ─── BUILD LIFT PRICES JSON SAFELY IN PHP ───────────────────────
@@ -47,33 +56,40 @@
          * trailing-comma / broken-JSON bugs that broke the price cards.
          */
         $liftKeyMapForPrices = [
-            'four-post lift'  => 'four',  'four post lift'  => 'four',
-            'two-post lift'   => 'two',   'two post lift'   => 'two',
-            'scissor lift'    => 'scissor',
+            'four-post lift' => 'four',
+            'four post lift' => 'four',
+            'two-post lift' => 'two',
+            'two post lift' => 'two',
+            'scissor lift' => 'scissor',
             'motorcycle lift' => 'flat',
-            'alignment'       => 'flat2',
+            'alignment' => 'flat2',
         ];
 
         $allLiftPricesJson = [];
         foreach ($allLiftProducts as $lp) {
-            $lpKey     = null;
+            $lpKey = null;
             $lpNameLow = strtolower(trim($lp->name));
             foreach ($liftKeyMapForPrices as $needle => $key) {
-                if (str_contains($lpNameLow, $needle)) { $lpKey = $key; break; }
+                if (str_contains($lpNameLow, $needle)) {
+                    $lpKey = $key;
+                    break;
+                }
             }
-            if (!$lpKey) continue;
+            if (!$lpKey) {
+                continue;
+            }
 
             $prices = [];
             foreach ($lp->prices as $price) {
                 $prices[] = [
-                    'hours'         => (int)   $price->hours,
-                    'price'         => (float) $price->price,
-                    'total'         => (float) ($price->price * $price->hours),
-                    'is_membership' => (int)   ($price->is_membership ?? 0),
+                    'hours' => (int) $price->hours,
+                    'price' => (float) $price->price,
+                    'total' => (float) ($price->price * $price->hours),
+                    'is_membership' => (int) ($price->is_membership ?? 0),
                 ];
             }
             $allLiftPricesJson[$lpKey] = [
-                'name'   => $lp->name,
+                'name' => $lp->name,
                 'prices' => $prices,
             ];
         }
@@ -95,11 +111,11 @@
                             Select Lift Type
                         </button>
                         <ul class="dropdown-menu w-100" id="mxLiftDropdownMenu">
-                            <li><a class="dropdown-item" data-lift="four"    href="#">Four-Post Lift</a></li>
-                            <li><a class="dropdown-item" data-lift="two"     href="#">Two-Post Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="four" href="#">Four-Post Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="two" href="#">Two-Post Lift</a></li>
                             <li><a class="dropdown-item" data-lift="scissor" href="#">Scissor Lift</a></li>
-                            <li><a class="dropdown-item" data-lift="flat"    href="#">Motorcycle Lift</a></li>
-                            <li><a class="dropdown-item" data-lift="flat2"   href="#">Alignment Rack</a></li>
+                            <li><a class="dropdown-item" data-lift="flat" href="#">Motorcycle Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="flat2" href="#">Alignment Rack</a></li>
                         </ul>
                     </div>
                 </div>
@@ -147,11 +163,8 @@
                     <a href="{{ route('rentals') }}" class="mx-product-change">Change product</a>
                 </div>
 
-                <div id="mxProductMeta"
-                    data-product-mode="1"
-                    data-lift-key="{{ $productLiftKey }}"
-                    data-lift-name="{{ $productLiftName }}"
-                    data-product-id="{{ $product->id }}">
+                <div id="mxProductMeta" data-product-mode="1" data-lift-key="{{ $productLiftKey }}"
+                    data-lift-name="{{ $productLiftName }}" data-product-id="{{ $product->id }}">
                 </div>
             @endif
         </div>
@@ -164,15 +177,16 @@
                     @if ($isProductMode)
                         @foreach ($product->prices as $price)
                             <div class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
-                                data-hours="{{ $price->hours }}"
-                                data-price="{{ $price->price }}"
+                                data-hours="{{ $price->hours }}" data-price="{{ $price->price }}"
                                 data-total="{{ $price->price * $price->hours }}">
                                 <span class="mx-hours">
                                     {{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}
                                 </span>
                                 <span class="mx-price">
                                     ${{ $price->price }}
-                                    @if ($price->hours > 1) / hour @endif
+                                    @if ($price->hours > 1)
+                                        / hour
+                                    @endif
                                 </span>
                             </div>
                         @endforeach
@@ -185,19 +199,22 @@
                             </div>
                             <ul class="mx-liftpoints" id="mxLiftPoints">
                                 @foreach (explode("\n", $product->description ?? '') as $line)
-                                    @if (trim($line)) <li>{{ trim($line) }}</li> @endif
+                                    @if (trim($line))
+                                        <li>{{ trim($line) }}</li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>
-
                     @elseif($product ?? null)
                         @foreach ($product->prices as $price)
                             <div class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
-                                data-hours="{{ $price->hours }}"
-                                data-price="{{ $price->price }}"
+                                data-hours="{{ $price->hours }}" data-price="{{ $price->price }}"
                                 data-total="{{ $price->price * $price->hours }}">
                                 <span class="mx-hours">{{ $price->hours }} Hour{{ $price->hours > 1 ? 's' : '' }}</span>
-                                <span class="mx-price">${{ $price->price }}@if ($price->hours > 1) / hour @endif</span>
+                                <span class="mx-price">${{ $price->price }}@if ($price->hours > 1)
+                                        / hour
+                                    @endif
+                                </span>
                             </div>
                         @endforeach
                         <div class="mx-liftpreview">
@@ -208,11 +225,12 @@
                             </div>
                             <ul class="mx-liftpoints" id="mxLiftPoints">
                                 @foreach (explode("\n", $product->description ?? '') as $line)
-                                    @if (trim($line)) <li>{{ trim($line) }}</li> @endif
+                                    @if (trim($line))
+                                        <li>{{ trim($line) }}</li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>
-
                     @else
                         {{-- ── DIRECT BOOKING MODE ── --}}
 
@@ -240,8 +258,7 @@
                                     </svg>
                                     <p>Select a lift type to preview</p>
                                 </div>
-                                <img id="mxLiftPreviewImg"
-                                    src="{{ asset('assets/images/icons/lift-red.png') }}"
+                                <img id="mxLiftPreviewImg" src="{{ asset('assets/images/icons/lift-red.png') }}"
                                     alt="Lift preview" style="display:none;">
                             </div>
                             <ul class="mx-liftpoints" id="mxLiftPoints">
@@ -316,7 +333,8 @@
                                     <div id="mxModalTitle" class="mx-modal-title">Confirm Booking</div>
                                     <div class="mx-modal-sub">Adjust hours if needed — must be consecutive.</div>
                                 </div>
-                                <button type="button" class="mx-modal-x" id="mxModalClose" aria-label="Close">×</button>
+                                <button type="button" class="mx-modal-x" id="mxModalClose"
+                                    aria-label="Close">×</button>
                             </div>
                             <div class="mx-modal-body">
                                 <div class="mx-info-row">
@@ -363,7 +381,8 @@
 
         {{-- ── SUMMARY MODAL ── --}}
         <div id="mxSummaryModal" class="mx-modal-overlay" aria-hidden="true">
-            <div class="mx-modal-card mx-summary-card" role="dialog" aria-modal="true" aria-labelledby="mxSummaryTitle">
+            <div class="mx-modal-card mx-summary-card" role="dialog" aria-modal="true"
+                aria-labelledby="mxSummaryTitle">
                 <div class="mx-modal-head">
                     <div>
                         <div id="mxSummaryTitle" class="mx-modal-title">Booking Summary</div>
@@ -373,17 +392,26 @@
                 </div>
                 <div class="mx-modal-body">
                     <div class="mx-receipt">
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Workstation</span><span class="mx-receipt-value" id="mxsWorkstation">—</span></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Lift Type</span><span class="mx-receipt-value" id="mxsLift">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Workstation</span><span
+                                class="mx-receipt-value" id="mxsWorkstation">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Lift Type</span><span
+                                class="mx-receipt-value" id="mxsLift">—</span></div>
                         <div class="mx-receipt-divider"></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span class="mx-receipt-value" id="mxsDate">—</span></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Start Time</span><span class="mx-receipt-value" id="mxsStart">—</span></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span class="mx-receipt-value" id="mxsDuration">—</span></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">End Time</span><span class="mx-receipt-value" id="mxsEnd">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span
+                                class="mx-receipt-value" id="mxsDate">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Start Time</span><span
+                                class="mx-receipt-value" id="mxsStart">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span
+                                class="mx-receipt-value" id="mxsDuration">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">End Time</span><span
+                                class="mx-receipt-value" id="mxsEnd">—</span></div>
                         <div class="mx-receipt-divider"></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Rate</span><span class="mx-receipt-value" id="mxsRate">—</span></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Hours</span><span class="mx-receipt-value" id="mxsHours">—</span></div>
-                        <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total</span><span class="mx-receipt-value" id="mxsTotal">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Rate</span><span
+                                class="mx-receipt-value" id="mxsRate">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Hours</span><span
+                                class="mx-receipt-value" id="mxsHours">—</span></div>
+                        <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total</span><span
+                                class="mx-receipt-value" id="mxsTotal">—</span></div>
                     </div>
                     <p class="mx-summary-note">
                         <i class="fa-solid fa-circle-info"></i>
@@ -391,8 +419,10 @@
                     </p>
                 </div>
                 <div class="mx-modal-actions">
-                    <button type="button" class="mx-btn-outline" id="mxSummaryBack"><i class="fa-solid fa-arrow-left"></i> Edit</button>
-                    <button type="button" class="mx-btn-solid" id="mxSummaryPay">Pay Now &nbsp;<i class="fa-solid fa-lock"></i></button>
+                    <button type="button" class="mx-btn-outline" id="mxSummaryBack"><i
+                            class="fa-solid fa-arrow-left"></i> Edit</button>
+                    <button type="button" class="mx-btn-solid" id="mxSummaryPay">Pay Now &nbsp;<i
+                            class="fa-solid fa-lock"></i></button>
                 </div>
             </div>
         </div>
@@ -409,9 +439,12 @@
                 </div>
                 <div class="mx-modal-body">
                     <div class="mxs-pay-tabs">
-                        <button type="button" class="mxs-pay-tab active" data-tab="card"><i class="fa-regular fa-credit-card"></i> Card</button>
-                        <button type="button" class="mxs-pay-tab" data-tab="upi"><i class="fa-solid fa-mobile-screen-button"></i> UPI</button>
-                        <button type="button" class="mxs-pay-tab" data-tab="netbanking"><i class="fa-solid fa-building-columns"></i> Net Banking</button>
+                        <button type="button" class="mxs-pay-tab active" data-tab="card"><i
+                                class="fa-regular fa-credit-card"></i> Card</button>
+                        <button type="button" class="mxs-pay-tab" data-tab="upi"><i
+                                class="fa-solid fa-mobile-screen-button"></i> UPI</button>
+                        <button type="button" class="mxs-pay-tab" data-tab="netbanking"><i
+                                class="fa-solid fa-building-columns"></i> Net Banking</button>
                     </div>
                     <div id="mxPayError" class="mx-pay-error d-none"></div>
                     <div class="mxs-pay-panel active" id="mxPayPanel-card">
@@ -419,22 +452,34 @@
                             <div class="mx-card-chip"></div>
                             <div class="mx-card-number-display" id="mxCardDisplay">•••• •••• •••• ••••</div>
                             <div class="mx-card-bottom">
-                                <div><div class="mx-card-meta-label">Card Holder</div><div class="mx-card-meta-value" id="mxCardNameDisplay">YOUR NAME</div></div>
-                                <div><div class="mx-card-meta-label">Expires</div><div class="mx-card-meta-value" id="mxCardExpDisplay">MM / YY</div></div>
+                                <div>
+                                    <div class="mx-card-meta-label">Card Holder</div>
+                                    <div class="mx-card-meta-value" id="mxCardNameDisplay">YOUR NAME</div>
+                                </div>
+                                <div>
+                                    <div class="mx-card-meta-label">Expires</div>
+                                    <div class="mx-card-meta-value" id="mxCardExpDisplay">MM / YY</div>
+                                </div>
                             </div>
                         </div>
                         <div class="mx-pay-fields">
-                            <div class="mx-field-wrap full"><label>Card Number</label><input type="text" id="mxCardNum" class="mx-pay-input" placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric"></div>
-                            <div class="mx-field-wrap full"><label>Cardholder Name</label><input type="text" id="mxCardName" class="mx-pay-input" placeholder="Name on card"></div>
-                            <div class="mx-field-wrap half"><label>Expiry</label><input type="text" id="mxCardExp" class="mx-pay-input" placeholder="MM / YY" maxlength="7" inputmode="numeric"></div>
-                            <div class="mx-field-wrap half"><label>CVV</label><input type="password" id="mxCardCvv" class="mx-pay-input" placeholder="•••" maxlength="3" inputmode="numeric"></div>
+                            <div class="mx-field-wrap full"><label>Card Number</label><input type="text"
+                                    id="mxCardNum" class="mx-pay-input" placeholder="1234 5678 9012 3456" maxlength="19"
+                                    inputmode="numeric"></div>
+                            <div class="mx-field-wrap full"><label>Cardholder Name</label><input type="text"
+                                    id="mxCardName" class="mx-pay-input" placeholder="Name on card"></div>
+                            <div class="mx-field-wrap half"><label>Expiry</label><input type="text" id="mxCardExp"
+                                    class="mx-pay-input" placeholder="MM / YY" maxlength="7" inputmode="numeric"></div>
+                            <div class="mx-field-wrap half"><label>CVV</label><input type="password" id="mxCardCvv"
+                                    class="mx-pay-input" placeholder="•••" maxlength="3" inputmode="numeric"></div>
                         </div>
                     </div>
                     <div class="mxs-pay-panel" id="mxPayPanel-upi">
                         <div class="mx-upi-wrap">
                             <i class="fa-solid fa-mobile-screen-button mx-upi-icon"></i>
                             <p class="mx-upi-label">Enter your UPI ID</p>
-                            <input type="text" class="mx-pay-input" id="mxUpiId" placeholder="yourname@upi" style="max-width:280px;margin:0 auto;display:block;">
+                            <input type="text" class="mx-pay-input" id="mxUpiId" placeholder="yourname@upi"
+                                style="max-width:280px;margin:0 auto;display:block;">
                             <p class="mx-upi-hint">e.g. name@okaxis, name@ybl, name@paytm</p>
                         </div>
                     </div>
@@ -442,7 +487,8 @@
                         <div class="mx-nb-grid">
                             @foreach (['SBI', 'HDFC', 'ICICI', 'Axis', 'Kotak', 'Yes Bank', 'PNB', 'BOB'] as $bank)
                                 <label class="mx-nb-option">
-                                    <input type="radio" name="mxBank" value="{{ strtolower(str_replace(' ', '', $bank)) }}">
+                                    <input type="radio" name="mxBank"
+                                        value="{{ strtolower(str_replace(' ', '', $bank)) }}">
                                     <span>{{ $bank }}</span>
                                 </label>
                             @endforeach
@@ -461,7 +507,8 @@
 
         {{-- ── SUCCESS MODAL ── --}}
         <div id="mxSuccessModal" class="mx-modal-overlay" aria-hidden="true">
-            <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true" aria-labelledby="mxSuccessTitle">
+            <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true"
+                aria-labelledby="mxSuccessTitle">
                 <div class="mx-success-anim">
                     <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
                         <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
@@ -471,19 +518,28 @@
                 <div id="mxSuccessTitle" class="mx-success-title">Booking Confirmed!</div>
                 <div class="mx-success-sub">Your booking ID is <strong id="mxSuccessBookingId">—</strong></div>
                 <div class="mx-receipt mx-success-receipt">
-                    <div class="mx-receipt-row"><span class="mx-receipt-label">Workstation</span><span class="mx-receipt-value" id="mxrWorkstation">—</span></div>
-                    <div class="mx-receipt-row"><span class="mx-receipt-label">Lift</span><span class="mx-receipt-value" id="mxrLift">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">Workstation</span><span
+                            class="mx-receipt-value" id="mxrWorkstation">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">Lift</span><span class="mx-receipt-value"
+                            id="mxrLift">—</span></div>
                     <div class="mx-receipt-divider"></div>
-                    <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span class="mx-receipt-value" id="mxrDate">—</span></div>
-                    <div class="mx-receipt-row"><span class="mx-receipt-label">Start</span><span class="mx-receipt-value" id="mxrStart">—</span></div>
-                    <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span class="mx-receipt-value" id="mxrDuration">—</span></div>
-                    <div class="mx-receipt-row"><span class="mx-receipt-label">End</span><span class="mx-receipt-value" id="mxrEnd">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span class="mx-receipt-value"
+                            id="mxrDate">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">Start</span><span class="mx-receipt-value"
+                            id="mxrStart">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span
+                            class="mx-receipt-value" id="mxrDuration">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">End</span><span class="mx-receipt-value"
+                            id="mxrEnd">—</span></div>
                     <div class="mx-receipt-divider"></div>
-                    <div class="mx-receipt-row"><span class="mx-receipt-label">Rate</span><span class="mx-receipt-value" id="mxrRate">—</span></div>
-                    <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total Paid</span><span class="mx-receipt-value" id="mxrTotal">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">Rate</span><span class="mx-receipt-value"
+                            id="mxrRate">—</span></div>
+                    <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total Paid</span><span
+                            class="mx-receipt-value" id="mxrTotal">—</span></div>
                 </div>
                 <div class="mx-modal-actions mx-success-actions">
-                    <button type="button" class="mx-btn-outline" id="mxPrintBtn"><i class="fa-solid fa-print"></i> Print Receipt</button>
+                    <button type="button" class="mx-btn-outline" id="mxPrintBtn"><i class="fa-solid fa-print"></i>
+                        Print Receipt</button>
                     <button type="button" class="mx-btn-solid" onclick="location.reload()">Done</button>
                 </div>
             </div>
@@ -494,9 +550,7 @@
     <div class="mx-demo-ribbon" aria-label="Demo Mode">DEMO<small>Work in progress</small></div>
 
     <div id="mx-auth-state" data-logged-in="{{ auth()->check() ? '1' : '0' }}"></div>
-    <div id="mx-routes"
-        data-login-url="{{ route('popup.login') }}"
-        data-register-url="{{ route('popup.register') }}">
+    <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}">
     </div>
 
     {{-- ── AUTH MODAL ── --}}
@@ -505,21 +559,22 @@
             <div class="modal-content" style="background:#1f1f1f; color:#fff; border-radius:10px;">
                 <div class="modal-header border-0">
                     <h5 class="modal-title text-white">Continue to Book</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <ul class="nav nav-tabs" id="authTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link  text-white bg-dark" id="loginTab"
-                                data-bs-toggle="tab" data-bs-target="#loginTabPane" type="button" role="tab">Login</button>
+                            <button class="nav-link  text-white bg-dark" id="loginTab" data-bs-toggle="tab"
+                                data-bs-target="#loginTabPane" type="button" role="tab">Login</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link text-white bg-dark" id="registerTab"
-                                data-bs-toggle="tab" data-bs-target="#registerTabPane" type="button" role="tab">Register</button>
+                            <button class="nav-link text-white bg-dark" id="registerTab" data-bs-toggle="tab"
+                                data-bs-target="#registerTabPane" type="button" role="tab">Register</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active text-white bg-dark" id="guestTab"
-                                data-bs-toggle="tab" data-bs-target="#guestTabPane" type="button" role="tab">Guest Booking</button>
+                            <button class="nav-link active text-white bg-dark" id="guestTab" data-bs-toggle="tab"
+                                data-bs-target="#guestTabPane" type="button" role="tab">Guest Booking</button>
                         </li>
                     </ul>
 
@@ -534,15 +589,18 @@
                                 <div class="mb-3">
                                     <label class="form-label small text-white">Email</label>
                                     <input type="email" class="form-control border-0" name="email"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                        required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label small text-white">Password</label>
                                     <input type="password" class="form-control border-0" name="password"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                        required>
                                 </div>
                                 <div class="text-end mt-2">
-                                    <a href="#" id="forgotPasswordBtn" class="small text-danger btn">Forgot password?</a>
+                                    <a href="#" id="forgotPasswordBtn" class="small text-danger btn">Forgot
+                                        password?</a>
                                 </div>
                                 <button type="submit" class="btn w-100 text-white fw-semibold mt-3"
                                     style="background:linear-gradient(180deg,rgba(221,43,49,1) 0%,rgb(119,17,23) 100%);border:2px solid #791218;height:46px;letter-spacing:1px;">
@@ -560,23 +618,31 @@
                                 <div class="row g-2">
                                     <div class="col-6">
                                         <label class="form-label small text-white">Email</label>
-                                        <input type="email" class="form-control border-0 form-control-sm" name="email"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                        <input type="email" class="form-control border-0 form-control-sm"
+                                            name="email"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label small text-white">Mobile</label>
-                                        <input type="text" class="form-control border-0 form-control-sm" name="mobile_no"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                        <input type="text" class="form-control border-0 form-control-sm"
+                                            name="mobile_no"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label small text-white">Password</label>
-                                        <input type="password" class="form-control border-0 form-control-sm" name="password"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                        <input type="password" class="form-control border-0 form-control-sm"
+                                            name="password"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label small text-white">Confirm</label>
-                                        <input type="password" class="form-control border-0 form-control-sm" name="password_confirmation"
-                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                        <input type="password" class="form-control border-0 form-control-sm"
+                                            name="password_confirmation"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn w-100 text-white fw-semibold mt-3"
@@ -589,9 +655,11 @@
                         {{-- GUEST BOOKING TAB --}}
                         <div class="tab-pane fade show active" id="guestTabPane" role="tabpanel">
                             <div id="guestErrorMsg" class="alert alert-danger d-none"></div>
-                            <div class="alert alert-info" style="background:#2d3748;border:1px solid #4a5568;color:#e2e8f0;font-size:13px;">
+                            <div class="alert alert-info"
+                                style="background:#2d3748;border:1px solid #4a5568;color:#e2e8f0;font-size:13px;">
                                 <i class="fa-solid fa-info-circle"></i>
-                                Your slot will be held for <strong>30 minutes</strong>. Please call us to confirm your booking.
+                                Your slot will be held for <strong>30 minutes</strong>. Please call us to confirm your
+                                booking.
                             </div>
                             {{-- FIX: id kept as guestBookingForm — matches JS listener --}}
                             <form id="guestBookingForm">
@@ -600,13 +668,15 @@
                                     <label class="form-label small text-white">Full Name</label>
                                     <input type="text" class="form-control border-0" name="guest_name" id="guestName"
                                         placeholder="Enter your full name"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;-webkit-text-fill-color:#fff;" required>
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;-webkit-text-fill-color:#fff;"
+                                        required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label small text-white">US Phone Number</label>
-                                    <input type="tel" class="form-control border-0" name="guest_phone" id="guestPhone"
-                                        placeholder="(XXX) XXX-XXXX"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;-webkit-text-fill-color:#fff;" required>
+                                    <input type="tel" class="form-control border-0" name="guest_phone"
+                                        id="guestPhone" placeholder="(XXX) XXX-XXXX"
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;-webkit-text-fill-color:#fff;"
+                                        required>
                                 </div>
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" id="guestAgree" required>
@@ -630,7 +700,8 @@
     {{-- ── GUEST SUCCESS MODAL ── --}}
     <div id="mxGuestSuccessModal" class="mx-modal-overlay" aria-hidden="true">
         <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
-             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                aria-label="Close"></button>
             <div class="mx-success-anim">
                 <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
                     <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
@@ -639,30 +710,49 @@
             </div>
             <div class="mx-success-title">Slot Reserved!</div>
             <div class="mx-success-sub">Booking ID: <strong id="mxGuestBookingId">—</strong></div>
-            <div class="alert alert-warning" style="background:#2d3748;border:1px solid #f59e0b;color:#fbbf24;margin:20px 0;">
+            <div class="alert alert-warning"
+                style="background:#2d3748;border:1px solid #f59e0b;color:#fbbf24;margin:20px 0;">
                 <div style="display:flex;align-items:center;gap:12px;">
                     <i class="fa-solid fa-clock" style="font-size:24px;"></i>
                     <div>
                         <strong>Time Remaining: <span id="mxGuestTimer">30:00</span></strong>
-                        <p style="margin:5px 0 0 0;font-size:13px;color:#e2e8f0;">Your slot will be released if not confirmed</p>
+                        <p style="margin:5px 0 0 0;font-size:13px;color:#e2e8f0;">Your slot will be released if not
+                            confirmed</p>
                     </div>
                 </div>
             </div>
-            <div class="mx-garage-contact" style="background:#1e293b;padding:20px;border-radius:8px;margin:20px 0;text-align:center;">
+            <div class="mx-garage-contact"
+                style="background:#1e293b;padding:20px;border-radius:8px;margin:20px 0;text-align:center;">
                 <p style="color:#94a3b8;margin-bottom:10px;font-size:13px;">CALL US NOW TO CONFIRM</p>
-                <a href="tel:+11234567890" class="mx-phone-link" style="color:#22c55e;font-size:28px;font-weight:bold;text-decoration:none;">
+                <a href="tel:+11234567890" class="mx-phone-link"
+                    style="color:#22c55e;font-size:28px;font-weight:bold;text-decoration:none;">
                     <i class="fa-solid fa-phone"></i> +1 (123) 456-7890
                 </a>
                 <p style="color:#94a3b8;margin-top:10px;font-size:12px;">Office Hours: Mon-Fri 9AM-6PM | Sat 9AM-12PM</p>
             </div>
             <div class="mx-receipt mx-success-receipt">
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Name</span><span class="mx-receipt-value" id="mxgName">—</span></div>
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Phone</span><span class="mx-receipt-value" id="mxgPhone">—</span></div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Name</span><span class="mx-receipt-value"
+                        id="mxgName">—</span></div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Phone</span><span class="mx-receipt-value"
+                        id="mxgPhone">—</span></div>
                 <div class="mx-receipt-divider"></div>
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Lift</span><span class="mx-receipt-value" id="mxgLift">—</span></div>
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span class="mx-receipt-value" id="mxgDate">—</span></div>
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Time</span><span class="mx-receipt-value" id="mxgTime">—</span></div>
-                <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span class="mx-receipt-value" id="mxgDuration">—</span></div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Lift</span><span class="mx-receipt-value"
+                        id="mxgLift">—</span></div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span class="mx-receipt-value"
+                        id="mxgDate">—</span></div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Time</span><span class="mx-receipt-value"
+                        id="mxgTime">—</span></div>
+                <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span class="mx-receipt-value"
+                        id="mxgDuration">—</span></div>
+                <div class="mx-receipt-row">
+                    <span class="mx-receipt-label">Slot Timing</span>
+                    <span class="mx-receipt-value" id="mxgSlotTiming">—</span>
+                </div>
+
+                <div class="mx-receipt-row">
+                    <span class="mx-receipt-label">Total Amount</span>
+                    <span class="mx-receipt-value" id="mxgTotal">$0</span>
+                </div>
             </div>
             <div class="mx-modal-actions mx-success-actions">
                 <a href="tel:+11234567890" class="mx-btn-solid" style="text-decoration:none;">
@@ -678,23 +768,29 @@
             <div class="modal-content mt-4 p-4" style="background:transparent;border:none;">
                 <div id="fpStepEmail">
                     <h6 class="mb-3 text-white">Reset Password</h6>
-                    <input type="email" id="fpEmailInput" class="form-control form-control-sm mb-2" placeholder="Enter email" style="background:#2d2d2d;color:#fff;border:none;">
-                    <button class="btn btn-primary w-100 btn-sm d-flex align-items-center justify-content-center gap-2" id="fpSendOtpBtn">
+                    <input type="email" id="fpEmailInput" class="form-control form-control-sm mb-2"
+                        placeholder="Enter email" style="background:#2d2d2d;color:#fff;border:none;">
+                    <button class="btn btn-primary w-100 btn-sm d-flex align-items-center justify-content-center gap-2"
+                        id="fpSendOtpBtn">
                         <span class="btn-text">Send OTP</span>
                         <span class="spinner-border spinner-border-sm d-none" id="fpOtpLoader"></span>
                     </button>
                 </div>
                 <div id="fpStepOtp" class="d-none">
                     <label class="form-label small text-white">Please enter the OTP sent to your email</label>
-                    <input type="text" id="fpOtpInput" class="form-control form-control-sm mb-2 text-center" placeholder="Enter OTP" style="background:#2d2d2d;color:#fff;border:none;">
+                    <input type="text" id="fpOtpInput" class="form-control form-control-sm mb-2 text-center"
+                        placeholder="Enter OTP" style="background:#2d2d2d;color:#fff;border:none;">
                     <button class="btn btn-success w-100 btn-sm" id="fpVerifyOtpBtn">Verify OTP</button>
                     <button class="btn btn-link btn-sm w-100 text-white" id="fpResendOtpBtn">Resend OTP</button>
                 </div>
-                <div id="fpStepReset" class="d-none text-white w-100" style="background:#1f1f1f;padding:16px;border-radius:10px;">
+                <div id="fpStepReset" class="d-none text-white w-100"
+                    style="background:#1f1f1f;padding:16px;border-radius:10px;">
                     <label class="form-label small">New Password</label>
-                    <input type="password" id="fpNewPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
+                    <input type="password" id="fpNewPassword" class="form-control border-0 mb-3"
+                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
                     <label class="form-label small">Confirm Password</label>
-                    <input type="password" id="fpConfirmPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
+                    <input type="password" id="fpConfirmPassword" class="form-control border-0 mb-3"
+                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
                     <button id="fpResetPasswordBtn" class="btn w-100 text-white fw-semibold shadow"
                         style="background:linear-gradient(180deg,rgba(221,43,49,1) 0%,rgb(119,17,23) 100%);border:2px solid #791218;height:46px;letter-spacing:1px;">
                         Reset Password
@@ -705,19 +801,21 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var cn = document.getElementById('mxCardNum');
             var nm = document.getElementById('mxCardName');
             var ex = document.getElementById('mxCardExp');
             if (!cn) return;
-            cn.addEventListener('input', function () {
+            cn.addEventListener('input', function() {
                 var v = this.value.replace(/\D/g, '').padEnd(16, '•').slice(0, 16).match(/.{1,4}/g);
-                document.getElementById('mxCardDisplay').textContent = v ? v.join(' ') : '•••• •••• •••• ••••';
+                document.getElementById('mxCardDisplay').textContent = v ? v.join(' ') :
+                    '•••• •••• •••• ••••';
             });
-            nm.addEventListener('input', function () {
-                document.getElementById('mxCardNameDisplay').textContent = this.value.toUpperCase() || 'YOUR NAME';
+            nm.addEventListener('input', function() {
+                document.getElementById('mxCardNameDisplay').textContent = this.value.toUpperCase() ||
+                    'YOUR NAME';
             });
-            ex.addEventListener('input', function () {
+            ex.addEventListener('input', function() {
                 document.getElementById('mxCardExpDisplay').textContent = this.value || 'MM / YY';
             });
         });

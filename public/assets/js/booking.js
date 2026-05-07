@@ -149,7 +149,10 @@ $(function () {
         $('#mxgDate').text(dateFmt);
         $('#mxgTime').text(formatTimePoint(startH));
         $('#mxgDuration').text(payload.hours + ' hour' + (payload.hours > 1 ? 's' : ''));
+var slotText = prettyRange(payload.date, startH, payload.hours);
 
+$('#mxgSlotTiming').text(slotText);
+$('#mxgTotal').text(formatMoney(getPackageTotal(payload.hours)));
         startGuestTimer(expiresAt);
         openModal('#mxGuestSuccessModal');
     }
@@ -1019,7 +1022,7 @@ $(function () {
         // FIX: was #mxLoginErr — blade has #loginErrorMsg
         var $err = $('#loginErrorMsg').addClass('d-none').text('');
         try {
-            var res  = await fetch('/login', {
+            var res  = await fetch('/popup-login', {
                 method: 'POST', credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': window.MX_CSRF, 'Accept': 'application/json' },
                 body: JSON.stringify({
@@ -1039,7 +1042,7 @@ $(function () {
         // FIX: was #mxRegErr — blade has #registerErrorMsg
         var $err = $('#registerErrorMsg').addClass('d-none').text('');
         try {
-            var res  = await fetch('/register', {
+            var res  = await fetch('/popup-register', {
                 method: 'POST', credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': window.MX_CSRF, 'Accept': 'application/json' },
                 body: JSON.stringify({
