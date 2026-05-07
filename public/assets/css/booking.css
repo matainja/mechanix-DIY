@@ -1017,6 +1017,7 @@
     display: flex; flex-direction: column;
     max-height: 92vh;
     border: 1px solid rgba(255,255,255,.1);
+    padding: 0 20px;
 }
 @keyframes mxSlideUp {
     from { opacity:0; transform: translateY(40px) scale(.95); }
