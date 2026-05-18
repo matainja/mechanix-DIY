@@ -12,6 +12,7 @@ use Carbon\CarbonPeriod;
 use App\Models\Holiday;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
+use Illuminate\Support\Facades\Log;
 
 
 class BookingController extends Controller
@@ -104,7 +105,7 @@ class BookingController extends Controller
             ->select('date', 'time')
             ->where('workstation', $workstation)
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
-            ->where('status', 'booked')
+            ->whereIn('status', ['booked', 'pending']) // Include pending slots in calendar
             ->get();
 
         $bookedSlots = [];
@@ -160,8 +161,6 @@ class BookingController extends Controller
      */
     public function storeGuestBooking(Request $request)
     {
-        // ⚠️  dd() removed — it was killing every request
-
         $validated = $request->validate([
             'guest_name'  => 'required|string|max:255',
             'guest_phone' => 'required|string|max:20',
@@ -236,6 +235,70 @@ class BookingController extends Controller
                 'booking_id' => $booking->id,
                 'expires_at' => $expiresAt->toIso8601String(),
             ]);
+        });
+    }
+
+    /**
+     * Confirm guest booking payment and update status to 'confirmed' (booked)
+     */
+    public function confirmGuestPayment(Request $request)
+    {
+        $validated = $request->validate([
+            'booking_id'     => 'required|integer|exists:bookings,id',
+            'payment_method' => 'required|string',
+            'amount'         => 'required|numeric|min:0',
+        ]);
+
+        return DB::transaction(function () use ($validated) {
+            try {
+                // Find the booking
+                $booking = Booking::where('id', $validated['booking_id'])
+                    ->where('status', 'pending')
+                    ->where('booking_type', 'guest')
+                    ->first();
+
+                if (!$booking) {
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Booking not found or already confirmed.'
+                    ], 404);
+                }
+
+                // Check if booking has expired
+                if ($booking->expires_at && now()->greaterThan($booking->expires_at)) {
+                    // Delete expired booking and slots
+                    BookingSlot::where('booking_id', $booking->id)->delete();
+                    $booking->delete();
+
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Booking has expired. Please create a new booking.'
+                    ], 410);
+                }
+
+                // Update booking status to confirmed
+                $booking->update([
+                    'status' => 'confirmed',
+                ]);
+
+                // Update all related booking slots to 'booked'
+                BookingSlot::where('booking_id', $booking->id)
+                    ->update(['status' => 'booked']);
+
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Payment confirmed successfully!',
+                    'booking' => $booking
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Guest payment confirmation error: ' . $e->getMessage());
+                
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Payment confirmation failed: ' . $e->getMessage()
+                ], 500);
+            }
         });
     }
 }

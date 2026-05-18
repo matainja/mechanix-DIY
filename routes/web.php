@@ -74,6 +74,8 @@ Route::post('/popup-login', [AuthPopupController::class, 'login'])->name('popup.
 Route::post('/popup-register', [AuthPopupController::class, 'register'])->name('popup.register');
 Route::post('/logout', [AuthPopupController::class, 'logout'])->name('logout');
 Route::post('/booking/guest', [BookingController::class, 'storeGuestBooking'])->name('booking.guest');
+Route::post('/booking/guest/confirm-payment', [BookingController::class, 'confirmGuestPayment'])
+    ->name('booking.guest.confirm-payment');
 Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp']);
 Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
 Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword']);

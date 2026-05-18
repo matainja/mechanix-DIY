@@ -85,54 +85,59 @@ $(function () {
        GUEST BOOKING FORM
        FIX: payload uses mxGetBookingPayload() which already has product_id
     ================================================================ */
-    $('#guestBookingForm').on('submit', async function (e) {
-        e.preventDefault();
-        var $err = $('#guestErrorMsg').addClass('d-none').text('');
+   $('#guestBookingForm').on('submit', async function (e) {
+    e.preventDefault();
+    var $err = $('#guestErrorMsg').addClass('d-none').text('');
 
-        var rawPhone = $('#guestPhone').val().replace(/\D/g, '');
-        if (rawPhone.length !== 10) {
-            $err.text('Please enter a valid 10-digit US phone number.').removeClass('d-none');
+    var rawPhone = $('#guestPhone').val().replace(/\D/g, '');
+    if (rawPhone.length !== 10) {
+        $err.text('Please enter a valid 10-digit US phone number.').removeClass('d-none');
+        return;
+    }
+
+    var payload          = mxGetBookingPayload();
+    payload.guest_name   = $('#guestName').val().trim();
+    payload.guest_phone  = '+1' + rawPhone;
+
+    if (!payload.date || !payload.start) {
+        $err.text('Booking details are missing. Please go back and select a date and time.').removeClass('d-none');
+        return;
+    }
+
+    // Store payload for payment later
+    sessionStorage.setItem('mx_guest_booking_payload', JSON.stringify(payload));
+
+    try {
+        var res  = await fetch('/booking/guest', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.MX_CSRF,
+                'Accept':       'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        var data = await res.json().catch(function () { return {}; });
+
+        if (!res.ok || !data.status) {
+            $err.text(data.message || 'Booking failed. Please try again.').removeClass('d-none');
             return;
         }
 
-        var payload          = mxGetBookingPayload();
-        payload.guest_name   = $('#guestName').val().trim();
-        payload.guest_phone  = '+1' + rawPhone;
+        var inst = bootstrap.Modal.getInstance(document.getElementById('mxAuthModal'));
+        if (inst) inst.hide();
 
-        if (!payload.date || !payload.start) {
-            $err.text('Booking details are missing. Please go back and select a date and time.').removeClass('d-none');
-            return;
-        }
+        // Store booking ID for later use
+        sessionStorage.setItem('mx_guest_booking_id', data.booking_id);
+        
+        showGuestSuccessModal(data.booking_id, payload, data.expires_at);
 
-        try {
-            var res  = await fetch('/booking/guest', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept':       'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            var data = await res.json().catch(function () { return {}; });
-
-            if (!res.ok || !data.status) {
-                $err.text(data.message || 'Booking failed. Please try again.').removeClass('d-none');
-                return;
-            }
-
-            var inst = bootstrap.Modal.getInstance(document.getElementById('mxAuthModal'));
-            if (inst) inst.hide();
-
-            showGuestSuccessModal(data.booking_id, payload, data.expires_at);
-
-        } catch (err) {
-            $err.text('Network error. Please try again.').removeClass('d-none');
-        }
-    });
-
+    } catch (err) {
+        $err.text('Network error. Please try again.').removeClass('d-none');
+    }
+});
     /* ================================================================
        GUEST SUCCESS MODAL WITH COUNTDOWN
     ================================================================ */
@@ -205,6 +210,181 @@ $('#mxgTotal').text(formatMoney(getPackageTotal(payload.hours)));
         }
     });
 
+    /* ================================================================
+   GUEST SUCCESS MODAL - PAY NOW BUTTON
+================================================================ */
+$(document).on('click', '#mxGuestSuccessModal #mxSummaryPay', function(e) {
+    e.preventDefault();
+    
+    // Get the stored booking payload
+    var guestPayload = sessionStorage.getItem('mx_guest_booking_payload');
+    if (!guestPayload) {
+        alert('Booking data not found. Please try again.');
+        return;
+    }
+    
+    // Close guest success modal
+    closeModal('#mxGuestSuccessModal');
+    
+    // Clear the guest timer
+    if (guestTimerInterval) {
+        clearInterval(guestTimerInterval);
+        guestTimerInterval = null;
+    }
+    
+    // Prepare payment modal
+    var payload = JSON.parse(guestPayload);
+    var total = getPackageTotal(payload.hours);
+    
+    $('#mxPayAmount').text(formatMoney(total));
+    $('#mxPayBtnAmt').text(formatMoney(total));
+    
+    // Reset payment form
+    $('#mxCardNum, #mxCardExp, #mxCardCvv, #mxCardName').val('');
+    $('#mxUpiId').val('');
+    $('input[name="mxBank"]').prop('checked', false);
+    $('#mxPayError').addClass('d-none').text('');
+    $('#mxPayNowBtn').prop('disabled', false);
+    $('#mxPaySpinner').addClass('d-none');
+    $('#mxPayBtnText').html('Pay <span id="mxPayBtnAmt">' + formatMoney(total) + '</span>');
+    
+    // Set card tab as active
+    $('.mxs-pay-tab').removeClass('active').filter('[data-tab="card"]').addClass('active');
+    $('.mxs-pay-panel').removeClass('active');
+    $('#mxPayPanel-card').addClass('active');
+    
+    // Open payment modal
+    openPayModal();
+});
+
+
+/* ================================================================
+   UPDATE GUEST BOOKING SUBMISSION
+================================================================ */
+// Update the existing guest booking form submission
+var originalGuestSubmit = $('#guestBookingForm').data('events')?.submit?.[0]?.handler;
+$('#guestBookingForm').off('submit').on('submit', async function (e) {
+    e.preventDefault();
+    var $err = $('#guestErrorMsg').addClass('d-none').text('');
+
+    var rawPhone = $('#guestPhone').val().replace(/\D/g, '');
+    if (rawPhone.length !== 10) {
+        $err.text('Please enter a valid 10-digit US phone number.').removeClass('d-none');
+        return;
+    }
+
+    var payload          = mxGetBookingPayload();
+    payload.guest_name   = $('#guestName').val().trim();
+    payload.guest_phone  = '+1' + rawPhone;
+
+    if (!payload.date || !payload.start) {
+        $err.text('Booking details are missing. Please go back and select a date and time.').removeClass('d-none');
+        return;
+    }
+
+    // Store payload for payment later
+    sessionStorage.setItem('mx_guest_booking_payload', JSON.stringify(payload));
+
+    try {
+        var res  = await fetch('/booking/guest', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.MX_CSRF,
+                'Accept':       'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        var data = await res.json().catch(function () { return {}; });
+
+        if (!res.ok || !data.status) {
+            $err.text(data.message || 'Booking failed. Please try again.').removeClass('d-none');
+            return;
+        }
+
+        var inst = bootstrap.Modal.getInstance(document.getElementById('mxAuthModal'));
+        if (inst) inst.hide();
+
+        // Store booking ID for later use
+        sessionStorage.setItem('mx_guest_booking_id', data.booking_id);
+        
+        showGuestSuccessModal(data.booking_id, payload, data.expires_at);
+
+    } catch (err) {
+        $err.text('Network error. Please try again.').removeClass('d-none');
+    }
+});
+
+/* ================================================================
+   UPDATE PAYMENT SUBMISSION FOR GUEST BOOKINGS
+================================================================ */
+// Modify the existing payment button click handler
+$('#mxPayNowBtn').off('click').on('click', function() {
+    var guestPayload = sessionStorage.getItem('mx_guest_booking_payload');
+    
+    if (guestPayload) {
+        // This is a guest booking payment
+        simulateDemoPayment(function() {
+            confirmGuestBookingWithPayment();
+        });
+    } else {
+        // Regular logged-in user payment
+        simulateDemoPayment(function() {
+            submitBooking(JSON.parse(sessionStorage.getItem('mx_booking_payload') || '{}'));
+        });
+    }
+});
+
+
+/* ================================================================
+   CONFIRM GUEST BOOKING AFTER PAYMENT
+================================================================ */
+async function confirmGuestBookingWithPayment() {
+    var payload = JSON.parse(sessionStorage.getItem('mx_guest_booking_payload'));
+    var bookingId = sessionStorage.getItem('mx_guest_booking_id');
+    
+    if (!payload || !bookingId) {
+        alert('Booking information not found.');
+        return;
+    }
+    
+    try {
+        var res = await fetch('/booking/guest/confirm-payment', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.MX_CSRF,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                booking_id: bookingId,
+                payment_method: $('.mxs-pay-tab.active').data('tab'),
+                amount: getPackageTotal(payload.hours)
+            }),
+        });
+
+        var data = await res.json().catch(function () { return {}; });
+
+        if (!res.ok || !data.status) {
+            alert(data.message || 'Payment confirmation failed. Please contact us.');
+            return;
+        }
+
+        // Clear session storage
+        sessionStorage.removeItem('mx_guest_booking_payload');
+        sessionStorage.removeItem('mx_guest_booking_id');
+
+        // Show success receipt
+        openSuccessReceipt(bookingId, payload);
+
+    } catch (err) {
+        console.error('Payment confirmation error:', err);
+        alert('Network error. Your booking is reserved. Please contact us to complete payment.');
+    }
+}
     /* ----------------------------------------------------------------
        PER-LIFT SLOT ISOLATION
     ---------------------------------------------------------------- */
@@ -660,7 +840,7 @@ $('#mxgTotal').text(formatMoney(getPackageTotal(payload.hours)));
        LIFT BUTTONS (direct-booking mode only)
     ================================================================ */
     var LIFT_DATA = {
-        four:    { img: 'assets/images/rentals/Media (8).jpg',      points: ['Heavy-duty four-post support', 'Perfect for long-hour jobs', 'Maximum stability & safety'] },
+        four:    { img: 'assets/images/rentals/Media (8).jpg',      points: ['Heavy-duty support', 'Perfect for long-hour jobs', 'Maximum stability & safety'] },
         two:     { img: 'assets/images/rentals/Media (6).jpg',      points: ['Quick vehicle access', 'Ideal for mechanical repairs', 'Compact and space efficient'] },
         scissor: { img: 'assets/images/rentals/scissor.jpg',        points: ['Low profile design', 'Fast lifting operation', 'Great for tire & brake work'] },
         flat:    { img: 'assets/images/rentals/motocycle.jpg',       points: ['Designed for motorcycles', 'Easy loading & unloading', 'Stable flat platform'] },

@@ -700,8 +700,7 @@
     {{-- ── GUEST SUCCESS MODAL ── --}}
     <div id="mxGuestSuccessModal" class="mx-modal-overlay" aria-hidden="true">
         <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                aria-label="Close"></button>
+           
             <div class="mx-success-anim">
                 <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
                     <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
@@ -760,6 +759,11 @@
                     <i class="fa-solid fa-phone"></i> Call Now to Confirm
                 </a>
             </div>
+             <div class="mx-modal-actions">
+                   
+                    <button type="button" class="mx-btn-solid" id="mxSummaryPay">Pay Now &nbsp;<i
+                            class="fa-solid fa-lock"></i></button>
+                </div>
         </div>
     </div>
 
