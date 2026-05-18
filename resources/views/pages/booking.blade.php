@@ -12,6 +12,7 @@
         $liftKeyMap = [
             'four' => 'four',
             'four-post' => 'four',
+            'four-post style lift' => 'four',
             'fourpost' => 'four',
             'two' => 'two',
             'two-post' => 'two',

@@ -504,7 +504,7 @@ async function confirmGuestBookingWithPayment() {
        LIFT LABELS
     ================================================================ */
     var LIFT_LABELS = {
-        four:    'Four-Post Lift',
+        four:    'Four-Post Style Lift',
         two:     'Two-Post Lift',
         scissor: 'Scissor Lift',
         flat:    'Motorcycle Lift',
