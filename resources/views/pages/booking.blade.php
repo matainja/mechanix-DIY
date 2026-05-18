@@ -125,7 +125,7 @@
                 <div class="mx-liftbar">
                     <button class="mx-liftbtn" data-lift="four">
                         <img src="{{ asset('assets/images/icons/four-post.png') }}" class="mx-ic" alt="">
-                        <span>Four-Post Lift</span>
+                        <span>Four-Post Style Lift</span>
                     </button>
                     <button class="mx-liftbtn mx-redmark" data-lift="two">
                         <img src="{{ asset('assets/images/icons/two-post.png') }}" class="mx-ic" alt="">
