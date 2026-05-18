@@ -59,6 +59,7 @@
         $liftKeyMapForPrices = [
             'four-post lift' => 'four',
             'four post lift' => 'four',
+             'four-post style lift' => 'four',
             'two-post lift' => 'two',
             'two post lift' => 'two',
             'scissor lift' => 'scissor',
