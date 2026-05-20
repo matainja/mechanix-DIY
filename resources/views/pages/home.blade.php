@@ -62,7 +62,7 @@
  
                 <span class="service-divider">|</span>
  
-                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#technician-site">
+                <a class="service-item-custom service-link" href="">
                     <img src="{{ asset('assets/images/icons/technician.png') }}" alt="Technician" />
                     <span>Mechanic On Site</span>
                 </a>

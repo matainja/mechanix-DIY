@@ -165,7 +165,7 @@
         @endforelse
     </section> -->
 
-<section id="technician-site" class="service-section">
+{{-- <section id="technician-site" class="service-section">
     <h2 class="section-title">Technician On Site</h2>
 
     <!-- Technician 1 -->
@@ -239,7 +239,7 @@
         </div>
     </div>
 
-</section>
+</section> --}}
 
     <!-- {{-- SECTION 4 --}}
     <section id="Discounted-parts" class="service-section">
