@@ -101,11 +101,15 @@
             <h3>AC Machine (R1234yf)</h3>
             <p>Professional A/C recovery and recharge machine for newer vehicles using R1234yf refrigerant (2017+). Fully automatic with leak detection and vacuum pump.</p>
         </div>
-        {{-- <div class="list-action">
-            <a href="#" class="rental-btn">
-                Book Now
-            </a>
-        </div> --}}
+       <div class="list-action">
+    <a href="tel:7327307712" class="rental-btn">
+        Call Now To Book
+
+        <span style="display:block;font-size:12px;font-weight:500;margin-top:4px;">
+            732-730-7712 EXTENSION 3
+        </span>
+    </a>
+</div>
     </div>
 
     {{-- Demo Item 2 --}}
