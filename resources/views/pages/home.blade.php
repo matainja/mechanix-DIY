@@ -55,7 +55,7 @@
  
                 <span class="service-divider">|</span>
  
-                <a class="service-item-custom service-link" href="{{ route('commonpage') }}#Discounted-parts">
+                <a class="service-item-custom service-link" href="#">
                     <img src="{{ asset('assets/images/tool-rental.png') }}" alt="Tool Rentals" />
                     <span>Discounted Parts Available</span>
                 </a>

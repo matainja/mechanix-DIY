@@ -1147,12 +1147,12 @@
                 Done
             </button>
 
-            <a href="/dashboard"
+            <a href="/rentals"
                class="mx-btn-solid"
                style="text-decoration:none;">
 
                 <i class="fa-solid fa-gauge"></i>
-                My Dashboard
+                Rentals
 
             </a>
 
