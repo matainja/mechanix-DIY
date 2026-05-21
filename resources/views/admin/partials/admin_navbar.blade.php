@@ -37,6 +37,14 @@
                         <span class="pc-mtext">Manage Users</span>
                     </a>
                 </li>
+               <li class="pc-item">
+    <a href="{{ route('admin.admin.membership.requests') }}" class="pc-link">
+        <span class="pc-micon">
+            <i class="ti ti-crown"></i>
+        </span>
+        <span class="pc-mtext">Membership</span>
+    </a>
+</li>
 
                 {{-- <li class="pc-item">
                     <a href="{{ route('admin.products.index') }}" class="pc-link">

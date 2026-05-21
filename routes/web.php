@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\MembershipController;
 
 
 //Page Controller
@@ -66,7 +67,13 @@ Route::middleware(['auth', 'admin'])
         Route::post('/holidays/store-weekly', [HolidayController::class, 'storeWeekly'])->name('holidays.storeWeekly');
         Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.delete');
         Route::post('/holidays/bulk', [HolidayController::class, 'storeBulk'])->name('holidays.storeBulk');
-    });
+        //membership admin routes
+        Route::get('/admin/membership-requests', [MembershipController::class, 'getAllRequests'])->name('admin.membership.requests');
+        Route::post('/membership-requests/{id}/approve', [MembershipController::class, 'approveRequest'])->name('admin.membership.approve');
+        Route::post('/membership-requests/{id}/reject', [MembershipController::class, 'rejectRequest'])->name('admin.membership.reject');
+    
+        Route::post('/membership-plans', [MembershipController::class, 'storePlan'])->name('membership.plans.store');
+        });
 
 //Loin & Register Popup
 
@@ -79,3 +86,8 @@ Route::post('/booking/guest/confirm-payment', [BookingController::class, 'confir
 Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp']);
 Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
 Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword']);
+
+// Membership routes
+Route::get('/membership/plans', [MembershipController::class, 'getPlans'])->name('membership.plans');
+Route::post('/membership/request', [MembershipController::class, 'submitRequest'])->middleware('auth')->name('membership.request');
+Route::post('/membership/guest-request', [MembershipController::class, 'submitGuestRequest'])->name('membership.guest-request');

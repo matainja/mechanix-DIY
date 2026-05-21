@@ -37,8 +37,8 @@
                             <th>#</th>
                             <!-- <th>User</th> -->
                             <th>Booking Date</th>
-                            <th>Workstation</th>
-                            <th>Start Time</th>
+                            {{-- <th>Workstation</th> --}}
+                            <th>Start Time</th> <th>End Time</th>
                             <th>Duration (Hours)</th>
                             <th>Lift Type</th>
                             
@@ -55,8 +55,15 @@
                                     {{ $bookings->total() - ($bookings->firstItem() + $loop->index - 1) }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($booking->date)->format('d M Y') }}</td>
-                                <td>{{ $booking->workstation }}</td>
+                                {{-- <td>{{ $booking->workstation }}</td> --}} 
                                 <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</td>
+                                <td>
+                                    {{
+                                        \Carbon\Carbon::parse($booking->start_time)
+                                        ->addHours($booking->hours)
+                                        ->format('H:i')
+                                    }}
+                                </td>
                                 <td>{{ $booking->hours }}</td>
                                 <td>{{ $booking->lift_type }}</td>
                                 
