@@ -24,10 +24,10 @@
         <picture>
             <!-- Mobile image -->
             <source media="(max-width: 768px)" 
-                    srcset="{{ asset('assets/images/mechanix-banner-mob-new-2.jpg') }}">
+                    srcset="{{ asset('assets/images/mechanix-banner-mob-new-01.jpg') }}">
 
             <!-- Desktop image -->
-            <img src="{{ asset('assets/images/mechanix-banner-desktop-new-2.jpg') }}" 
+            <img src="{{ asset('assets/images/mechanix-banner-desktop-new-01.jpg') }}" 
                  alt="Hero Image">
         </picture>
     </div>
