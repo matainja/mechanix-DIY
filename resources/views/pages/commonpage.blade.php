@@ -31,21 +31,13 @@
                     <p>Premium rental product available for booking.</p>
                 </div>
 
-                {{-- <div class="list-action">
-                    <a href="{{ route('rental.details',$rental->id) }}" class="rental-btn">
-                        Call Now To Book
-                    </a>
-                </div> --}}
-
                 <div class="list-action">
-    <a href="tel:7327307712" class="rental-btn">
-        Call Now To Book
+                    <a href="{{ route('rental.details',$rental->id) }}" class="rental-btn">
+                     Book Now
+                    </a>
+                </div>
 
-        <span style="display:block;font-size:12px;font-weight:500;margin-top:4px;">
-            732-730-7712 EXTENSION 3
-        </span>
-    </a>
-</div>
+                
             </div>
 
         @empty
@@ -76,11 +68,20 @@
                     <p>Premium rental product available for booking.</p>
                 </div>
 
-                <div class="list-action">
+                {{-- <div class="list-action">
                     <a href="{{ route('rental.details',$rental->id) }}" class="rental-btn">
                         Book Now
                     </a>
-                </div>
+                </div> --}}
+                <div class="list-action">
+    <a href="tel:7327307712" class="rental-btn">
+        Call Now To Book
+
+        <span style="display:block;font-size:12px;font-weight:500;margin-top:4px;">
+            732-730-7712 EXTENSION 3
+        </span>
+    </a>
+</div>
             </div>
 
         @empty
