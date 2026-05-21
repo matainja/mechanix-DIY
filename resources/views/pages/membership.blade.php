@@ -17,7 +17,7 @@
     <div class="row g-4 justify-content-center">
 
       <!-- Silver -->
-      <div class="col-lg-4 col-md-6">
+      {{-- <div class="col-lg-4 col-md-6">
         <div class="cs-card pricing-card">
           <h3 class="plan-title">Silver</h3>
           <div class="price">$19<span>/month</span></div>
@@ -64,33 +64,33 @@
 
           <a href="#" class="cs-btn w-100">Choose Plan</a>
         </div>
-      </div>
+      </div> --}}
 
       <!-- Bulk Time Package -->
-     <div class="col-lg-4 col-md-6">
-     <div class="cs-card pricing-card bulk-card">
+    <div class="col-lg-4 col-md-6">
+    <div class="cs-card pricing-card featured">
 
         <div class="bulk-badge">
             BEST VALUE
         </div>
 
-        <h3 class="plan-title">Bulk Time</h3>
+        <h3 class="plan-title">Bulk Membership</h3>
 
         <div class="price">
-            $1000<span>/40 hrs</span>
+            $1000<span>/month</span>
         </div>
 
         <ul class="membership-list text-start">
-            <li>✔ 40 Hours Included</li>
-            <li>✔ Access to All Specialty Tools</li>
-            <li>✔ Flexible Usage</li>
-            <li>✔ No Monthly Renewal</li>
-            <li>✔ Priority Booking Access</li>
+            <li>✔ Includes 40 Hours Lift Time</li>
+            <li>✔ Same-Day Booking Available</li>
+            <li>✔ 3–4 Bonus Hours Included</li>
+            <li>✔ Access to Downtime Usage</li>
+            <li>✔ Call & Come In If Space Is Available</li>
+            <li>✔ Priority Mechanix Member Access</li>
         </ul>
 
-        <a href="#"
-           class="cs-btn primary w-100">
-            Buy Package
+        <a href="#" class="cs-btn primary w-100">
+            Join Membership
         </a>
 
     </div>

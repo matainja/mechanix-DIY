@@ -307,12 +307,12 @@
         @endforelse
     </section> -->
 
-    {{-- SECTION 4 --}}
-<section id="Discounted-parts" class="service-section">
-    <h2 class="section-title">Call Ahead for Discounted Parts</h2>
+    {{-- SECTION 4 --   commented out as per new design --}}
+{{-- <section id="Discounted-parts" class="service-section">
+    <h2 class="section-title">Call Ahead for Discounted Parts</h2> --}}
 
     {{-- Demo Item 1 --}}
-    <div class="list-card">
+    {{-- <div class="list-card">
         <div class="list-image">
             <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop" alt="Brake Pads">
         </div>
@@ -325,10 +325,10 @@
                 Order Now
             </a>
         </div>
-    </div>
+    </div> --}}
 
     {{-- Demo Item 2 --}}
-    <div class="list-card">
+    {{-- <div class="list-card">
         <div class="list-image">
             <img src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=400&h=300&fit=crop" alt="Wiper Blades">
         </div>
@@ -343,7 +343,7 @@
         </div>
     </div>
 
-</section>
+</section> --}}
 
 {{-- SECTION 5 --}}
 <section id="basic-tool" class="service-section">

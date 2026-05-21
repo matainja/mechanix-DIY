@@ -38,12 +38,12 @@
                     </a>
                 </li>
 
-                <li class="pc-item">
+                {{-- <li class="pc-item">
                     <a href="{{ route('admin.products.index') }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-package"></i></span>
                         <span class="pc-mtext">Products & Pricing</span>
                     </a>
-                </li>
+                </li> --}}
 
 
 

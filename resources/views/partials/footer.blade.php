@@ -16,6 +16,11 @@
             <div class="footer-right">
                 <a href="https://www.facebook.com/share/1FAMG1nL9L/" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="https://share.google/qFgLzY2EsnYDPDOBX" 
+   target="_blank" 
+   class="social-icon">
+   <i class="fab fa-google"></i>
+</a>
                 <a href="https://www.instagram.com/mechanix_d.i.y?igsh=bnNub3NxMmtvOHlx" class="social-icon"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
