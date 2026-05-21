@@ -61,13 +61,26 @@
 
                     {{-- PRICE --}}
                     <div class="details-pricebox">
-                        <div class="details-price">
+                        {{-- <div class="details-price">
                             @if($defaultPrice)
                                 $ {{ $defaultPrice->price }} / {{ $defaultPrice->hours }} hrs
                             @else
                                 Contact for price
                             @endif
-                        </div>
+                        </div> --}}
+                        <div class="details-price">
+    @if($defaultPrice)
+
+        @if($defaultPrice->hours == 1)
+            $ {{ $defaultPrice->price }}/hr
+        @else
+            $ {{ $defaultPrice->price }} / {{ $defaultPrice->hours }} hrs
+        @endif
+
+    @else
+        Contact for price
+    @endif
+</div>
 
                         <div class="details-note">
                             Product ID: {{ $rental->id }}

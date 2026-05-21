@@ -727,7 +727,7 @@
                 <p style="color:#94a3b8;margin-bottom:10px;font-size:13px;">CALL US NOW TO CONFIRM</p>
                 <a href="tel:+11234567890" class="mx-phone-link"
                     style="color:#22c55e;font-size:28px;font-weight:bold;text-decoration:none;">
-                    <i class="fa-solid fa-phone"></i> +1 (123) 456-7890
+                    <i class="fa-solid fa-phone"></i> 732-730-7712 EXTENSION 3
                 </a>
                 <p style="color:#94a3b8;margin-top:10px;font-size:12px;">Office Hours: Mon-Fri 9AM-6PM | Sat 9AM-12PM</p>
             </div>

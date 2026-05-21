@@ -31,11 +31,21 @@
                     <p>Premium rental product available for booking.</p>
                 </div>
 
-                <div class="list-action">
+                {{-- <div class="list-action">
                     <a href="{{ route('rental.details',$rental->id) }}" class="rental-btn">
-                        Book Now
+                        Call Now To Book
                     </a>
-                </div>
+                </div> --}}
+
+                <div class="list-action">
+    <a href="tel:7327307712" class="rental-btn">
+        Call Now To Book
+
+        <span style="display:block;font-size:12px;font-weight:500;margin-top:4px;">
+            732-730-7712 EXTENSION 3
+        </span>
+    </a>
+</div>
             </div>
 
         @empty
@@ -90,11 +100,11 @@
             <h3>AC Machine (R1234yf)</h3>
             <p>Professional A/C recovery and recharge machine for newer vehicles using R1234yf refrigerant (2017+). Fully automatic with leak detection and vacuum pump.</p>
         </div>
-        <div class="list-action">
+        {{-- <div class="list-action">
             <a href="#" class="rental-btn">
                 Book Now
             </a>
-        </div>
+        </div> --}}
     </div>
 
     {{-- Demo Item 2 --}}
@@ -106,11 +116,11 @@
             <h3>AC Machine (R134a)</h3>
             <p>Heavy-duty A/C service machine for vehicles using R134a refrigerant (1994-2016). Features automatic oil injection, refrigerant recycling, and digital display.</p>
         </div>
-        <div class="list-action">
+        {{-- <div class="list-action">
             <a href="#" class="rental-btn">
                 Book Now
             </a>
-        </div>
+        </div> --}}
     </div>
 
     {{-- Demo Item 3 --}}
@@ -122,11 +132,11 @@
             <h3>Diagnostic Scanner</h3>
             <p>Professional-grade OBD2 diagnostic scanner with bi-directional controls. Reads and clears codes for engine, ABS, airbag, transmission, and more. Compatible with all 1996+ vehicles.</p>
         </div>
-        <div class="list-action">
+        {{-- <div class="list-action">
             <a href="#" class="rental-btn">
                 Book Now
             </a>
-        </div>
+        </div> --}}
     </div>
 
 </section>
@@ -358,11 +368,11 @@
             <h3>Craftsman 230-Piece Mechanics Tool Set</h3>
             <p>Complete socket and wrench set for all your DIY car repairs. Includes metric and SAE sizes for foreign and domestic vehicles.</p>
         </div>
-        <div class="list-action">
+        {{-- <div class="list-action">
             <a href="#" class="rental-btn">
                 Reserve Tool
             </a>
-        </div>
+        </div> --}}
     </div>
 
     {{-- Demo Item 2 --}}
@@ -374,11 +384,11 @@
             <h3>Professional Automotive Tool Set</h3>
 <p>High-quality hand tools and specialty garage equipment for efficient DIY repairs, maintenance work, and vehicle upgrades.</p>
         </div>
-        <div class="list-action">
+        {{-- <div class="list-action">
             <a href="#" class="rental-btn">
                 Reserve Tool
             </a>
-        </div>
+        </div> --}}
     </div>
 
 </section>

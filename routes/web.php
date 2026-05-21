@@ -73,6 +73,8 @@ Route::middleware(['auth', 'admin'])
         Route::post('/membership-requests/{id}/reject', [MembershipController::class, 'rejectRequest'])->name('admin.membership.reject');
     
         Route::post('/membership-plans', [MembershipController::class, 'storePlan'])->name('membership.plans.store');
+        Route::delete('/membership-plan/{id}', [MembershipController::class, 'deletePlan'])
+    ->name('membership.plan.delete');
         });
 
 //Loin & Register Popup

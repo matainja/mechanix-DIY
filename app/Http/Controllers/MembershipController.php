@@ -17,7 +17,8 @@ class MembershipController extends Controller
      */
     public function getPlans()
     {
-        $plans = MembershipPlan::all();
+        // $plans = MembershipPlan::all();
+        $plans = MembershipPlan::where('is_active', true)->get();
         return response()->json([
             'status' => true,
             'plans' => $plans
@@ -238,8 +239,11 @@ public function submitGuestRequest(Request $request)
         ->orderBy('created_at', 'desc')
         ->get();
 
-    return view('admin.pages.membership', compact('requests'));
-}
+    // return view('admin.pages.membership', compact('requests'));
+$plans = MembershipPlan::where('is_active', true)->latest()->get();
+
+return view('admin.pages.membership', compact('requests', 'plans'));
+    }
 
 public function storePlan(Request $request)
 {
@@ -321,4 +325,25 @@ public function storePlan(Request $request)
         ], 500);
     }
 }
+public function deletePlan($id)
+{
+    try {
+
+        $plan = MembershipPlan::findOrFail($id);
+
+        // Delete only the plan
+        // Existing memberships will still work
+        // because they already store membership_plan_id
+
+        $plan->delete();
+
+        return redirect()->back()->with('success', 'Plan deleted successfully.');
+
+    } catch (\Exception $e) {
+
+        return redirect()->back()->with('error', $e->getMessage());
+
+    }
+}
+
 }
