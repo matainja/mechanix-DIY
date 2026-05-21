@@ -65,46 +65,90 @@ class MembershipController extends Controller
     /**
      * Submit guest membership request
      */
-    public function submitGuestRequest(Request $request)
-    {
-        $validated = $request->validate([
-            'guest_name' => 'required|string|max:255',
-            'guest_email' => 'required|email|max:255',
-            'guest_phone' => 'required|string|max:20',
-            'membership_plan_id' => 'required|exists:membership_plans,id',
-            'amount_paid' => 'required|numeric|min:0',
-            'payment_method' => 'required|string',
+    // public function submitGuestRequest(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'guest_name' => 'required|string|max:255',
+    //         'guest_email' => 'required|email|max:255',
+    //         'guest_phone' => 'required|string|max:20',
+    //         'membership_plan_id' => 'required|exists:membership_plans,id',
+    //         'amount_paid' => 'required|numeric|min:0',
+    //         'payment_method' => 'required|string',
+    //     ]);
+
+    //     try {
+    //         $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
+
+    //         $membershipRequest = MembershipRequest::create([
+    //             'user_id' => null,
+    //             'guest_name' => $validated['guest_name'],
+    //             'guest_email' => $validated['guest_email'],
+    //             'guest_phone' => $validated['guest_phone'],
+    //             'membership_plan_id' => $validated['membership_plan_id'],
+    //             'amount_paid' => $validated['amount_paid'],
+    //             'payment_method' => $validated['payment_method'],
+    //             'status' => 'pending',
+    //         ]);
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Membership request submitted successfully! We will contact you once approved.',
+    //             'request_id' => $membershipRequest->id,
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         Log::error('Guest membership request error: ' . $e->getMessage());
+            
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Failed to submit membership request.'
+    //         ], 500);
+    //     }
+    // }
+
+    /**
+ * Submit guest membership request (Initial - Pending)
+ */
+public function submitGuestRequest(Request $request)
+{
+    $validated = $request->validate([
+        'guest_name'         => 'required|string|max:255',
+        'guest_email'        => 'required|email|max:255',
+        'guest_phone'        => 'required|string|max:20',
+        'membership_plan_id' => 'required|exists:membership_plans,id',
+        'amount_paid'        => 'nullable|numeric|min:0',        // Made optional
+        'payment_method'     => 'nullable|string',               // Made optional
+    ]);
+
+    try {
+        $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
+
+        $membershipRequest = MembershipRequest::create([
+            'user_id'            => null,
+            'guest_name'         => $validated['guest_name'],
+            'guest_email'         => $validated['guest_email'],
+            'guest_phone'         => $validated['guest_phone'],
+            'membership_plan_id'  => $validated['membership_plan_id'],
+            'amount_paid'         => $validated['amount_paid'] ?? $plan->price,  // Fallback to plan price
+            'payment_method'      => $validated['payment_method'] ?? null,
+            'status'              => 'pending',
         ]);
 
-        try {
-            $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
+        return response()->json([
+            'status'     => true,
+            'message'    => 'Membership request submitted successfully!',
+            'request_id' => $membershipRequest->id,
+        ]);
 
-            $membershipRequest = MembershipRequest::create([
-                'user_id' => null,
-                'guest_name' => $validated['guest_name'],
-                'guest_email' => $validated['guest_email'],
-                'guest_phone' => $validated['guest_phone'],
-                'membership_plan_id' => $validated['membership_plan_id'],
-                'amount_paid' => $validated['amount_paid'],
-                'payment_method' => $validated['payment_method'],
-                'status' => 'pending',
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Membership request submitted successfully! We will contact you once approved.',
-                'request_id' => $membershipRequest->id,
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Guest membership request error: ' . $e->getMessage());
-            
-            return response()->json([
-                'status' => false,
-                'message' => 'Failed to submit membership request.'
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        Log::error('Guest membership request error: ' . $e->getMessage());
+        
+        return response()->json([
+            'status'  => false,
+            'message' => 'Failed to submit membership request.'
+        ], 500);
     }
+}
 
     /**
      * Admin: Approve membership request
@@ -215,4 +259,66 @@ public function storePlan(Request $request)
     ]);
 }
 
+
+    /**
+     * Process Guest Payment and Activate Membership
+     */
+   public function guestPayment(Request $request)
+{
+    try {
+        $validated = $request->validate([
+            'request_id'         => 'required|exists:membership_requests,id',
+            'membership_plan_id' => 'required|exists:membership_plans,id',
+            'amount_paid'        => 'required|numeric|min:0',
+            'payment_method'     => 'required|string',
+        ]);
+
+        $membershipRequest = MembershipRequest::findOrFail($validated['request_id']);
+
+        if ($membershipRequest->status !== 'pending') {
+            return response()->json(['status' => false, 'message' => 'Request already processed'], 400);
+        }
+
+        $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
+
+        DB::beginTransaction();
+
+        // Update request status
+        $membershipRequest->update([
+            'amount_paid'    => $validated['amount_paid'],
+            'payment_method' => $validated['payment_method'],
+            'status'         => 'approved',
+            'approved_at'    => now(),
+        ]);
+
+        // Create Guest Membership
+        UserMembership::create([
+            'user_id'            => null,
+            'guest_name'         => $membershipRequest->guest_name,
+            'guest_email'        => $membershipRequest->guest_email,
+            'guest_phone'        => $membershipRequest->guest_phone,
+            'membership_plan_id' => $validated['membership_plan_id'],
+            'start_date'         => now(),
+            'end_date'           => now()->addDays($plan->duration_days),
+            'status'             => 'active',
+            'payment_method'     => $validated['payment_method'],
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Membership activated successfully!',
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Guest Payment Error: ' . $e->getMessage());
+        
+        return response()->json([
+            'status' => false,
+            'message' => 'Failed to activate membership: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }
