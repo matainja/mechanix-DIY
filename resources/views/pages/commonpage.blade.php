@@ -352,7 +352,7 @@
     {{-- Demo Item 1 --}}
     <div class="list-card">
         <div class="list-image">
-            <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&h=300&fit=crop" alt="Socket Set">
+            <img src="{{ asset('assets/images/rentals/shared image.jpg') }}" alt="Socket Set">
         </div>
         <div class="list-content">
             <h3>Craftsman 230-Piece Mechanics Tool Set</h3>
@@ -368,11 +368,11 @@
     {{-- Demo Item 2 --}}
     <div class="list-card">
         <div class="list-image">
-            <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400&h=300&fit=crop" alt="Hydraulic Jack">
+            <img src="{{ asset('assets/images/rentals/shared image (1).jpg') }}" alt="Hydraulic Jack">
         </div>
         <div class="list-content">
-            <h3>DEWALT 3-Ton Heavy Duty Floor Jack</h3>
-            <p>Professional-grade hydraulic jack with rapid lift technology. Perfect for tire changes, brake work, and undercarriage repairs at Mechanix DIY.</p>
+            <h3>Professional Automotive Tool Set</h3>
+<p>High-quality hand tools and specialty garage equipment for efficient DIY repairs, maintenance work, and vehicle upgrades.</p>
         </div>
         <div class="list-action">
             <a href="#" class="rental-btn">
