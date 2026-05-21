@@ -143,7 +143,7 @@
 
 
 
-                {{-- <br>
+                <br>
                   <li class="nav-item mobile-only">
     <a class="nav-link mobile-menu-item" href="{{ route('admin.home') }}">
         <div class="menu-item-content">
@@ -151,7 +151,7 @@
             <span>Admin Dashboard</span>
         </div>
     </a>
-</li> --}}
+</li>
                     <li class="nav-item mobile-only">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
