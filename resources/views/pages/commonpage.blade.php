@@ -309,7 +309,7 @@
 
     {{-- SECTION 4 --}}
 <section id="Discounted-parts" class="service-section">
-    <h2 class="section-title">Discounted Parts Available</h2>
+    <h2 class="section-title">Call Ahead for Discounted Parts</h2>
 
     {{-- Demo Item 1 --}}
     <div class="list-card">
@@ -347,7 +347,7 @@
 
 {{-- SECTION 5 --}}
 <section id="basic-tool" class="service-section">
-    <h2 class="section-title">Basic Tools Provided</h2>
+    <h2 class="section-title">Basic Hand Tools And Cart</h2>
 
     {{-- Demo Item 1 --}}
     <div class="list-card">

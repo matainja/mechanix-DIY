@@ -66,6 +66,36 @@
         </div>
       </div>
 
+      <!-- Bulk Time Package -->
+     <div class="col-lg-4 col-md-6">
+     <div class="cs-card pricing-card bulk-card">
+
+        <div class="bulk-badge">
+            BEST VALUE
+        </div>
+
+        <h3 class="plan-title">Bulk Time</h3>
+
+        <div class="price">
+            $1000<span>/40 hrs</span>
+        </div>
+
+        <ul class="membership-list text-start">
+            <li>✔ 40 Hours Included</li>
+            <li>✔ Access to All Specialty Tools</li>
+            <li>✔ Flexible Usage</li>
+            <li>✔ No Monthly Renewal</li>
+            <li>✔ Priority Booking Access</li>
+        </ul>
+
+        <a href="#"
+           class="cs-btn primary w-100">
+            Buy Package
+        </a>
+
+    </div>
+</div>
+
     </div>
 
   </div>

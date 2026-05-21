@@ -152,3 +152,21 @@
   opacity: 0.85;
   line-height: 1.6;
 }
+
+.bulk-card{
+    position: relative;
+    border: 2px solid #ff9800;
+    transform: scale(1.03);
+}
+
+.bulk-badge{
+    position:absolute;
+    top:-12px;
+    right:20px;
+    background:#ff9800;
+    color:#fff;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+}
