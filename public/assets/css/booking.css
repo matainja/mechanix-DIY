@@ -1415,3 +1415,83 @@
     transition: border-color .15s;
 }
 .mx-product-change:hover { border-color: #e8282b; color: #b71c1c; }
+.mx-modal-overlay{
+    opacity:0;
+    visibility:hidden;
+    transition:all .3s ease;
+}
+
+.mx-modal-overlay.show{
+    opacity:1;
+    visibility:visible;
+}
+
+.mx-mini-timer{
+    background:#2d3748;
+    border:1px solid #f59e0b;
+    color:#fbbf24;
+    margin:12px 0;
+    padding:10px 12px;
+    border-radius:10px;
+}
+
+.mx-mini-timer-wrap{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.mx-mini-timer i{
+    font-size:18px;
+}
+
+.mx-mini-timer strong{
+    font-size:13px;
+    font-weight:700;
+}
+
+.mx-mini-timer p{
+    margin:2px 0 0;
+    font-size:11px;
+    color:#cbd5e1;
+    line-height:1.3;
+}
+
+.mx-modal-close{
+    position:absolute;
+    top:12px;
+    right:12px;
+
+    width:32px;
+    height:32px;
+
+    border:none;
+    outline:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.08);
+    color:#ffffff;
+
+    font-size:22px;
+    font-weight:600;
+    line-height:1;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:all .2s ease;
+    z-index:20;
+}
+
+.mx-modal-close:hover{
+    background:#ef4444;
+    transform:scale(1.08);
+}
+
+.mx-modal-close:active{
+    transform:scale(.96);
+}

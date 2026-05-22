@@ -157,7 +157,8 @@
 
         handleSubmit: async function(e) {
             e.preventDefault();
-            
+             // If membership.js is active on this page, let it handle login
+    if (window.MX_MEMBERSHIP_PAGE) return;
             const loginError = document.getElementById('loginErrorMsg');
             Utils.hideError(loginError);
 
@@ -205,7 +206,8 @@
 
         handleSubmit: async function(e) {
             e.preventDefault();
-            
+             // If membership.js is active on this page, let it handle login
+    if (window.MX_MEMBERSHIP_PAGE) return;
             const registerError = document.getElementById('registerErrorMsg');
             Utils.hideError(registerError);
 
@@ -569,3 +571,9 @@
     }
 
 })();
+function closeGuestMemberSuccessModal() {
+
+    $('#mxGuestMemberSuccessModal')
+        .removeClass('show')
+        .attr('aria-hidden', 'true');
+}

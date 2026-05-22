@@ -836,3 +836,20 @@ $(function () {
     /* ====================== INIT ====================== */
     loadPlans();
 });
+function closeMemberSuccessModal() {
+
+    const modal = document.getElementById("mxMemberSuccessModal");
+
+    modal.style.opacity = "0";
+    modal.style.visibility = "hidden";
+
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 300);
+}
+function closeGuestMemberSuccessModal() {
+
+    $('#mxGuestMemberSuccessModal')
+        .removeClass('show')
+        .attr('aria-hidden', 'true');
+}

@@ -1192,58 +1192,185 @@ async function confirmGuestBookingWithPayment() {
     ================================================================ */
     $('#mxPrintBtn').on('click', function () { window.print(); });
 
-    /* ================================================================
-       AUTH FORMS
-       FIX: error div IDs now match blade (#loginErrorMsg, #registerErrorMsg)
-            form IDs now match blade (#mxLoginForm, #mxRegisterForm)
-    ================================================================ */
-    $('#mxLoginForm').on('submit', async function (e) {
-        e.preventDefault();
-        // FIX: was #mxLoginErr — blade has #loginErrorMsg
-        var $err = $('#loginErrorMsg').addClass('d-none').text('');
-        try {
-            var res  = await fetch('/popup-login', {
-                method: 'POST', credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': window.MX_CSRF, 'Accept': 'application/json' },
-                body: JSON.stringify({
-                    email:    $(this).find('[name=email]').val(),
-                    password: $(this).find('[name=password]').val(),
-                }),
-            });
-            var data = await res.json().catch(function () { return {}; });
-            if (!res.ok) { $err.text(data.message || 'Login failed.').removeClass('d-none'); return; }
-            window.MX_IS_LOGGED_IN = true;
-            mxContinueAfterAuth();
-        } catch (_) { $err.text('Network error.').removeClass('d-none'); }
-    });
+/* ================================================================
+   AUTH FORMS - CLEAN WORKING VERSION
+================================================================ */
 
-    $('#mxRegisterForm').on('submit', async function (e) {
-        e.preventDefault();
-        // FIX: was #mxRegErr — blade has #registerErrorMsg
-        var $err = $('#registerErrorMsg').addClass('d-none').text('');
-        try {
-            var res  = await fetch('/popup-register', {
-                method: 'POST', credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': window.MX_CSRF, 'Accept': 'application/json' },
-                body: JSON.stringify({
-                    email:                 $(this).find('[name=email]').val(),
-                    mobile_no:             $(this).find('[name=mobile_no]').val(),
-                    password:              $(this).find('[name=password]').val(),
-                    password_confirmation: $(this).find('[name=password_confirmation]').val(),
-                }),
-            });
-            var data = await res.json().catch(function () { return {}; });
-            if (!res.ok) {
-                $err.text(
-                    data.errors ? Object.values(data.errors).flat().join(' ') : (data.message || 'Registration failed.')
-                ).removeClass('d-none');
-                return;
+/* ================= LOGIN ================= */
+$('#mxLoginForm').on('submit', async function (e) {
+
+    e.preventDefault();
+
+    let $err = $('#loginErrorMsg');
+    $err.addClass('d-none').text('');
+
+    let loginUrl = $('#mx-routes').data('login-url') || '/popup-login';
+
+    try {
+
+        let res = await fetch(loginUrl, {
+            method: 'POST',
+            credentials: 'same-origin', // IMPORTANT FOR SESSION LOGIN
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN':
+                    window.MX_CSRF ||
+                    $('meta[name="csrf-token"]').attr('content') ||
+                    ''
+            },
+
+            body: JSON.stringify({
+                email: $(this).find('[name=email]').val().trim(),
+                password: $(this).find('[name=password]').val(),
+            })
+        });
+
+        let data = await res.json().catch(() => ({}));
+
+        /* ---------- ERROR ---------- */
+        if (!res.ok) {
+
+            $err
+                .text(data.message || 'Login failed. Please check your credentials.')
+                .removeClass('d-none');
+
+            return;
+        }
+
+        /* ---------- SUCCESS ---------- */
+
+        // update frontend auth state
+        window.MX_IS_LOGGED_IN = true;
+
+        $('#mx-auth-state').attr('data-logged-in', '1');
+
+        // close modal
+        const modalEl = document.getElementById('mxAuthModal');
+
+        if (modalEl) {
+
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+
+            if (modalInstance) {
+                modalInstance.hide();
+            } else {
+                $(modalEl).modal('hide');
             }
-            window.MX_IS_LOGGED_IN = true;
-            mxContinueAfterAuth();
-        } catch (_) { $err.text('Network error.').removeClass('d-none'); }
-    });
+        }
 
+        // wait for modal animation then reload
+        setTimeout(() => {
+
+            // HARD RELOAD
+            window.location.href = window.location.href;
+
+        }, 500);
+
+    } catch (err) {
+
+        console.error(err);
+
+        $err
+            .text('Network error. Please try again.')
+            .removeClass('d-none');
+    }
+});
+
+
+/* ================= REGISTER ================= */
+$('#mxRegisterForm').on('submit', async function (e) {
+
+    e.preventDefault();
+
+    let $err = $('#registerErrorMsg');
+    $err.addClass('d-none').text('');
+
+    let registerUrl =
+        $('#mx-routes').data('register-url') || '/popup-register';
+
+    try {
+
+        let res = await fetch(registerUrl, {
+            method: 'POST',
+            credentials: 'same-origin', // IMPORTANT
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN':
+                    window.MX_CSRF ||
+                    $('meta[name="csrf-token"]').attr('content') ||
+                    ''
+            },
+
+            body: JSON.stringify({
+
+                email:
+                    $(this).find('[name=email]').val().trim(),
+
+                mobile_no:
+                    $(this).find('[name=mobile_no]').val().trim(),
+
+                password:
+                    $(this).find('[name=password]').val(),
+
+                password_confirmation:
+                    $(this).find('[name=password_confirmation]').val(),
+            })
+        });
+
+        let data = await res.json().catch(() => ({}));
+
+        /* ---------- ERROR ---------- */
+        if (!res.ok) {
+
+            let errorText = data.errors
+                ? Object.values(data.errors).flat().join(' • ')
+                : (data.message || 'Registration failed.');
+
+            $err
+                .text(errorText)
+                .removeClass('d-none');
+
+            return;
+        }
+
+        /* ---------- SUCCESS ---------- */
+
+        window.MX_IS_LOGGED_IN = true;
+
+        $('#mx-auth-state').attr('data-logged-in', '1');
+
+        // close modal
+        const modalEl = document.getElementById('mxAuthModal');
+
+        if (modalEl) {
+
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+
+            if (modalInstance) {
+                modalInstance.hide();
+            } else {
+                $(modalEl).modal('hide');
+            }
+        }
+
+        // reload after modal closes
+        setTimeout(() => {
+
+            window.location.href = window.location.href;
+
+        }, 500);
+
+    } catch (err) {
+
+        console.error(err);
+
+        $err
+            .text('Network error. Please try again.')
+            .removeClass('d-none');
+    }
+});
     /* ================================================================
        WORKSTATION TABS
     ================================================================ */
@@ -1271,3 +1398,12 @@ async function confirmGuestBookingWithPayment() {
     ================================================================ */
     updateBookBtnState();
 });
+function closeGuestMemberSuccessModal() {
+
+    const modal = document.getElementById("mxGuestSuccessModal");
+
+    if (!modal) return;
+
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+}

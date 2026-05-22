@@ -800,6 +800,77 @@
         width:100%;
     }
 }
+.mx-success-card{
+    position: relative;
+}
+
+.mx-modal-close{
+    position: absolute;
+    top: 12px;
+    right: 14px;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+
+    font-size: 28px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.25s ease;
+}
+
+.mx-modal-close:hover{
+    background: #dd2b31;
+    transform: rotate(90deg);
+}
+
+.mx-garage-contact-small{
+    margin-top:12px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:rgba(255,255,255,0.04);
+    text-align:center;
+}
+
+.mx-contact-mini-title{
+    margin:0 0 6px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.5px;
+    color:#94a3b8;
+}
+
+.mx-phone-link-mini{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:14px;
+    font-weight:600;
+    color:#fff;
+    text-decoration:none;
+}
+
+.mx-phone-link-mini i{
+    font-size:12px;
+}
+
+.mx-office-mini{
+    margin:6px 0 0;
+    font-size:10px;
+    color:#94a3b8;
+    line-height:1.4;
+}
 </style>
 @endpush
 
@@ -1066,7 +1137,13 @@
 ════════════════════════════════════════════════════ --}}
 <div id="mxGuestMemberSuccessModal" class="mx-modal-overlay" aria-hidden="true">
     <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
+<button type="button"
+        class="mx-modal-close"
+        onclick="closeGuestMemberSuccessModal()">
 
+    &times;
+
+</button>
         <div class="mx-success-anim">
             <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
                 <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
@@ -1075,12 +1152,12 @@
         </div>
 
         <div class="mx-success-title">Request Submitted!</div>
-        <div class="mx-success-sub">Request ID: <strong id="mxGuestMemberReqId">—</strong></div>
+        {{-- <div class="mx-success-sub">Request ID: <strong id="mxGuestMemberReqId">—</strong></div> --}}
 
         <!-- Scrollable Content Area -->
         <div class="success-modal-body">
             {{-- Timer box --}}
-            <div class="mx-timer-box">
+            {{-- <div class="mx-timer-box">
                 <i class="fa-solid fa-clock"></i>
                 <div>
                     <div class="mx-timer-label">
@@ -1088,18 +1165,25 @@
                     </div>
                     <div class="mx-timer-note">You'll be contacted at the number you provided</div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Call to confirm --}}
-            <div class="mx-garage-contact">
-                <p style="color:#94a3b8;margin-bottom:10px;font-size:13px;">CALL US NOW TO CONFIRM</p>
-                <a href="tel:+11234567890" class="mx-phone-link">
-                    <i class="fa-solid fa-phone"></i> +1 (123) 456-7890
-                </a>
-                <p style="color:#94a3b8;margin-top:10px;font-size:12px;">
-                    Office Hours: Mon–Fri 9AM–6PM &nbsp;|&nbsp; Sat 9AM–12PM
-                </p>
-            </div>
+           <div class="mx-garage-contact mx-garage-contact-small">
+
+    <p class="mx-contact-mini-title">
+        CALL TO CONFIRM
+    </p>
+
+    <a href="tel:+11234567890" class="mx-phone-link-mini">
+        <i class="fa-solid fa-phone"></i>
+       732-730-7712 EXTENSION 3
+    </a>
+
+    <p class="mx-office-mini">
+        Mon–Fri 9AM–6PM | Sat 9AM–12PM
+    </p>
+
+</div>
 
             {{-- Receipt --}}
             <div class="mx-receipt">
@@ -1133,9 +1217,9 @@
 
         <!-- Actions - Always Visible -->
         <div class="mx-success-actions">
-            <button id="continueToPaymentBtn" class="mx-btn-solid">
+            {{-- <button id="continueToPaymentBtn" class="mx-btn-solid">
                 <i class="fa-solid fa-credit-card"></i> Continue to Payment
-            </button>
+            </button> --}}
             <a href="tel:+11234567890" class="mx-btn-outline" style="text-decoration:none;">
                 <i class="fa-solid fa-phone"></i> Call to Confirm
             </a>
@@ -1148,7 +1232,13 @@
 ════════════════════════════════════════════════════ --}}
 <div id="mxMemberSuccessModal" class="mx-modal-overlay" aria-hidden="true">
     <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
+<button type="button"
+        class="mx-modal-close"
+        onclick="closeMemberSuccessModal()">
 
+    &times;
+
+</button>
         <div class="mx-success-anim">
             <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
                 <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
@@ -1238,10 +1328,152 @@
 
     </div>
 </div>
-
+{{-- ------------------------------------------------------------------------------ --}}
 {{-- Auth state for JS --}}
 <div id="mx-auth-state" data-logged-in="{{ auth()->check() ? '1' : '0' }}"></div>
+<!-- Routes for JS -->
+    <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}"></div>
 
+    {{-- Auth Modal --}}
+    <div class="modal fade" id="mxAuthModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background:#1f1f1f; color:#fff; border-radius:10px;">
+
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-white">Continue to Book</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    {{-- Tabs --}}
+                    <ul class="nav nav-tabs" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active text-white bg-dark" id="loginTab" data-bs-toggle="tab" data-bs-target="#loginTabPane" type="button" role="tab" aria-controls="loginTabPane" aria-selected="true" style="border:none; border-radius:5px 5px 0 0;">
+                                Login
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-white bg-dark" id="registerTab" data-bs-toggle="tab" data-bs-target="#registerTabPane" type="button" role="tab" aria-controls="registerTabPane" aria-selected="false" style="border:none; border-radius:5px 5px 0 0;">
+                                Register
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content pt-3" id="authTabsContent">
+
+                        {{-- LOGIN TAB --}}
+                        <div class="tab-pane fade show active" id="loginTabPane" role="tabpanel" aria-labelledby="loginTab">
+                            <div id="loginErrorMsg" class="alert alert-danger d-none"></div>
+
+                            <form id="loginFormMain">
+                                @csrf
+                                <div class="mb-3">
+                                    <label class="form-label small text-white">Email</label>
+                                    <input type="email" class="form-control border-0" name="email" id="loginEmail" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small text-white">Password</label>
+                                    <input type="password" class="form-control border-0" name="password" id="loginPassword" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                </div>
+
+                                <div class="text-end mt-2">
+                                    <a href="#" id="forgotPasswordBtn" class="small text-danger btn">
+                                        Forgot password?
+                                    </a>
+                                </div>
+
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border:2px solid #791218; height:46px; letter-spacing:1px;">
+                                    Login
+                                </button>
+                            </form>
+                        </div>
+
+                        {{-- REGISTER TAB --}}
+                        <div class="tab-pane fade" id="registerTabPane" role="tabpanel" aria-labelledby="registerTab">
+                            <div id="registerErrorMsg" class="alert alert-danger d-none"></div>
+
+                            <form id="registerFormMain">
+                                @csrf
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Email</label>
+                                        <input type="email" class="form-control border-0 form-control-sm" name="email" id="registerEmail" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Mobile</label>
+                                        <input type="text" class="form-control border-0 form-control-sm" name="mobile_no" id="registerMobile" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Password</label>
+                                        <input type="password" class="form-control border-0 form-control-sm" name="password" id="registerPassword" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Confirm</label>
+                                        <input type="password" class="form-control border-0 form-control-sm" name="password_confirmation" id="registerPasswordConfirm" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;" required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border:2px solid #791218; height:46px; letter-spacing:1px;">
+                                    Create Account
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {{-- Forgot Password Modal --}}
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="background: linear-gradient(180deg,#1f1f1f,#2a2a2a); border-radius:10px;">
+            <div class="modal-content mt-4 p-4" style="background: transparent; border:none;">
+
+                <!-- Step 1: Email -->
+                <div id="fpStepEmail">
+                    <h6 class="mb-3 text-white">Reset Password</h6>
+                    <input type="email" id="fpEmailInput" class="form-control form-control-sm mb-2" placeholder="Enter email" style="background:#2d2d2d;color:#fff;border:none;">
+                    <button class="btn btn-primary w-100 btn-sm d-flex align-items-center justify-content-center gap-2" id="fpSendOtpBtn">
+                        <span class="btn-text">Send OTP</span>
+                        <span class="spinner-border spinner-border-sm d-none" id="fpOtpLoader"></span>
+                    </button>
+                </div>
+
+                <!-- Step 2: OTP -->
+                <div id="fpStepOtp" class="d-none">
+                    <label class="form-label small text-white">Please enter the OTP sent to your email</label>
+                    <input type="text" id="fpOtpInput" class="form-control form-control-sm mb-2 text-center" placeholder="Enter OTP" style="background:#2d2d2d;color:#fff;border:none;">
+                    <button class="btn btn-success w-100 btn-sm" id="fpVerifyOtpBtn">
+                        Verify OTP
+                    </button>
+                    <button class="btn btn-link btn-sm w-100 text-white" id="fpResendOtpBtn">
+                        Resend OTP
+                    </button>
+                </div>
+
+                <!-- Step 3: New Password -->
+                <div id="fpStepReset" class="d-none text-white w-100" style="background:#1f1f1f; padding:16px; border-radius:10px;">
+                    <label class="form-label small">New Password</label>
+                    <input type="password" id="fpNewPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
+
+                    <label class="form-label small">Confirm Password</label>
+                    <input type="password" id="fpConfirmPassword" class="form-control border-0 mb-3" style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;">
+
+                    <button id="fpResetPasswordBtn" class="btn w-100 text-white fw-semibold shadow" style="background: linear-gradient(180deg, rgba(221,43,49,1) 0%, rgb(119,17,23) 100%); border: 2px solid #791218; height:46px; letter-spacing:1px;">
+                        Reset Password
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 {{-- Card input live preview --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -1266,4 +1498,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
 @push('scripts')
 <script src="{{ asset('assets/js/membership.js') }}"></script>
+<script src="{{ asset('assets/js/script.js') }}"></script>
 @endpush

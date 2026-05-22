@@ -518,7 +518,7 @@
                     </svg>
                 </div>
                 <div id="mxSuccessTitle" class="mx-success-title">Booking Confirmed!</div>
-                <div class="mx-success-sub">Your booking ID is <strong id="mxSuccessBookingId">—</strong></div>
+                {{-- <div class="mx-success-sub">Your booking ID is <strong id="mxSuccessBookingId">—</strong></div> --}}
                 <div class="mx-receipt mx-success-receipt">
                     <div class="mx-receipt-row"><span class="mx-receipt-label">Workstation</span><span
                             class="mx-receipt-value" id="mxrWorkstation">—</span></div>
@@ -702,7 +702,13 @@
     {{-- ── GUEST SUCCESS MODAL ── --}}
     <div id="mxGuestSuccessModal" class="mx-modal-overlay" aria-hidden="true">
         <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
-           
+           <button type="button"
+        class="mx-modal-close"
+        onclick="closeGuestMemberSuccessModal()">
+
+    &times;
+
+</button>
             <div class="mx-success-anim">
                 <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
                     <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
@@ -710,27 +716,73 @@
                 </svg>
             </div>
             <div class="mx-success-title">Slot Reserved!</div>
-            <div class="mx-success-sub">Booking ID: <strong id="mxGuestBookingId">—</strong></div>
-            <div class="alert alert-warning"
-                style="background:#2d3748;border:1px solid #f59e0b;color:#fbbf24;margin:20px 0;">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <i class="fa-solid fa-clock" style="font-size:24px;"></i>
-                    <div>
-                        <strong>Time Remaining: <span id="mxGuestTimer">30:00</span></strong>
-                        <p style="margin:5px 0 0 0;font-size:13px;color:#e2e8f0;">Your slot will be released if not
-                            confirmed</p>
-                    </div>
-                </div>
-            </div>
+            {{-- <div class="mx-success-sub">Booking ID: <strong id="mxGuestBookingId">—</strong></div> --}}
+            <div class="alert alert-warning mx-mini-timer">
+
+    <div class="mx-mini-timer-wrap">
+
+        <i class="fa-solid fa-clock"></i>
+
+        <div>
+            <strong>
+                Time Left:
+                <span id="mxGuestTimer">30:00</span>
+            </strong>
+
+            <p>
+                Slot releases if not confirmed
+            </p>
+        </div>
+
+    </div>
+
+</div>
             <div class="mx-garage-contact"
-                style="background:#1e293b;padding:20px;border-radius:8px;margin:20px 0;text-align:center;">
-                <p style="color:#94a3b8;margin-bottom:10px;font-size:13px;">CALL US NOW TO CONFIRM</p>
-                <a href="tel:+11234567890" class="mx-phone-link"
-                    style="color:#22c55e;font-size:28px;font-weight:bold;text-decoration:none;">
-                    <i class="fa-solid fa-phone"></i> 732-730-7712 EXTENSION 3
-                </a>
-                <p style="color:#94a3b8;margin-top:10px;font-size:12px;">Office Hours: Mon-Fri 9AM-6PM | Sat 9AM-12PM</p>
-            </div>
+     style="
+        background:#1e293b;
+        padding:10px 12px;
+        border-radius:10px;
+        margin:12px 0;
+        text-align:center;
+     ">
+
+    <p style="
+        color:#94a3b8;
+        margin-bottom:6px;
+        font-size:11px;
+        font-weight:700;
+        letter-spacing:.5px;
+    ">
+        CALL TO CONFIRM
+    </p>
+
+    <a href="tel:+11234567890"
+       class="mx-phone-link"
+       style="
+          color:#22c55e;
+          font-size:15px;
+          font-weight:700;
+          text-decoration:none;
+          display:inline-flex;
+          align-items:center;
+          gap:6px;
+       ">
+
+        <i class="fa-solid fa-phone" style="font-size:12px;"></i>
+
+        732-730-7712 EXTENSION 3
+    </a>
+
+    <p style="
+        color:#94a3b8;
+        margin-top:6px;
+        font-size:10px;
+        line-height:1.4;
+    ">
+        Mon–Fri 9AM–6PM | Sat 9AM–12PM
+    </p>
+
+</div>
             <div class="mx-receipt mx-success-receipt">
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Name</span><span class="mx-receipt-value"
                         id="mxgName">—</span></div>
@@ -761,11 +813,11 @@
                     <i class="fa-solid fa-phone"></i> Call Now to Confirm
                 </a>
             </div>
-             <div class="mx-modal-actions">
+             {{-- <div class="mx-modal-actions">
                    
                     <button type="button" class="mx-btn-solid" id="mxSummaryPay">Pay Now &nbsp;<i
                             class="fa-solid fa-lock"></i></button>
-                </div>
+                </div> --}}
         </div>
     </div>
 
