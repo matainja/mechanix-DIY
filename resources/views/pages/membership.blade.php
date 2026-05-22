@@ -34,7 +34,7 @@
 }
 .mem-hero h1 {
     font-family: 'Bebas Neue', 'Impact', sans-serif;
-    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-size: clamp(1.7rem, 2.5vw, 2.2rem);
     color: #fff;
     line-height: 1;
     letter-spacing: 1px;
