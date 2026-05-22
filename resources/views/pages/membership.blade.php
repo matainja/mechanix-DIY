@@ -34,11 +34,11 @@
 }
 .mem-hero h1 {
     font-family: 'Bebas Neue', 'Impact', sans-serif;
-    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
     color: #fff;
     line-height: 1;
-    letter-spacing: 2px;
-    margin-bottom: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
 }
 .mem-hero h1 span { color: #dd2b31; }
 .mem-hero p {
@@ -52,10 +52,11 @@
 .mem-grid {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    max-width: 860px;
+    gap: 20px;
+    max-width: 1250px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
+    width: 100%;
 }
 
 
@@ -63,12 +64,13 @@
 .plan-card {
     background: #111;
     border: 1px solid #1e1e1e;
-    border-radius: 16px;
-    padding: 28px 36px;
+    border-radius: 18px;
+    padding: 34px 42px;
+    min-height: 150px;
     position: relative;
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 42px;
     transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
     overflow: hidden;
 }
@@ -150,7 +152,7 @@
     list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 20px;
+    gap: 12px 28px;
     margin-bottom: 0;
 }
 .plan-features li {
@@ -230,12 +232,13 @@
 
 /* ── Responsive: stack on small screens ──────────── */
 @media (max-width: 700px) {
-    .plan-card {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 20px;
-        padding: 24px 20px;
-    }
+   .plan-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 22px;
+    padding: 26px 22px;
+    width: 100%;
+}
     .plan-price-block { width: 100%; flex-direction: row; align-items: baseline; gap: 12px; }
     .plan-divider { width: 100%; height: 1px; }
     .plan-cta { width: 100%; }
@@ -807,7 +810,7 @@
 
     {{-- Hero --}}
     <div class="mem-hero">
-      <div class="mem-hero-eyebrow">Membership</div>
+      {{-- <div class="mem-hero-eyebrow">Membership</div> --}}
       <h1>Become a <span>Member</span></h1>
       <p>Get unlimited access to our premium facilities with exclusive member benefits.</p>
     </div>
