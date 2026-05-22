@@ -108,7 +108,7 @@
                                         <th>Amount</th>
                                         <th>Method</th>
                                         <th>Requested</th>
-                                        <th>Status</th>
+                                        <th>Approval</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
