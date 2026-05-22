@@ -426,6 +426,30 @@
     </div>
 
 </div>
+{{-- =========================================
+    NOTES MODAL
+========================================== --}}
+<div class="modal fade" id="adminNotesModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="adminNotesModalTitle">Admin Notes</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" id="adminNotesInput" rows="3"
+                    placeholder="Optional note (required for rejection)"></textarea>
+                <div class="invalid-feedback">A reason is required for rejection.</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-sm" id="adminNotesConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 
 
