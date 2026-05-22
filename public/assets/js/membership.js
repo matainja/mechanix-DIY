@@ -389,14 +389,14 @@
 // });
 
 
-
 $(function () {
 
     window.MX_CSRF = $('meta[name="csrf-token"]').attr('content') || '';
     window.MX_IS_LOGGED_IN = $('#mx-auth-state').data('logged-in') == '1';
 
-    var selectedPlan = null;
+    var selectedPlan          = null;
     var currentGuestRequestId = null;
+    var isGuestFlow           = false;
 
     /* ====================== MODAL HELPERS ====================== */
     function openModal(id)  { $(id).addClass('show').attr('aria-hidden', 'false'); }
@@ -415,17 +415,23 @@ $(function () {
     /* ====================== LOAD & RENDER PLANS ====================== */
     async function loadPlans() {
         try {
-            var res = await fetch('/membership/plans', {
+            var res  = await fetch('/membership/plans', {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: { 'Accept': 'application/json' },
             });
             var data = await res.json();
-            if (data.status && data.plans?.length) {
+            if (data.status && data.plans && data.plans.length) {
                 renderPlans(data.plans);
+            } else {
+                $('#membershipPlansContainer').html(
+                    '<div style="grid-column:1/-1;text-align:center;color:#64748b;padding:40px 0;">No membership plans available.</div>'
+                );
             }
         } catch (e) {
-            $('#membershipPlansContainer').html('<div style="grid-column:1/-1;text-align:center;color:#dd2b31;padding:40px 0;">Failed to load plans.</div>');
+            $('#membershipPlansContainer').html(
+                '<div style="grid-column:1/-1;text-align:center;color:#dd2b31;padding:40px 0;">Failed to load plans.</div>'
+            );
         }
     }
 
@@ -435,131 +441,246 @@ $(function () {
         plans.forEach(function (plan, idx) {
             var features = [];
             try { features = JSON.parse(plan.features || '[]'); } catch (e) { features = []; }
-            var featured = idx === 1;
-            var featureItems = features.map(f => 
-                '<li><span class="feat-icon"><i class="fa-solid fa-check"></i></span>' + f + '</li>'
-            ).join('');
+            var featured     = idx === 1;
+            var featureItems = features.map(function (f) {
+                return '<li><span class="feat-icon"><i class="fa-solid fa-check"></i></span>' + f + '</li>';
+            }).join('');
 
-            html += `<div class="plan-card ${featured ? 'featured' : ''}">
-                ${featured ? '<div class="plan-badge">POPULAR</div>' : ''}
-                <div class="plan-name">${plan.name}</div>
-                <div class="plan-price-row">
-                    <span class="plan-price-sym">$</span>
-                    <span class="plan-price-val">${plan.price}</span>
-                </div>
-                <div class="plan-duration">Valid for ${plan.duration_days} days</div>
-                <div class="plan-divider"></div>
-                <ul class="plan-features">${featureItems}</ul>
-                <button class="btn-plan ${featured ? 'btn-plan-primary' : 'btn-plan-outline'}" data-plan-id="${plan.id}">Join Membership</button>
-            </div>`;
+            html += '<div class="plan-card ' + (featured ? 'featured' : '') + '">' +
+                (featured ? '<div class="plan-badge">POPULAR</div>' : '') +
+                '<div class="plan-name">' + plan.name + '</div>' +
+                '<div class="plan-price-row">' +
+                    '<span class="plan-price-sym">$</span>' +
+                    '<span class="plan-price-val">' + plan.price + '</span>' +
+                '</div>' +
+                '<div class="plan-duration">Valid for ' + plan.duration_days + ' days</div>' +
+                '<div class="plan-divider"></div>' +
+                '<ul class="plan-features">' + featureItems + '</ul>' +
+                '<button class="btn-plan ' + (featured ? 'btn-plan-primary' : 'btn-plan-outline') +
+                '" data-plan-id="' + plan.id + '">Join Membership</button>' +
+            '</div>';
         });
         $('#membershipPlansContainer').html(html);
     }
 
     /* ====================== SELECT PLAN ====================== */
     $(document).on('click', '.btn-plan[data-plan-id]', function () {
-        selectedPlan = window.membershipPlans?.find(p => p.id == $(this).data('plan-id'));
-        if (!selectedPlan) return alert('Plan not found.');
+        var planId = $(this).data('plan-id');
+        selectedPlan = (window.membershipPlans || []).find(function (p) { return p.id == planId; });
+        if (!selectedPlan) { alert('Plan not found.'); return; }
 
         sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
 
         if (window.MX_IS_LOGGED_IN) {
+            isGuestFlow = false;
             openMembershipPayModal();
         } else {
+            isGuestFlow = true;
             var modal = new bootstrap.Modal(document.getElementById('mxAuthModal'));
             modal.show();
             bootstrap.Tab.getOrCreateInstance(document.getElementById('guestMemberTab')).show();
         }
     });
 
-    /* ====================== GUEST SUBMIT REQUEST ====================== */
+    /* ====================== AUTH — LOGIN ====================== */
+    $('#mxLoginForm').on('submit', async function (e) {
+        e.preventDefault();
+        var $err = $('#loginErrorMsg').addClass('d-none').text('');
+        try {
+            var res  = await fetch('/popup-login', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.MX_CSRF,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    email:    $(this).find('[name=email]').val(),
+                    password: $(this).find('[name=password]').val(),
+                }),
+            });
+            var data = await res.json().catch(function () { return {}; });
+            if (!res.ok) { $err.text(data.message || 'Login failed.').removeClass('d-none'); return; }
+
+            window.MX_IS_LOGGED_IN = true;
+            isGuestFlow = false;
+            var planData = sessionStorage.getItem('mx_membership_plan');
+            if (planData) { selectedPlan = JSON.parse(planData); }
+            bootstrap.Modal.getInstance(document.getElementById('mxAuthModal')).hide();
+            openMembershipPayModal();
+        } catch (_) {
+            $err.text('Network error.').removeClass('d-none');
+        }
+    });
+
+    /* ====================== AUTH — REGISTER ====================== */
+    $('#mxRegisterForm').on('submit', async function (e) {
+        e.preventDefault();
+        var $err = $('#registerErrorMsg').addClass('d-none').text('');
+        try {
+            var res  = await fetch('/popup-register', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.MX_CSRF,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    email:                 $(this).find('[name=email]').val(),
+                    mobile_no:             $(this).find('[name=mobile_no]').val(),
+                    password:              $(this).find('[name=password]').val(),
+                    password_confirmation: $(this).find('[name=password_confirmation]').val(),
+                }),
+            });
+            var data = await res.json().catch(function () { return {}; });
+            if (!res.ok) {
+                $err.text(
+                    data.errors
+                        ? Object.values(data.errors).flat().join(' ')
+                        : (data.message || 'Registration failed.')
+                ).removeClass('d-none');
+                return;
+            }
+            window.MX_IS_LOGGED_IN = true;
+            isGuestFlow = false;
+            var planData = sessionStorage.getItem('mx_membership_plan');
+            if (planData) { selectedPlan = JSON.parse(planData); }
+            bootstrap.Modal.getInstance(document.getElementById('mxAuthModal')).hide();
+            openMembershipPayModal();
+        } catch (_) {
+            $err.text('Network error.').removeClass('d-none');
+        }
+    });
+
+    /* ====================== AUTH — GUEST FORM ====================== */
+    // Guest submits info → create pending request → show success modal
     $('#guestMemberForm').on('submit', async function (e) {
         e.preventDefault();
-        var $err = $('#guestMemberErrorMsg').addClass('d-none').text('');
-
+        var $err  = $('#guestMemberErrorMsg').addClass('d-none').text('');
         var name  = $('#guestMemberName').val().trim();
         var email = $('#guestMemberEmail').val().trim();
         var phone = $('#guestMemberPhone').val().replace(/\D/g, '');
 
-        if (!name || !email || phone.length !== 10) {
-            $err.text('Please fill all fields correctly.').removeClass('d-none');
-            return;
+        if (!name || !email) {
+            $err.text('Please fill all fields.').removeClass('d-none'); return;
+        }
+        if (phone.length !== 10) {
+            $err.text('Please enter a valid 10-digit US phone number.').removeClass('d-none'); return;
         }
 
+        var formattedPhone = '+1' + phone;
+
+        // Store for later use in payment flow
+        sessionStorage.setItem('mx_guest_member_name',  name);
+        sessionStorage.setItem('mx_guest_member_email', email);
+        sessionStorage.setItem('mx_guest_member_phone', formattedPhone);
+
+        var planData = sessionStorage.getItem('mx_membership_plan');
+        if (planData) { selectedPlan = JSON.parse(planData); }
+
+        // Submit pending request first
         try {
-            var res = await fetch('/membership/guest-request', {
+            var res  = await fetch('/membership/guest-request', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
                     membership_plan_id: selectedPlan.id,
-                    guest_name: name,
-                    guest_email: email,
-                    guest_phone: '+1' + phone,
-                    amount_paid: selectedPlan.price
-                })
+                    guest_name:         name,
+                    guest_email:        email,
+                    guest_phone:        formattedPhone,
+                    amount_paid:        selectedPlan.price,
+                    payment_method:     'pending',
+                }),
             });
-
             var data = await res.json();
 
             if (!res.ok || !data.status) {
-                $err.text(data.message || 'Failed to submit request').removeClass('d-none');
+                $err.text(data.message || 'Failed to submit request.').removeClass('d-none');
                 return;
             }
 
-            currentGuestRequestId = data.request_id || data.id;
+            currentGuestRequestId = data.request_id;
+            sessionStorage.setItem('mx_guest_request_id', currentGuestRequestId);
+
             bootstrap.Modal.getInstance(document.getElementById('mxAuthModal')).hide();
-            showGuestRequestSuccessModal();
+
+            // Show guest success modal with request ID
+            showGuestSuccessModal(name, email, formattedPhone);
 
         } catch (err) {
             $err.text('Network error. Please try again.').removeClass('d-none');
         }
     });
 
-    function showGuestRequestSuccessModal() {
-        $('#mxGuestMemberReqId').text(currentGuestRequestId || 'REQ-' + Date.now().toString().slice(-6));
-        $('#mxGMsName').text($('#guestMemberName').val());
-        $('#mxGMsEmail').text($('#guestMemberEmail').val());
-        $('#mxGMsPhone').text($('#guestMemberPhone').val());
+    function showGuestSuccessModal(name, email, phone) {
+        $('#mxGuestMemberReqId').text(currentGuestRequestId || ('REQ-' + Date.now().toString().slice(-6)));
+        $('#mxGMsName').text(name);
+        $('#mxGMsEmail').text(email);
+        $('#mxGMsPhone').text(phone);
         $('#mxGMsPlan').text(selectedPlan.name);
         $('#mxGMsDuration').text(selectedPlan.duration_days + ' days');
         $('#mxGMsAmount').text('$' + parseFloat(selectedPlan.price).toFixed(2));
-
         openModal('#mxGuestMemberSuccessModal');
     }
 
-    /* ====================== CONTINUE TO PAYMENT ====================== */
+    /* ====================== CONTINUE TO PAYMENT (from guest success modal) ====================== */
     $(document).on('click', '#continueToPaymentBtn', function () {
+        // Restore request ID from session in case of page state loss
+        if (!currentGuestRequestId) {
+            currentGuestRequestId = sessionStorage.getItem('mx_guest_request_id');
+        }
+        if (!selectedPlan) {
+            var planData = sessionStorage.getItem('mx_membership_plan');
+            if (planData) selectedPlan = JSON.parse(planData);
+        }
         closeModal('#mxGuestMemberSuccessModal');
+        isGuestFlow = true;
         openMembershipPayModal();
     });
 
     /* ====================== PAYMENT MODAL ====================== */
     function openMembershipPayModal() {
         if (!selectedPlan) return;
+        var price = '$' + selectedPlan.price;
 
-        $('#mxPayTitle').text('Complete Payment');
-        $('#mxPayAmount').text('$' + selectedPlan.price);
-        $('#mxPayBtnAmt').text('$' + selectedPlan.price);
+        $('#mxPayTitle').text('Membership Payment');
+        $('#mxPayAmount').text(price);
+        $('#mxPayBtnText').html('Pay <span id="mxPayBtnAmt">' + price + '</span>');
 
         $('#mxCardNum, #mxCardExp, #mxCardCvv, #mxCardName, #mxUpiId').val('');
         $('input[name="mxBank"]').prop('checked', false);
+        $('#mxCardDisplay').text('•••• •••• •••• ••••');
+        $('#mxCardNameDisplay').text('YOUR NAME');
+        $('#mxCardExpDisplay').text('MM / YY');
         $('#mxPayError').addClass('d-none').text('');
+        $('#mxPayNowBtn').prop('disabled', false);
+        $('#mxPaySpinner').addClass('d-none');
+        $('.mxs-pay-tab').removeClass('active').filter('[data-tab="card"]').addClass('active');
+        $('.mxs-pay-panel').removeClass('active');
+        $('#mxPayPanel-card').addClass('active');
 
         openModal('#mxPayModal');
     }
 
     /* ====================== PAY BUTTON ====================== */
     $('#mxPayNowBtn').on('click', function () {
-        simulateDemoPayment(async function () {
-            await activateGuestMembership();
+        simulateDemoPayment(function () {
+            if (isGuestFlow) {
+                processGuestPayment();
+            } else {
+                submitLoggedInRequest();
+            }
         });
     });
 
-    /* ====================== DEMO PAYMENT FUNCTION (Fixed) ====================== */
+    /* ====================== DEMO PAYMENT ====================== */
     function simulateDemoPayment(onSuccess) {
         var $btn = $('#mxPayNowBtn');
         var $sp  = $('#mxPaySpinner');
@@ -590,38 +711,92 @@ $(function () {
         }, 1800);
     }
 
-    async function activateGuestMembership() {
-        if (!currentGuestRequestId) return alert('Request ID not found');
+    /* ====================== GUEST PAYMENT → auto approve ====================== */
+    async function processGuestPayment() {
+        var requestId = currentGuestRequestId || sessionStorage.getItem('mx_guest_request_id');
+        var method    = $('.mxs-pay-tab.active').data('tab') || 'card';
+
+        if (!requestId) {
+            alert('Request ID not found. Please try again.');
+            return;
+        }
+        if (!selectedPlan) {
+            var planData = sessionStorage.getItem('mx_membership_plan');
+            if (planData) selectedPlan = JSON.parse(planData);
+        }
 
         try {
-            var res = await fetch('/membership/guest-payment', {
+            var res  = await fetch('/membership/guest-payment', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    request_id: currentGuestRequestId,
+                    request_id:         requestId,
                     membership_plan_id: selectedPlan.id,
-                    amount_paid: selectedPlan.price,
-                    payment_method: $('.mxs-pay-tab.active').data('tab')
-                })
+                    amount_paid:        selectedPlan.price,
+                    payment_method:     method,
+                }),
             });
-
             var data = await res.json();
 
-            if (data.status) {
-                showFinalActivatedSuccessModal();
-            } else {
-                alert(data.message || 'Activation failed');
+            if (!res.ok || !data.status) {
+                alert(data.message || 'Payment failed. Please try again.');
+                return;
             }
-        } catch (e) {
-            alert('Payment processing failed');
+
+            // Cleanup
+            sessionStorage.removeItem('mx_membership_plan');
+            sessionStorage.removeItem('mx_guest_member_name');
+            sessionStorage.removeItem('mx_guest_member_email');
+            sessionStorage.removeItem('mx_guest_member_phone');
+            sessionStorage.removeItem('mx_guest_request_id');
+
+            showLoggedInSuccessModal();
+
+        } catch (err) {
+            alert('Network error. Please try again.');
         }
     }
 
-    function showFinalActivatedSuccessModal() {
+    /* ====================== LOGGED-IN REQUEST ====================== */
+    async function submitLoggedInRequest() {
+        var method = $('.mxs-pay-tab.active').data('tab') || 'card';
+
+        try {
+            var res  = await fetch('/membership/request', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.MX_CSRF,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    membership_plan_id: selectedPlan.id,
+                    amount_paid:        selectedPlan.price,
+                    payment_method:     method,
+                }),
+            });
+            var data = await res.json();
+
+            if (!res.ok || !data.status) {
+                alert(data.message || 'Request failed. Please try again.');
+                return;
+            }
+
+            sessionStorage.removeItem('mx_membership_plan');
+            showLoggedInSuccessModal();
+
+        } catch (err) {
+            alert('Network error. Please try again.');
+        }
+    }
+
+    function showLoggedInSuccessModal() {
         $('#mxMemberPlanName').text(selectedPlan.name);
         $('#mxMsName').text(selectedPlan.name);
         $('#mxMsDuration').text(selectedPlan.duration_days + ' days');
@@ -636,11 +811,9 @@ $(function () {
         var v = r.padEnd(16, '•').slice(0, 16).match(/.{1,4}/g);
         $('#mxCardDisplay').text(v ? v.join(' ') : '•••• •••• •••• ••••');
     });
-
     $('#mxCardName').on('input', function () {
         $('#mxCardNameDisplay').text($(this).val().toUpperCase() || 'YOUR NAME');
     });
-
     $('#mxCardExp').on('input', function () {
         var v = $(this).val().replace(/\D/g, '').slice(0, 4);
         if (v.length >= 3) v = v.slice(0, 2) + ' / ' + v.slice(2);
@@ -648,15 +821,14 @@ $(function () {
         $('#mxCardExpDisplay').text(v || 'MM / YY');
     });
 
-    /* Payment Tabs & Close */
+    /* ====================== PAYMENT TABS & CLOSE ====================== */
     $(document).on('click', '.mxs-pay-tab', function () {
         $('.mxs-pay-tab').removeClass('active');
         $(this).addClass('active');
         $('.mxs-pay-panel').removeClass('active');
         $('#mxPayPanel-' + $(this).data('tab')).addClass('active');
     });
-
-    $('#mxPayClose').on('click', () => closeModal('#mxPayModal'));
+    $('#mxPayClose').on('click', function () { closeModal('#mxPayModal'); });
     $('#mxPayModal').on('click', function (e) {
         if ($(e.target).is('#mxPayModal')) closeModal('#mxPayModal');
     });

@@ -267,27 +267,28 @@ public function storePlan(Request $request)
     /**
      * Process Guest Payment and Activate Membership
      */
-   public function guestPayment(Request $request)
+  public function guestPayment(Request $request)
 {
-    try {
-        $validated = $request->validate([
-            'request_id'         => 'required|exists:membership_requests,id',
-            'membership_plan_id' => 'required|exists:membership_plans,id',
-            'amount_paid'        => 'required|numeric|min:0',
-            'payment_method'     => 'required|string',
-        ]);
+    $validated = $request->validate([
+        'request_id'         => 'required|exists:membership_requests,id',
+        'membership_plan_id' => 'required|exists:membership_plans,id',
+        'amount_paid'        => 'required|numeric|min:0',
+        'payment_method'     => 'required|string',
+    ]);
+
+    return DB::transaction(function () use ($validated) {
 
         $membershipRequest = MembershipRequest::findOrFail($validated['request_id']);
 
         if ($membershipRequest->status !== 'pending') {
-            return response()->json(['status' => false, 'message' => 'Request already processed'], 400);
+            return response()->json([
+                'status'  => false,
+                'message' => 'Request already processed.'
+            ], 400);
         }
 
         $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
 
-        DB::beginTransaction();
-
-        // Update request status
         $membershipRequest->update([
             'amount_paid'    => $validated['amount_paid'],
             'payment_method' => $validated['payment_method'],
@@ -295,7 +296,6 @@ public function storePlan(Request $request)
             'approved_at'    => now(),
         ]);
 
-        // Create Guest Membership
         UserMembership::create([
             'user_id'            => null,
             'guest_name'         => $membershipRequest->guest_name,
@@ -308,22 +308,11 @@ public function storePlan(Request $request)
             'payment_method'     => $validated['payment_method'],
         ]);
 
-        DB::commit();
-
         return response()->json([
             'status'  => true,
             'message' => 'Membership activated successfully!',
         ]);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Guest Payment Error: ' . $e->getMessage());
-        
-        return response()->json([
-            'status' => false,
-            'message' => 'Failed to activate membership: ' . $e->getMessage()
-        ], 500);
-    }
+    });
 }
 public function deletePlan($id)
 {
