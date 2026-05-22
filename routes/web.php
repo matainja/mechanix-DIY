@@ -19,6 +19,8 @@ use App\Http\Controllers\RentalController;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 
+Route::redirect('/login', '/')->name('login');
+
 
 // Rental Routes
 Route::get('/rentals', [RentalController::class, 'index'])->name('rentals');

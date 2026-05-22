@@ -12,6 +12,10 @@ class PageController extends Controller
     {
         return view('pages.home');
     }
+    public function index()
+    {
+        return view('pages.home');
+    }
 
 
 

@@ -48,23 +48,27 @@
     margin: 0 auto;
 }
 
-/* ── Cards grid ──────────────────────────────────── */
+/* ── Cards grid → List layout ────────────────────── */
 .mem-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 28px;
-    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 860px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* ── Plan card ───────────────────────────────────── */
+
+/* ── Plan card → Plan row ────────────────────────── */
 .plan-card {
     background: #111;
     border: 1px solid #1e1e1e;
-    border-radius: 20px;
-    padding: 40px 36px 36px;
+    border-radius: 16px;
+    padding: 28px 36px;
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 32px;
     transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
     overflow: hidden;
 }
@@ -76,24 +80,132 @@
     pointer-events: none;
 }
 .plan-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 24px 60px rgba(0,0,0,.5);
+    transform: translateX(4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,.4);
     border-color: #333;
 }
 .plan-card.featured {
     border-color: #dd2b31;
     background: linear-gradient(160deg, #1a0e0e 0%, #0f0f0f 60%);
-    box-shadow: 0 0 0 1px rgba(221,43,49,.3), 0 20px 60px rgba(221,43,49,.12);
+    box-shadow: 0 0 0 1px rgba(221,43,49,.3), 0 8px 40px rgba(221,43,49,.12);
 }
 .plan-card.featured:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 0 1px rgba(221,43,49,.5), 0 28px 80px rgba(221,43,49,.2);
+    transform: translateX(4px);
+    box-shadow: 0 0 0 1px rgba(221,43,49,.5), 0 12px 50px rgba(221,43,49,.2);
 }
 
-/* badge */
+/* price block — fixed width left column */
+.plan-price-block {
+    flex-shrink: 0;
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+}
+.plan-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+.plan-price-sym { font-size: 1.4rem; font-weight: 700; color: #fff; }
+.plan-price-val {
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-size: 3.2rem;
+    color: #fff;
+    line-height: 1;
+}
+.plan-price-period { font-size: .85rem; color: #64748b; margin-left: 4px; }
+.plan-duration {
+    font-size: .8rem;
+    color: #64748b;
+}
+
+/* vertical divider */
+.plan-divider {
+    width: 1px;
+    height: 100px;
+    background: #1e1e1e;
+    flex-shrink: 0;
+}
+.plan-card.featured .plan-divider {
+    background: rgba(221,43,49,.2);
+}
+
+/* plan info — grows to fill */
+.plan-info {
+    flex: 1;
+    min-width: 0;
+}
+.plan-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+/* features inline */
+.plan-features {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-bottom: 0;
+}
+.plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #cbd5e1;
+    font-size: .88rem;
+    padding: 0;
+    border-bottom: none;
+}
+.plan-features li .feat-icon {
+    width: 16px; height: 16px;
+    background: rgba(34,197,94,.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.plan-features li .feat-icon i { color: #22c55e; font-size: .55rem; }
+
+/* CTA — right column */
+.plan-cta {
+    flex-shrink: 0;
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.btn-plan {
+    width: 100%;
+    padding: 13px;
+    font-size: .9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
+}
+.btn-plan::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background .2s;
+}
+.btn-plan:hover::after { background: rgba(255,255,255,.07); }
+
+/* badge repositioned for row layout */
 .plan-badge {
     position: absolute;
-    top: 20px; right: 20px;
+    top: 16px; right: 16px;
     background: #dd2b31;
     color: #fff;
     font-size: 10px;
@@ -104,69 +216,32 @@
     border-radius: 20px;
 }
 
-/* plan header */
-.plan-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-}
-.plan-price-row {
-    display: flex;
-    align-items: baseline;
-    gap: 4px;
-    margin-bottom: 6px;
-}
-.plan-price-sym { font-size: 1.6rem; font-weight: 700; color: #fff; }
-.plan-price-val {
-    font-family: 'Bebas Neue', 'Impact', sans-serif;
-    font-size: 4rem;
-    color: #fff;
-    line-height: 1;
-}
-.plan-price-period { font-size: .9rem; color: #64748b; margin-left: 4px; }
-.plan-duration {
-    font-size: .85rem;
-    color: #64748b;
-    margin-bottom: 28px;
-}
-
-/* divider */
-.plan-divider {
-    height: 1px;
-    background: #1e1e1e;
-    margin-bottom: 24px;
-}
-.plan-card.featured .plan-divider {
-    background: rgba(221,43,49,.2);
-}
-
-/* features */
-.plan-features {
-    list-style: none;
-    margin-bottom: 32px;
-}
-.plan-features li {
+/* skeleton → row shape */
+.plan-skeleton {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 16px;
+    padding: 28px 36px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: #cbd5e1;
-    font-size: .95rem;
-    padding: 9px 0;
-    border-bottom: 1px solid rgba(255,255,255,.04);
+    gap: 32px;
+    animation: skelPulse 1.4s ease-in-out infinite;
 }
-.plan-features li:last-child { border-bottom: none; }
-.plan-features li .feat-icon {
-    width: 18px; height: 18px;
-    background: rgba(34,197,94,.15);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
-.plan-features li .feat-icon i { color: #22c55e; font-size: .6rem; }
 
+/* ── Responsive: stack on small screens ──────────── */
+@media (max-width: 700px) {
+    .plan-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        padding: 24px 20px;
+    }
+    .plan-price-block { width: 100%; flex-direction: row; align-items: baseline; gap: 12px; }
+    .plan-divider { width: 100%; height: 1px; }
+    .plan-cta { width: 100%; }
+    .plan-features { flex-direction: column; gap: 6px; }
+    .plan-skeleton { flex-direction: column; }
+}
 /* CTA button */
 .btn-plan {
     width: 100%;
