@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\User;
 use App\Models\Holiday;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -48,5 +49,32 @@ class AdminController extends Controller
         $users = User::all();
         return view('admin.pages.users', compact('users'));
     }
+
+   public function approveBooking($id)
+{
+    $booking = Booking::findOrFail($id);
+    $booking->update(['status' => 'confirmed']);
+    
+    DB::table('booking_slots')
+        ->where('booking_id', $id)
+        ->update(['status' => 'booked']);
+
+    return response()->json(['status' => true, 'message' => 'Booking confirmed.']);
+}
+
+public function cancelBooking($id)
+{
+    $booking = Booking::findOrFail($id);
+    $booking->update(['status' => 'cancelled']);
+    return response()->json(['status' => true, 'message' => 'Booking cancelled.']);
+}
+
+public function deleteBooking($id)
+{
+    $booking = Booking::findOrFail($id);
+    DB::table('booking_slots')->where('booking_id', $id)->delete();
+    $booking->delete();
+    return response()->json(['status' => true, 'message' => 'Booking deleted.']);
+}
 }
 

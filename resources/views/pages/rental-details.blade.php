@@ -55,6 +55,20 @@
                             @foreach(explode("\n", $rental->description) as $line)
                                 <li>{{ $line }}</li>
                             @endforeach
+                            {{-- FEATURES  basic toool bullet point --}}
+                            @if($rental->description)
+                                <ul class="details-features">
+
+                                    @foreach(explode("\n", $rental->description) as $line)
+                                        <li>{{ $line }}</li>
+                                    @endforeach
+
+                                    <li>
+                                        Basic hand tools and tool carts are available with bay rentals based on availability.
+                                    </li>
+
+                                </ul>
+                            @endif
                         </ul>
                     @endif
 

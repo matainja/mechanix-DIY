@@ -75,6 +75,10 @@ Route::middleware(['auth', 'admin'])
         Route::post('/membership-plans', [MembershipController::class, 'storePlan'])->name('membership.plans.store');
         Route::delete('/membership-plan/{id}', [MembershipController::class, 'deletePlan'])
     ->name('membership.plan.delete');
+
+    Route::post('/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('bookings.approve');
+Route::post('/bookings/{id}/cancel',  [AdminController::class, 'cancelBooking'])->name('bookings.cancel');
+Route::delete('/bookings/{id}',       [AdminController::class, 'deleteBooking'])->name('bookings.delete');
         });
 
 //Loin & Register Popup
