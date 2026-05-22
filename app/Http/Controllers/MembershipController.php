@@ -154,52 +154,61 @@ public function submitGuestRequest(Request $request)
     /**
      * Admin: Approve membership request
      */
-    public function approveRequest(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'admin_notes' => 'nullable|string',
+   public function approveRequest(Request $request, $id)
+{
+    $validated = $request->validate([
+        'admin_notes' => 'nullable|string',
+    ]);
+
+    return DB::transaction(function () use ($id, $validated) {
+
+        $membershipRequest = MembershipRequest::findOrFail($id);
+
+        if ($membershipRequest->status !== 'pending') {
+            return response()->json([
+                'status'  => false,
+                'message' => 'This request has already been processed.'
+            ], 400);
+        }
+
+        $plan = $membershipRequest->membershipPlan;
+
+        if (!$plan) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Membership plan not found.'
+            ], 404);
+        }
+
+        // Update only columns that definitely exist
+        DB::table('membership_requests')
+            ->where('id', $id)
+            ->update([
+                'status'      => 'approved',
+                'approved_at' => now(),
+                'admin_notes' => $validated['admin_notes'] ?? null,
+                'updated_at'  => now(),
+            ]);
+
+        // Create UserMembership
+        UserMembership::create([
+            'user_id'            => $membershipRequest->user_id,
+            'guest_name'         => $membershipRequest->guest_name,
+            'guest_email'        => $membershipRequest->guest_email,
+            'guest_phone'        => $membershipRequest->guest_phone,
+            'membership_plan_id' => $membershipRequest->membership_plan_id,
+            'start_date'         => now(),
+            'end_date'           => now()->addDays($plan->duration_days),
+            'status'             => 'active',
+            'payment_method'     => $membershipRequest->payment_method,
         ]);
 
-        return DB::transaction(function () use ($id, $validated) {
-            $membershipRequest = MembershipRequest::findOrFail($id);
-
-            if ($membershipRequest->status !== 'pending') {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'This request has already been processed.'
-                ], 400);
-            }
-
-            $plan = $membershipRequest->membershipPlan;
-            $startDate = now();
-            $endDate = now()->addDays($plan->duration_days);
-
-            // Update request status
-            $membershipRequest->update([
-                'status' => 'approved',
-                'approved_at' => now(),
-                'approved_by' => auth()->id(),
-                'admin_notes' => $validated['admin_notes'] ?? null,
-            ]);
-
-            // Create user membership (only if user exists)
-            if ($membershipRequest->user_id) {
-                UserMembership::create([
-                    'user_id' => $membershipRequest->user_id,
-                    'membership_plan_id' => $membershipRequest->membership_plan_id,
-                    'start_date' => $startDate,
-                    'end_date' => $endDate,
-                    'status' => 'active',
-                ]);
-            }
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Membership request approved successfully!',
-                'membership_request' => $membershipRequest->fresh(),
-            ]);
-        });
-    }
+        return response()->json([
+            'status'  => true,
+            'message' => 'Membership request approved successfully!',
+        ]);
+    });
+}
 
     /**
      * Admin: Reject membership request

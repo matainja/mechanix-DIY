@@ -151,7 +151,17 @@
     </a>
 </div>
     </div>
+<div class="speciality-note">
+    <ul>
+        <li>
+            Specialty tools can be added to any lift or rental booking upon request and availability.
+        </li>
 
+        <li>
+            Please contact our team during booking confirmation to reserve required specialty equipment in advance.
+        </li>
+    </ul>
+</div>
 </section>
 
 
@@ -403,7 +413,17 @@
             </a>
         </div> --}}
     </div>
+<div class="speciality-note">
+    <ul>
+        <li>
+            Basic hand tools and tool carts are available with bay rentals based on availability.
+        </li>
 
+        <li>
+            Customers are encouraged to confirm tool availability with our team prior to or during booking confirmation.
+        </li>
+    </ul>
+</div>
 </section>
 
 </div>

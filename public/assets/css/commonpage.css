@@ -103,3 +103,26 @@ body{
     }
 
 }
+.speciality-note{
+    margin-top:30px;
+    padding:18px 22px;
+    background:#111827;
+    border-left:4px solid #dd2b31;
+    border-radius:8px;
+}
+
+.speciality-note ul{
+    margin:0;
+    padding-left:18px;
+}
+
+.speciality-note li{
+    color:#d1d5db;
+    margin-bottom:10px;
+    line-height:1.7;
+    font-size:15px;
+}
+
+.speciality-note li:last-child{
+    margin-bottom:0;
+}
