@@ -242,18 +242,22 @@ public function submitGuestRequest(Request $request)
     /**
      * Get all membership requests (for admin)
      */
-   public function getAllRequests()
+  public function getAllRequests()
 {
-    $requests = MembershipRequest::with(['user', 'membershipPlan', 'approvedBy'])
-        ->orderBy('created_at', 'desc')
-        ->get();
+    $requests = MembershipRequest::with([
+            'user',
+            'membershipPlan',
+            'approvedBy'
+        ])
+        ->orderBy('id', 'desc')
+        ->paginate(10);
 
-    // return view('admin.pages.membership', compact('requests'));
-$plans = MembershipPlan::where('is_active', true)->latest()->get();
+    $plans = MembershipPlan::where('is_active', true)
+        ->latest()
+        ->paginate(10);
 
-return view('admin.pages.membership', compact('requests', 'plans'));
-    }
-
+    return view('admin.pages.membership', compact('requests', 'plans'));
+}
 public function storePlan(Request $request)
 {
     $validated = $request->validate([

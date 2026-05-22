@@ -119,7 +119,9 @@
 
                                         <tr>
 
-                                            <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                        {{ $requests->total() - ($requests->firstItem() + $loop->index - 1) }}
+                                    </td>
 
                                             <td>
                                                 {{ $r->user?->name ?? $r->guest_name ?? '—' }}
@@ -219,7 +221,7 @@
                                 </tbody>
 
                             </table>
-
+ <div class="mt-3">{{ $requests->links('pagination::bootstrap-5') }}</div>
                         </div>
 
                     </div>
@@ -296,7 +298,7 @@
                                 </tbody>
 
                             </table>
-
+                    <div class="mt-3">{{ $plans->links('pagination::bootstrap-5') }}</div>
                         </div>
 
                     </div>

@@ -144,7 +144,19 @@
 
 
                 <br>
-                  <li class="nav-item mobile-only">
+                  {{-- <li class="nav-item mobile-only">
+    <a class="nav-link mobile-menu-item" href="{{ route('admin.home') }}">
+        <div class="menu-item-content">
+            <i class="bi bi-speedometer2 menu-icon"></i>
+            <span>Admin Dashboard</span>
+        </div>
+    </a>
+</li> --}}
+
+@auth
+@if(auth()->user()->role == 1)
+
+<li class="nav-item mobile-only">
     <a class="nav-link mobile-menu-item" href="{{ route('admin.home') }}">
         <div class="menu-item-content">
             <i class="bi bi-speedometer2 menu-icon"></i>
@@ -152,6 +164,9 @@
         </div>
     </a>
 </li>
+
+@endif
+@endauth
                     <li class="nav-item mobile-only">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -197,15 +212,26 @@
                                 <hr class="dropdown-divider">
                             </li>
                             {{-- admin dashboard --}}
-                            <li>
+                            {{-- <li>
             <a href="{{ route('admin.home') }}" class="dropdown-item">
               <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
             </a>
-          </li> 
+          </li>  --}}
+
+          @if(auth()->user()->role == 1)
+<li>
+    <a href="{{ route('admin.home') }}" class="dropdown-item">
+        <i class="bi bi-speedometer2 me-2"></i>
+        Admin Dashboard
+    </a>
+</li>
+
+<li>
+    <hr class="dropdown-divider">
+</li>
+@endif
           
-          <li>
-                                <hr class="dropdown-divider">
-                            </li>
+          
                             <li>
                                 <form method="POST" action="{{ route('logout') }}" class="text-center">
                                     @csrf
