@@ -70,7 +70,7 @@ Route::middleware(['auth', 'admin'])
         Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.delete');
         Route::post('/holidays/bulk', [HolidayController::class, 'storeBulk'])->name('holidays.storeBulk');
         //membership admin routes
-        Route::get('/admin/membership-requests', [MembershipController::class, 'getAllRequests'])->name('admin.membership.requests');
+        Route::get('/membership-requests', [MembershipController::class, 'getAllRequests'])->name('admin.membership.requests');
         Route::post('/membership-requests/{id}/approve', [MembershipController::class, 'approveRequest'])->name('admin.membership.approve');
         Route::post('/membership-requests/{id}/reject', [MembershipController::class, 'rejectRequest'])->name('admin.membership.reject');
     
