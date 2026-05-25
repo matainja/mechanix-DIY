@@ -61,13 +61,14 @@
 
 .membership-card {
     width: 100%;
-    background: linear-gradient(90deg, #140404 0%, #020202 40%, #000000 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, #2a1515 0%, #1a1010 50%, #141414 100%);
+    border: 1px solid rgba(221, 43, 49, 0.3);
     border-radius: 24px;
     padding: 30px;
     color: #fff;
     position: relative;
     transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+    box-shadow: 0 8px 32px rgba(221, 43, 49, 0.1), 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .membership-card:hover {
@@ -254,8 +255,8 @@
 
 /* ── Loading skeleton ────────────────────────────── */
 .plan-skeleton {
-    background: linear-gradient(90deg, #140404 0%, #020202 40%, #000000 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, #1a0f0f 0%, #0d0d0d 50%, #0a0a0a 100%);
+    border: 1px solid rgba(245, 35, 42, 0.426);
     border-radius: 24px;
     padding: 40px 36px;
     animation: skelPulse 1.4s ease-in-out infinite;
@@ -1134,9 +1135,9 @@
             </svg>
         </div>
 
-        <div class="mx-success-title">Membership Activated!</div>
+       <div class="mx-success-title">Membership Request Sent</div>
         <div class="mx-success-sub">
-            Welcome to <strong id="mxMemberPlanName">—</strong>
+            You selected the <strong id="mxMemberPlanName">—</strong> plan.
         </div>
 
         <div class="mx-member-success-body">

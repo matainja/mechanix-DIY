@@ -81,17 +81,33 @@ $(function () {
     }
 
     /* ====================== SELECT PLAN ====================== */
-    $(document).on('click', '.join-btn[data-plan-id]', function () {
-        var planId = $(this).data('plan-id');
-        selectedPlan = (window.membershipPlans || []).find(function (p) { return p.id == planId; });
-        if (!selectedPlan) { alert('Plan not found.'); return; }
+    // $(document).on('click', '.join-btn[data-plan-id]', function () {
+    //     var planId = $(this).data('plan-id');
+    //     selectedPlan = (window.membershipPlans || []).find(function (p) { return p.id == planId; });
+    //     if (!selectedPlan) { alert('Plan not found.'); return; }
 
-        sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
+    //     sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
 
-        if (window.MX_IS_LOGGED_IN) {
-            isGuestFlow = false;
-            openMembershipPayModal();
-        } else {
+    //     if (window.MX_IS_LOGGED_IN) {
+    //         isGuestFlow = false;
+    //         openMembershipPayModal();
+    //     } else {
+
+        /* ====================== SELECT PLAN ====================== */
+$(document).on('click', '.join-btn[data-plan-id]', function () {
+    var planId = $(this).data('plan-id');
+    selectedPlan = (window.membershipPlans || []).find(function (p) { return p.id == planId; });
+    if (!selectedPlan) { alert('Plan not found.'); return; }
+
+    sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
+
+    if (window.MX_IS_LOGGED_IN) {
+        isGuestFlow = false;
+        // Skip payment modal and directly submit request for logged-in users
+        submitLoggedInRequestWithoutPayment();
+        // FUTURE: Uncomment below to enable payment modal for logged-in users
+        // openMembershipPayModal();
+    } else {
             isGuestFlow = true;
             var modal = new bootstrap.Modal(document.getElementById('mxAuthModal'));
             modal.show();
@@ -429,6 +445,37 @@ $(function () {
         openModal('#mxMemberSuccessModal');
     }
 
+    /* ====================== LOGGED-IN REQUEST WITHOUT PAYMENT (ADMIN APPROVAL) ====================== */
+async function submitLoggedInRequestWithoutPayment() {
+    try {
+        var res = await fetch('/membership/request', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.MX_CSRF,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                membership_plan_id: selectedPlan.id,
+                amount_paid: selectedPlan.price,
+                payment_method: 'pending', // Pending payment, awaiting admin approval
+            }),
+        });
+        var data = await res.json();
+
+        if (!res.ok || !data.status) {
+            alert(data.message || 'Request failed. Please try again.');
+            return;
+        }
+
+        sessionStorage.removeItem('mx_membership_plan');
+        showLoggedInSuccessModal();
+
+    } catch (err) {
+        alert('Network error. Please try again.');
+    }
+}
     /* ====================== CARD FORMATTING ====================== */
     $('#mxCardNum').on('input', function () {
         var r = $(this).val().replace(/\D/g, '').slice(0, 16);
