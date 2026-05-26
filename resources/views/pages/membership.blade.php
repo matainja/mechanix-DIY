@@ -1006,7 +1006,7 @@
         </div>
 
         {{-- Actions --}}
-        <div class="mx-success-actions"
+        <!-- <div class="mx-success-actions"
              style="margin-top:14px;padding:0 18px;gap:10px;">
 
             <button type="button"
@@ -1023,7 +1023,7 @@
                 <i class="fa-solid fa-phone"></i>
                 Call to Upgrade
             </a>
-        </div>
+        </div> -->
     </div>
 </div>
 
