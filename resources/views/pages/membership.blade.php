@@ -848,102 +848,184 @@
     just before the closing </main> tag (alongside the other modals).
     ══════════════════════════════════════════════════════════════
 --}}
-
 <div id="mxAlreadyMemberModal" class="mx-modal-overlay" aria-hidden="true">
-    <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true"
-         aria-labelledby="mxAMTitle" style="max-width:500px;">
+    <div class="mx-modal-card mx-success-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="mxAMTitle"
+         style="
+            max-width:460px;
+            padding:16px 0;
+            max-height:92vh;
+            overflow:hidden;
+         ">
 
         {{-- Close button --}}
-        <button type="button" class="mx-modal-close"
-                onclick="closeAlreadyMemberModal()" aria-label="Close">&times;</button>
+        <button type="button"
+                class="mx-modal-close"
+                onclick="closeAlreadyMemberModal()"
+                aria-label="Close"
+                style="top:10px;right:12px;">
+            &times;
+        </button>
 
         {{-- Icon --}}
-       <div class="mx-success-anim" style="padding-top:12px;">
-    <svg width="32" height="32" viewBox="0 0 56 56" fill="none"
-         xmlns="http://www.w3.org/2000/svg">
-        <circle cx="28" cy="28" r="27" stroke="#dd2b31" stroke-width="2"/>
-        <path d="M28 16v14" stroke="#dd2b31" stroke-width="2.5"
-              stroke-linecap="round"/>
-        <circle cx="28" cy="38" r="1.5" fill="#dd2b31"/>
-    </svg>
-</div>
+        <div class="mx-success-anim" style="padding-top:4px;margin-bottom:4px;">
+            <svg width="30" height="30" viewBox="0 0 56 56" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+                <circle cx="28" cy="28" r="27" stroke="#dd2b31" stroke-width="2"/>
+                <path d="M28 16v14" stroke="#dd2b31" stroke-width="2.5"
+                      stroke-linecap="round"/>
+                <circle cx="28" cy="38" r="1.5" fill="#dd2b31"/>
+            </svg>
+        </div>
 
         {{-- Title --}}
-        <div id="mxAMTitle" class="mx-success-title"
-             style="font-size:1.25rem;margin-top:4px;">
+        <div id="mxAMTitle"
+             class="mx-success-title"
+             style="font-size:1.1rem;margin-top:0;">
             You're Already a Member!
         </div>
-        <div class="mx-success-sub" style="margin-bottom:16px;">
+
+        <div class="mx-success-sub"
+             style="margin-bottom:10px;font-size:13px;line-height:1.4;">
             Your current plan is active. To upgrade or cancel, please call us.
         </div>
 
         {{-- Current plan receipt --}}
-        <div class="mx-receipt" style="padding:0 20px;">
+        <div class="mx-receipt" style="padding:0 18px;">
             <div class="mx-receipt-row">
                 <span class="mx-receipt-label">Current Plan</span>
                 <span class="mx-receipt-value" id="mxAMPlanName">—</span>
             </div>
+
             <div class="mx-receipt-row">
                 <span class="mx-receipt-label">Price</span>
                 <span class="mx-receipt-value" id="mxAMPrice">—</span>
             </div>
+
             <div class="mx-receipt-row">
                 <span class="mx-receipt-label">Duration</span>
                 <span class="mx-receipt-value" id="mxAMDuration">—</span>
             </div>
-            <div class="mx-receipt-divider"></div>
+
+            <div class="mx-receipt-divider" style="margin:8px 0;"></div>
+
             <div class="mx-receipt-row">
                 <span class="mx-receipt-label">Started</span>
                 <span class="mx-receipt-value" id="mxAMStartDate">—</span>
             </div>
+
             <div class="mx-receipt-row">
                 <span class="mx-receipt-label">Expires</span>
                 <span class="mx-receipt-value" id="mxAMEndDate">—</span>
             </div>
+
             <div class="mx-receipt-row mx-receipt-total">
                 <span class="mx-receipt-label">Status</span>
-                <span class="mx-receipt-value" style="color:#22c55e;"
-                      id="mxAMDaysLeft">—</span>
+                <span class="mx-receipt-value"
+                      style="color:#22c55e;"
+                      id="mxAMDaysLeft">
+                    —
+                </span>
             </div>
         </div>
 
-        {{-- Features (shown only when plan has features) --}}
-        <div class="mx-am-features-wrap" style="padding:0 20px;margin-top:12px;">
-            <p style="color:#64748b;font-size:12px;font-weight:700;
-                      letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">
+        {{-- Features --}}
+        <div class="mx-am-features-wrap"
+             style="padding:0 18px;margin-top:10px;">
+
+            <p style="
+                color:#64748b;
+                font-size:11px;
+                font-weight:700;
+                letter-spacing:.8px;
+                text-transform:uppercase;
+                margin-bottom:6px;
+            ">
                 Included in your plan
             </p>
+
             <ul id="mxAMFeatureList"
-    style="
-        list-style:none;
-        padding:0;
-        margin:0;
-        display:grid;
-        grid-template-columns:repeat(3, 1fr);
-        gap:6px 12px;
-    ">
-</ul>
+                style="
+                    list-style:none;
+                    padding:0;
+                    margin:0;
+                    display:grid;
+                    grid-template-columns:repeat(3,1fr);
+                    gap:4px 10px;
+                ">
+            </ul>
         </div>
 
-        {{-- Call-admin contact block --}}
-        <div class="mx-garage-contact" style="margin:18px 20px 0;padding-top:16px;
-             border-top:1px solid rgba(255,255,255,0.08);text-align:center;">
-            <p style="color:#94a3b8;margin-bottom:10px;font-size:11px;
-                      font-weight:700;letter-spacing:1px;">
+        {{-- Contact block --}}
+        <div class="mx-garage-contact"
+             style="
+                margin:12px 18px 0;
+                padding-top:10px;
+                border-top:1px solid rgba(255,255,255,0.08);
+                text-align:center;
+             ">
+
+            <p style="
+                color:#94a3b8;
+                margin-bottom:6px;
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:.8px;
+            ">
                 TO UPGRADE OR CANCEL YOUR MEMBERSHIP
             </p>
-            <a href="tel:7327307712" class="mx-phone-link"
-               style="text-decoration:none;">
+
+            <a href="tel:7327307712"
+               class="mx-phone-link"
+               style="
+                    text-decoration:none;
+                    transform:scale(.92);
+                    display:inline-flex;
+                    align-items:center;
+                    gap:8px;
+               ">
+
                 <i class="fa-solid fa-phone-volume"></i>
+
                 <div class="mx-phone-content">
                     <span class="mx-phone-number">732-730-7712</span>
                     <span class="mx-phone-extension">EXTENSION 3</span>
                 </div>
             </a>
-            <p style="color:#64748b;margin-top:10px;font-size:11px;line-height:1.5;">
-                Mon–Fri &nbsp;9 AM – 6 PM &nbsp;|&nbsp; Sat &nbsp;9 AM – 12 PM
+
+            <p style="
+                color:#64748b;
+                margin-top:6px;
+                font-size:10px;
+                line-height:1.3;
+            ">
+                Mon–Fri 9 AM – 6 PM | Sat 9 AM – 12 PM
             </p>
         </div>
+
+        {{-- Actions --}}
+        <div class="mx-success-actions"
+             style="margin-top:14px;padding:0 18px;gap:10px;">
+
+            <button type="button"
+                    class="mx-btn-outline"
+                    onclick="closeAlreadyMemberModal()"
+                    style="padding:10px 14px;">
+                Close
+            </button>
+
+            <a href="tel:7327307712"
+               class="mx-btn-solid"
+               style="text-decoration:none;padding:10px 14px;">
+
+                <i class="fa-solid fa-phone"></i>
+                Call to Upgrade
+            </a>
+        </div>
+    </div>
+</div>
 
         {{-- Actions --}}
         <!-- <div class="mx-success-actions" style="margin-top:20px;">
