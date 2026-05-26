@@ -510,48 +510,52 @@ function showPendingRequestModal(data) {
        LOGGED-IN REQUEST WITHOUT PAYMENT (admin-approval flow, current default)
     ================================================================ */
     async function submitLoggedInRequestWithoutPayment() {
-        try {
-            var res  = await fetch('/membership/request', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    membership_plan_id: selectedPlan.id,
-                    amount_paid:        selectedPlan.price,
-                    payment_method:     'pending',
-                }),
-            });
 
-            // In submitLoggedInRequestWithoutPayment function, after the fetch:
-if (!res.ok || !data.status) {
-    if (res.status === 429 && data.pending_request) {
-        showPendingRequestModal(data);
-    } else {
-        alert(data.message || 'Request failed.');
-    }
-    return;
-}
-            var data = await res.json();
-            if (!res.ok || !data.status) { alert(data.message || 'Request failed.'); return; }
-            sessionStorage.removeItem('mx_membership_plan');
-            showLoggedInSuccessModal();
-        } catch (err) {
-            alert('Network error. Please try again.');
+    try {
+
+        var res = await fetch('/membership/request', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.MX_CSRF,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                membership_plan_id: selectedPlan.id,
+                amount_paid: selectedPlan.price,
+                payment_method: 'pending',
+            }),
+        });
+
+        var data = await res.json();
+
+        // Handle errors / pending request
+        if (!res.ok || !data.status) {
+
+            if (res.status === 429 && data.pending_request) {
+
+                showPendingRequestModal(data);
+
+            } else {
+
+                alert(data.message || 'Request failed.');
+
+            }
+
+            return;
         }
-    }
 
-    function showLoggedInSuccessModal() {
-        $('#mxMemberPlanName').text(selectedPlan.name);
-        $('#mxMsName').text(selectedPlan.name);
-        $('#mxMsDuration').text(selectedPlan.duration_days + ' days');
-        $('#mxMsAmount').text('$' + parseFloat(selectedPlan.price).toFixed(2));
-        openModal('#mxMemberSuccessModal');
-    }
+        sessionStorage.removeItem('mx_membership_plan');
 
+        showLoggedInSuccessModal();
+
+    } catch (err) {
+
+        alert('Network error. Please try again.');
+
+    }
+}
     /* ================================================================
        CARD FORMATTING
     ================================================================ */
