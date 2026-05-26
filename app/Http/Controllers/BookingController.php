@@ -232,7 +232,7 @@ for ($i = 0; $i < $hours; $i++) {
 
            foreach ($times as $time) {
 
-   foreach ($times as $time) {
+   
     BookingSlot::updateOrCreate(
         [
             'date'        => $date,
