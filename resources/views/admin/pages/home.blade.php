@@ -27,125 +27,143 @@
         <!-- [ Main Content ] start -->
         <div class="row">
 
-            <!-- Confirmed Bookings -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Confirmed Bookings
-                        </h6>
+    <!-- Confirmed Bookings -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Confirmed Bookings
+                    </h6>
 
-                        <h4 class="mb-3">
-                            {{ number_format($confirmedBookings) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        {{ number_format($confirmedBookings) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Pending Bookings -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Pending Bookings
-                        </h6>
+    <!-- Pending Bookings -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Pending Bookings
+                    </h6>
 
-                        <h4 class="mb-3">
-                            {{ number_format($pendingBookings) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        {{ number_format($pendingBookings) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- canceled Bookings -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Cancelled Bookings
-                        </h6>
+    <!-- Cancelled Bookings -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Cancelled Bookings
+                    </h6>
 
-                        <h4 class="mb-3">
-                            {{ number_format($cancelledBookings) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        {{ number_format($cancelledBookings) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Regular Bookings -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Regular Bookings
-                        </h6>
+    <!-- Regular Bookings -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Regular Bookings
+                    </h6>
 
-                        <h4 class="mb-3">
-                            {{ number_format($regularBookings) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        {{ number_format($regularBookings) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Guest Bookings -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Guest Bookings
-                        </h6>
+    <!-- Guest Bookings -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Guest Bookings
+                    </h6>
 
-                        <h4 class="mb-3">
-                            {{ number_format($guestBookings) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        {{ number_format($guestBookings) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Total Users -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Total Users
-                        </h6>
+    <!-- Total Users -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Total Users
+                    </h6>
 
-                        <h4 class="mb-3">
-                            {{ number_format($totalUsers) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        {{ number_format($totalUsers) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Total Holidays -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Total Holidays
-                        </h6>
+    <!-- Total Holidays -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Total Holidays
+                    </h6>
 
-                        <h4 class="mb-3">
-                            {{ number_format($totalHolidays) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        {{ number_format($totalHolidays) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Overall Revenue -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="mb-2 f-w-400 text-muted">
-                            Overall Revenue
-                        </h6>
+    <!-- Overall Revenue -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 f-w-400 text-muted">
+                        Overall Revenue
+                    </h6>
 
-                        <h4 class="mb-3">
-                            ${{ number_format($totalRevenue, 2) }}
-                        </h4>
-                    </div>
+                    <h4 class="mb-0 fw-bold">
+                        ${{ number_format($totalRevenue, 2) }}
+                    </h4>
                 </div>
             </div>
+        </div>
+    </div>
+
+</div>
 
             <!-- Monthly Revenue -->
             <div class="col-md-6 col-xl-3">
@@ -229,7 +247,7 @@
                         data-bs-toggle="tab"
                         data-bs-target="#regular"
                         type="button">
-                    Regular Users
+                    Registered Users
                 </button>
             </li>
 

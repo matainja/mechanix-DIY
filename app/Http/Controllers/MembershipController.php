@@ -348,4 +348,42 @@ public function deletePlan($id)
     }
 }
 
+public function myMembership()
+{
+    if (!auth()->check()) {
+        return response()->json(['status' => false, 'membership' => null]);
+    }
+ 
+    $membership = \App\Models\UserMembership::with('membershipPlan')
+        ->where('user_id', auth()->id())
+        ->where('status', 'active')
+        ->where('end_date', '>=', now())
+        ->latest('start_date')
+        ->first();
+ 
+    if (!$membership) {
+        return response()->json(['status' => true, 'membership' => null]);
+    }
+ 
+    return response()->json([
+        'status'     => true,
+        'membership' => [
+            'plan_name'    => optional($membership->membershipPlan)->name ?? 'Membership',
+            'price'        => optional($membership->membershipPlan)->price ?? 0,
+            'duration_days'=> optional($membership->membershipPlan)->duration_days ?? 0,
+            'start_date'   => $membership->start_date
+                                ? \Carbon\Carbon::parse($membership->start_date)->format('M d, Y')
+                                : '—',
+            'end_date'     => $membership->end_date
+                                ? \Carbon\Carbon::parse($membership->end_date)->format('M d, Y')
+                                : '—',
+            'days_left'    => $membership->end_date
+                                ? max(0, (int) now()->diffInDays($membership->end_date, false))
+                                : 0,
+            'features'     => optional($membership->membershipPlan)->features ?? '[]',
+        ],
+    ]);
+}
+ 
+
 }

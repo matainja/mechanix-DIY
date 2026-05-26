@@ -511,13 +511,81 @@
         <div id="mxSuccessModal" class="mx-modal-overlay" aria-hidden="true">
             <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true"
                 aria-labelledby="mxSuccessTitle">
-                <div class="mx-success-anim">
-                    <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
-                        <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
-                        <path class="mx-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                    </svg>
-                </div>
+                <div class="mx-success-anim"
+     style="
+        width:58px;
+        height:58px;
+        margin:0 auto 8px;
+     ">
+
+    <svg class="mx-checkmark"
+         viewBox="0 0 52 52"
+         xmlns="http://www.w3.org/2000/svg"
+         style="
+            width:40px;
+            height:40px;
+         ">
+
+        <circle class="mx-checkmark-circle"
+                cx="26"
+                cy="26"
+                r="25"
+                fill="none" />
+
+        <path class="mx-checkmark-check"
+              fill="none"
+              d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+    </svg>
+
+</div>
                 <div id="mxSuccessTitle" class="mx-success-title">Booking Confirmed!</div>
+                        <div class="mx-garage-contact"
+     style="
+        background:#1e293b;
+        padding:8px 10px;
+        border-radius:8px;
+        margin:8px 0;
+        text-align:center;
+        line-height:1.2;
+     ">
+
+    <p style="
+        color:#94a3b8;
+        margin:0 0 4px;
+        font-size:10px;
+        font-weight:600;
+        letter-spacing:.4px;
+    ">
+        CALL TO CONFIRM
+    </p>
+
+    <a href="tel:+17327307712"
+       class="mx-phone-link"
+       style="
+          color:#22c55e;
+          font-size:14px;
+          font-weight:700;
+          text-decoration:none;
+          display:inline-flex;
+          align-items:center;
+          gap:5px;
+          margin:0;
+       ">
+
+        <i class="fa-solid fa-phone" style="font-size:11px;"></i>
+
+        732-730-7712 EXT. 3
+    </a>
+
+    <p style="
+        color:#94a3b8;
+        margin:4px 0 0;
+        font-size:9px;
+    ">
+        Mon–Fri 9AM–6PM • Sat 9AM–12PM
+    </p>
+
+</div>
                 {{-- <div class="mx-success-sub">Your booking ID is <strong id="mxSuccessBookingId">—</strong></div> --}}
                 <div class="mx-receipt mx-success-receipt">
                     <div class="mx-receipt-row"><span class="mx-receipt-label">Workstation</span><span
@@ -709,52 +777,99 @@
     &times;
 
 </button>
-            <div class="mx-success-anim">
-                <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
-                    <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
-                    <path class="mx-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                </svg>
-            </div>
+           <div class="mx-success-anim"
+     style="
+        width:58px;
+        height:58px;
+        margin:0 auto 8px;
+     ">
+
+    <svg class="mx-checkmark"
+         viewBox="0 0 52 52"
+         xmlns="http://www.w3.org/2000/svg"
+         style="
+            width:40px;
+            height:40px;
+         ">
+
+        <circle class="mx-checkmark-circle"
+                cx="26"
+                cy="26"
+                r="25"
+                fill="none" />
+
+        <path class="mx-checkmark-check"
+              fill="none"
+              d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+    </svg>
+
+</div>
             <div class="mx-success-title">Slot Reserved!</div>
             {{-- <div class="mx-success-sub">Booking ID: <strong id="mxGuestBookingId">—</strong></div> --}}
-            <div class="alert alert-warning mx-mini-timer">
+           <div class="mx-mini-timer"
+     style="
+        background:#1e293b;
+        border:1px solid #334155;
+        border-radius:8px;
+        padding:6px 10px;
+        margin:8px 0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        font-size:12px;
+        line-height:1;
+     ">
 
-    <div class="mx-mini-timer-wrap">
+    <i class="fa-solid fa-clock"
+       style="
+          color:#f59e0b;
+          font-size:12px;
+       "></i>
 
-        <i class="fa-solid fa-clock"></i>
+    <span style="color:#cbd5e1;">
+        Time Left:
+    </span>
 
-        <div>
-            <strong>
-                Time Left:
-                <span id="mxGuestTimer">30:00</span>
-            </strong>
+    <strong id="mxGuestTimer"
+            style="
+                color:#fbbf24;
+                font-size:13px;
+                margin-right:4px;
+            ">
+        30:00
+    </strong>
 
-            <p>
-                Slot releases if not confirmed
-            </p>
-        </div>
-
-    </div>
+    <span style="
+        color:#64748b;
+        font-size:11px;
+    ">
+        Slot auto releases
+    </span>
 
 </div>
             <div class="mx-garage-contact"
      style="
         background:#1e293b;
-        padding:10px 12px;
+        padding:10px 14px;
         border-radius:10px;
-        margin:12px 0;
-        text-align:center;
+        margin:10px 0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:14px;
+        flex-wrap:wrap;
      ">
 
-    <p style="
+    <span style="
         color:#94a3b8;
-        margin-bottom:6px;
         font-size:11px;
         font-weight:700;
-        letter-spacing:.5px;
+        letter-spacing:.4px;
+        line-height:1;
     ">
         CALL TO CONFIRM
-    </p>
+    </span>
 
     <a href="tel:+11234567890"
        class="mx-phone-link"
@@ -763,24 +878,25 @@
           font-size:15px;
           font-weight:700;
           text-decoration:none;
-          display:inline-flex;
+          display:flex;
           align-items:center;
           gap:6px;
+          line-height:1;
        ">
 
         <i class="fa-solid fa-phone" style="font-size:12px;"></i>
 
-        732-730-7712 EXTENSION 3
+        732-730-7712 EXT 3
     </a>
 
-    <p style="
+    <span style="
         color:#94a3b8;
-        margin-top:6px;
         font-size:10px;
-        line-height:1.4;
+        line-height:1;
+        white-space:nowrap;
     ">
-        Mon–Fri 9AM–6PM | Sat 9AM–12PM
-    </p>
+        Mon–Fri 9AM–6PM
+    </span>
 
 </div>
             <div class="mx-receipt mx-success-receipt">
@@ -809,7 +925,7 @@
                 </div>
             </div>
             <div class="mx-modal-actions mx-success-actions">
-                <a href="tel:+11234567890" class="mx-btn-solid" style="text-decoration:none;">
+                <a href="tel:+732-730-7712" class="mx-btn-solid" style="text-decoration:none;">
                     <i class="fa-solid fa-phone"></i> Call Now to Confirm
                 </a>
             </div>

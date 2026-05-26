@@ -840,6 +840,146 @@
     </div>
 
   </div>
+
+  {{--
+    ══════════════════════════════════════════════════════════════
+    ALREADY-A-MEMBER MODAL
+    Paste this anywhere inside the <main> section of membership.blade.php,
+    just before the closing </main> tag (alongside the other modals).
+    ══════════════════════════════════════════════════════════════
+--}}
+
+<div id="mxAlreadyMemberModal" class="mx-modal-overlay" aria-hidden="true">
+    <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true"
+         aria-labelledby="mxAMTitle" style="max-width:500px;">
+
+        {{-- Close button --}}
+        <button type="button" class="mx-modal-close"
+                onclick="closeAlreadyMemberModal()" aria-label="Close">&times;</button>
+
+        {{-- Icon --}}
+        <div class="mx-success-anim" style="padding-top:32px;">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+                <circle cx="28" cy="28" r="27" stroke="#dd2b31" stroke-width="2"/>
+                <path d="M28 16v14" stroke="#dd2b31" stroke-width="2.5"
+                      stroke-linecap="round"/>
+                <circle cx="28" cy="38" r="1.5" fill="#dd2b31"/>
+            </svg>
+        </div>
+
+        {{-- Title --}}
+        <div id="mxAMTitle" class="mx-success-title"
+             style="font-size:1.25rem;margin-top:4px;">
+            You're Already a Member!
+        </div>
+        <div class="mx-success-sub" style="margin-bottom:16px;">
+            Your current plan is active. To upgrade or cancel, please call us.
+        </div>
+
+        {{-- Current plan receipt --}}
+        <div class="mx-receipt" style="padding:0 20px;">
+            <div class="mx-receipt-row">
+                <span class="mx-receipt-label">Current Plan</span>
+                <span class="mx-receipt-value" id="mxAMPlanName">—</span>
+            </div>
+            <div class="mx-receipt-row">
+                <span class="mx-receipt-label">Price</span>
+                <span class="mx-receipt-value" id="mxAMPrice">—</span>
+            </div>
+            <div class="mx-receipt-row">
+                <span class="mx-receipt-label">Duration</span>
+                <span class="mx-receipt-value" id="mxAMDuration">—</span>
+            </div>
+            <div class="mx-receipt-divider"></div>
+            <div class="mx-receipt-row">
+                <span class="mx-receipt-label">Started</span>
+                <span class="mx-receipt-value" id="mxAMStartDate">—</span>
+            </div>
+            <div class="mx-receipt-row">
+                <span class="mx-receipt-label">Expires</span>
+                <span class="mx-receipt-value" id="mxAMEndDate">—</span>
+            </div>
+            <div class="mx-receipt-row mx-receipt-total">
+                <span class="mx-receipt-label">Status</span>
+                <span class="mx-receipt-value" style="color:#22c55e;"
+                      id="mxAMDaysLeft">—</span>
+            </div>
+        </div>
+
+        {{-- Features (shown only when plan has features) --}}
+        <div class="mx-am-features-wrap" style="padding:0 20px;margin-top:12px;">
+            <p style="color:#64748b;font-size:12px;font-weight:700;
+                      letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">
+                Included in your plan
+            </p>
+            <ul id="mxAMFeatureList"
+                style="list-style:none;padding:0;margin:0;display:flex;
+                       flex-wrap:wrap;gap:6px 16px;">
+            </ul>
+        </div>
+
+        {{-- Call-admin contact block --}}
+        <div class="mx-garage-contact" style="margin:18px 20px 0;padding-top:16px;
+             border-top:1px solid rgba(255,255,255,0.08);text-align:center;">
+            <p style="color:#94a3b8;margin-bottom:10px;font-size:11px;
+                      font-weight:700;letter-spacing:1px;">
+                TO UPGRADE OR CANCEL YOUR MEMBERSHIP
+            </p>
+            <a href="tel:7327307712" class="mx-phone-link"
+               style="text-decoration:none;">
+                <i class="fa-solid fa-phone-volume"></i>
+                <div class="mx-phone-content">
+                    <span class="mx-phone-number">732-730-7712</span>
+                    <span class="mx-phone-extension">EXTENSION 3</span>
+                </div>
+            </a>
+            <p style="color:#64748b;margin-top:10px;font-size:11px;line-height:1.5;">
+                Mon–Fri &nbsp;9 AM – 6 PM &nbsp;|&nbsp; Sat &nbsp;9 AM – 12 PM
+            </p>
+        </div>
+
+        {{-- Actions --}}
+        <!-- <div class="mx-success-actions" style="margin-top:20px;">
+            <button type="button" class="mx-btn-outline"
+                    onclick="closeAlreadyMemberModal()">
+                Close
+            </button>
+            <a href="tel:7327307712" class="mx-btn-solid" style="text-decoration:none;">
+                <i class="fa-solid fa-phone"></i> Call to Upgrade
+            </a>
+        </div> -->
+
+    </div>
+</div>
+
+{{-- Inline style additions for the already-member modal feature list --}}
+<style>
+#mxAMFeatureList li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #cbd5e1;
+    font-size: 13px;
+    width: calc(50% - 8px);
+}
+.mx-am-check {
+    width: 16px;
+    height: 16px;
+    background: #dd2b31;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: #fff;
+    flex-shrink: 0;
+    line-height: 1;
+}
+@media (max-width: 480px) {
+    #mxAMFeatureList li { width: 100%; }
+}
+</style>
 </main>
 
 {{-- AUTH MODAL --}}

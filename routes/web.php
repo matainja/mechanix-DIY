@@ -73,7 +73,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('/membership-requests', [MembershipController::class, 'getAllRequests'])->name('admin.membership.requests');
         Route::post('/membership-requests/{id}/approve', [MembershipController::class, 'approveRequest'])->name('admin.membership.approve');
         Route::post('/membership-requests/{id}/reject', [MembershipController::class, 'rejectRequest'])->name('admin.membership.reject');
-    
+        
         Route::post('/membership-plans', [MembershipController::class, 'storePlan'])->name('membership.plans.store');
         Route::delete('/membership-plan/{id}', [MembershipController::class, 'deletePlan'])
     ->name('membership.plan.delete');
@@ -81,6 +81,7 @@ Route::middleware(['auth', 'admin'])
     Route::post('/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('bookings.approve');
 Route::post('/bookings/{id}/cancel',  [AdminController::class, 'cancelBooking'])->name('bookings.cancel');
 Route::delete('/bookings/{id}',       [AdminController::class, 'deleteBooking'])->name('bookings.delete');
+
         });
 
 //Loin & Register Popup
@@ -100,3 +101,4 @@ Route::get('/membership/plans', [MembershipController::class, 'getPlans'])->name
 Route::post('/membership/request', [MembershipController::class, 'submitRequest'])->middleware('auth')->name('membership.request');
 Route::post('/membership/guest-request', [MembershipController::class, 'submitGuestRequest'])->name('membership.guest-request');
 Route::post('/membership/guest-payment', [MembershipController::class, 'guestPayment'])->name('membership.guest-payment');  // ← Add this
+Route::get('/membership/my-membership', [MembershipController::class, 'myMembership']);
