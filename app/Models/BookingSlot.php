@@ -1,5 +1,5 @@
 <?php
-// app/Models/BookingSlot.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +14,9 @@ class BookingSlot extends Model
         'status',
     ];
 
-    // 🔧 Add this relationship
+    /**
+     * Get the booking that owns this slot
+     */
     public function booking()
     {
         return $this->belongsTo(Booking::class);
