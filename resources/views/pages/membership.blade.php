@@ -914,9 +914,15 @@
                 Included in your plan
             </p>
             <ul id="mxAMFeatureList"
-                style="list-style:none;padding:0;margin:0;display:flex;
-                       flex-wrap:wrap;gap:6px 16px;">
-            </ul>
+    style="
+        list-style:none;
+        padding:0;
+        margin:0;
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:6px 12px;
+    ">
+</ul>
         </div>
 
         {{-- Call-admin contact block --}}
@@ -955,29 +961,38 @@
 
 {{-- Inline style additions for the already-member modal feature list --}}
 <style>
-#mxAMFeatureList li {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #cbd5e1;
-    font-size: 13px;
-    width: calc(50% - 8px);
+#mxAMFeatureList li{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    color:#cbd5e1;
+    font-size:12px;
+    min-width:0;
 }
-.mx-am-check {
-    width: 16px;
-    height: 16px;
-    background: #dd2b31;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    color: #fff;
-    flex-shrink: 0;
-    line-height: 1;
+
+.mx-am-check{
+    width:14px;
+    height:14px;
+    background:#dd2b31;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:8px;
+    color:#fff;
+    flex-shrink:0;
+    line-height:1;
 }
-@media (max-width: 480px) {
-    #mxAMFeatureList li { width: 100%; }
+@media (max-width:768px){
+    #mxAMFeatureList{
+        grid-template-columns:repeat(2,1fr) !important;
+    }
+}
+
+@media (max-width:480px){
+    #mxAMFeatureList{
+        grid-template-columns:1fr !important;
+    }
 }
 </style>
 </main>
