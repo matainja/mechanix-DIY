@@ -509,7 +509,7 @@ function showPendingRequestModal(data) {
     /* ================================================================
        LOGGED-IN REQUEST WITHOUT PAYMENT (admin-approval flow, current default)
     ================================================================ */
-    async function submitLoggedInRequestWithoutPayment() {
+   async function submitLoggedInRequestWithoutPayment() {
 
     try {
 
@@ -528,11 +528,13 @@ function showPendingRequestModal(data) {
             }),
         });
 
+        // FIRST decode response
         var data = await res.json();
 
-        // Handle errors / pending request
+        // THEN check response
         if (!res.ok || !data.status) {
 
+            // Handle cooldown/pending request
             if (res.status === 429 && data.pending_request) {
 
                 showPendingRequestModal(data);
@@ -540,20 +542,21 @@ function showPendingRequestModal(data) {
             } else {
 
                 alert(data.message || 'Request failed.');
-
             }
 
             return;
         }
 
+        // SUCCESS
         sessionStorage.removeItem('mx_membership_plan');
 
         showLoggedInSuccessModal();
 
     } catch (err) {
 
-        alert('Network error. Please try again.');
+        console.log(err);
 
+        alert('Network error. Please try again.');
     }
 }
     /* ================================================================
