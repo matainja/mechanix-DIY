@@ -41,11 +41,14 @@ class BookingController extends Controller
             $hours       = (int) $request->hours;
             $workstation = (int) $request->workstation;
 
-            $times = [];
-            for ($i = 0; $i < $hours; $i++) {
-                $hour    = $startHour + $i;
-                $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00';
-            }
+           $times = [];
+
+for ($i = 0; $i < $hours; $i++) {
+
+    $hour = $startHour + $i;
+
+    $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+}
 
             $exists = BookingSlot::where('date', $date)
                 ->where('workstation', $workstation)
@@ -184,12 +187,14 @@ class BookingController extends Controller
             $hours       = (int) $validated['hours'];
             $workstation = (int) $validated['workstation'];
 
-            $times = [];
-            for ($i = 0; $i < $hours; $i++) {
-                $hour    = $startHour + $i;
-                $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00';
-            }
+           $times = [];
 
+for ($i = 0; $i < $hours; $i++) {
+
+    $hour = $startHour + $i;
+
+    $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+}
             // Check for any already-booked or pending slots in the same window
             $exists = BookingSlot::where('date', $date)
                 ->where('workstation', $workstation)
