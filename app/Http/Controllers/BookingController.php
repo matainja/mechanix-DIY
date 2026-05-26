@@ -78,19 +78,19 @@ class BookingController extends Controller
 
             foreach ($times as $time) {
 
-    foreach ($times as $time) {
-    BookingSlot::updateOrCreate(
-        [
-            'date'        => $date,
-            'time'        => $time,
-            'workstation' => $workstation,
-        ],
-        [
-            'booking_id'  => $booking->id,
-            'status'      => 'booked',
-        ]
-    );
-}
+                
+                BookingSlot::updateOrCreate(
+                    [
+                        'date'        => $date,
+                        'time'        => $time,
+                        'workstation' => $workstation,
+                    ],
+                    [
+                        'booking_id'  => $booking->id,
+                        'status'      => 'booked',
+                    ]
+                );
+            }
             return response()->json([
                 'status'     => true,
                 'booking_id' => $booking->id,
