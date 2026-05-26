@@ -99,7 +99,7 @@ class BookingController extends Controller
     // }
 
 
-    public function store(StoreBookingRequest $request)
+   public function store(StoreBookingRequest $request)
 {
     return DB::transaction(function () use ($request) {
 
@@ -137,9 +137,22 @@ class BookingController extends Controller
             ], 409);
         }
 
-        // Rest of your code...
-        $booking = Booking::create([...]);
+        // Create the booking
+        $booking = Booking::create([
+            'user_id'       => auth()->id(),
+            'date'          => $date,
+            'product_id'    => $request->product_id,
+            'start_time'    => $request->start,
+            'hours'         => $hours,
+            'lift_type'     => $request->lift,
+            'workstation'   => $workstation,
+            'package_hours' => $request->package,
+            'rate_per_hour' => $request->total / $hours,
+            'total'         => $request->total,
+            'status'        => 'confirmed',
+        ]);
 
+        // Create or update booking slots
         foreach ($times as $time) {
             BookingSlot::updateOrCreate(
                 [
@@ -320,7 +333,18 @@ class BookingController extends Controller
 
 public function storeGuestBooking(Request $request)
 {
-    $validated = $request->validate([...]);
+    $validated = $request->validate([
+        'guest_name'  => 'required|string|max:255',
+        'guest_phone' => 'required|string|max:20',
+        'date'        => 'required|date',
+        'start'       => 'required|string',
+        'hours'       => 'required|integer|min:1',
+        'lift'        => 'required|string',
+        'package'     => 'required|integer',
+        'workstation' => 'required|integer',
+        'total'       => 'required|numeric',
+        'product_id'  => 'nullable|exists:products,id',
+    ]);
 
     return DB::transaction(function () use ($validated) {
         $date        = $validated['date'];
@@ -359,8 +383,26 @@ public function storeGuestBooking(Request $request)
 
         $expiresAt = now()->addMinutes(30);
 
-        $booking = Booking::create([...]);
+        // Create the booking
+        $booking = Booking::create([
+            'user_id'       => null,
+            'guest_name'    => $validated['guest_name'],
+            'guest_phone'   => $validated['guest_phone'],
+            'date'          => $date,
+            'product_id'    => $validated['product_id'] ?? null,
+            'start_time'    => $validated['start'],
+            'hours'         => $hours,
+            'lift_type'     => $validated['lift'],
+            'workstation'   => $workstation,
+            'package_hours' => $validated['package'],
+            'rate_per_hour' => $validated['total'] / $hours,
+            'total'         => $validated['total'],
+            'status'        => 'pending',
+            'booking_type'  => 'guest',
+            'expires_at'    => $expiresAt,
+        ]);
 
+        // Create or update booking slots
         foreach ($times as $time) {
             BookingSlot::updateOrCreate(
                 [
