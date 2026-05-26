@@ -43,12 +43,12 @@ class BookingController extends Controller
 
            $times = [];
 
-for ($i = 0; $i < $hours; $i++) {
+                for ($i = 0; $i < $hours; $i++) {
 
-    $hour = $startHour + $i;
+                    $hour = $startHour + $i;
 
-    $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
-}
+                    $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+                }
 
             $exists = BookingSlot::where('date', $date)
                 ->where('workstation', $workstation)
