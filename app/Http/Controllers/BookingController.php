@@ -32,71 +32,134 @@ class BookingController extends Controller
         return view('pages.booking', compact('product', 'allLiftProducts'));
     }
 
-    public function store(StoreBookingRequest $request)
-    {
-        return DB::transaction(function () use ($request) {
+    // public function store(StoreBookingRequest $request)
+    // {
+    //     return DB::transaction(function () use ($request) {
 
-            $date        = $request->date;
-            $startHour   = (int) substr($request->start, 0, 2);
-            $hours       = (int) $request->hours;
-            $workstation = (int) $request->workstation;
+    //         $date        = $request->date;
+    //         $startHour   = (int) substr($request->start, 0, 2);
+    //         $hours       = (int) $request->hours;
+    //         $workstation = (int) $request->workstation;
 
-           $times = [];
+    //        $times = [];
 
-                for ($i = 0; $i < $hours; $i++) {
+    //             for ($i = 0; $i < $hours; $i++) {
 
-                    $hour = $startHour + $i;
+    //                 $hour = $startHour + $i;
 
-                    $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
-                }
+    //                 $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+    //             }
 
-            $exists = BookingSlot::where('date', $date)
-                ->where('workstation', $workstation)
-                ->whereIn('time', $times)
-                ->exists();
+    //         $exists = BookingSlot::where('date', $date)
+    //             ->where('workstation', $workstation)
+    //             ->whereIn('time', $times)
+    //             ->exists();
 
-            if ($exists) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'One or more slots already booked',
-                ], 409);
-            }
+    //         if ($exists) {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'One or more slots already booked',
+    //             ], 409);
+    //         }
 
-            $booking = Booking::create([
-                'user_id'      => auth()->id(),
-                'date'         => $date,
-                'product_id'   => $request->product_id,
-                'start_time'   => $request->start,
-                'hours'        => $hours,
-                'lift_type'    => $request->lift,
-                'workstation'  => $workstation,
-                'package_hours' => $request->package,
-                'rate_per_hour' => $request->total / $hours,
-                'total'        => $request->total,
-                'status'       => 'confirmed',
-            ]);
+    //         $booking = Booking::create([
+    //             'user_id'      => auth()->id(),
+    //             'date'         => $date,
+    //             'product_id'   => $request->product_id,
+    //             'start_time'   => $request->start,
+    //             'hours'        => $hours,
+    //             'lift_type'    => $request->lift,
+    //             'workstation'  => $workstation,
+    //             'package_hours' => $request->package,
+    //             'rate_per_hour' => $request->total / $hours,
+    //             'total'        => $request->total,
+    //             'status'       => 'confirmed',
+    //         ]);
 
-            foreach ($times as $time) {
+    //         foreach ($times as $time) {
 
                 
-                BookingSlot::updateOrCreate(
-                    [
-                        'date'        => $date,
-                        'time'        => $time,
-                        'workstation' => $workstation,
-                    ],
-                    [
-                        'booking_id'  => $booking->id,
-                        'status'      => 'booked',
-                    ]
-                );
-            }
+    //             BookingSlot::updateOrCreate(
+    //                 [
+    //                     'date'        => $date,
+    //                     'time'        => $time,
+    //                     'workstation' => $workstation,
+    //                 ],
+    //                 [
+    //                     'booking_id'  => $booking->id,
+    //                     'status'      => 'booked',
+    //                 ]
+    //             );
+    //         }
+    //         return response()->json([
+    //             'status'     => true,
+    //             'booking_id' => $booking->id,
+    //         ]);
+    //     });
+    // }
+
+
+    public function store(StoreBookingRequest $request)
+{
+    return DB::transaction(function () use ($request) {
+
+        $date        = $request->date;
+        $startHour   = (int) substr($request->start, 0, 2);
+        $hours       = (int) $request->hours;
+        $workstation = (int) $request->workstation;
+
+        $times = [];
+        for ($i = 0; $i < $hours; $i++) {
+            $hour = $startHour + $i;
+            $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+        }
+
+        // 🔧 FIX: Check only non-expired slots
+        $exists = BookingSlot::where('date', $date)
+            ->where('workstation', $workstation)
+            ->whereIn('time', $times)
+            ->where(function($query) {
+                $query->where('status', 'booked')
+                    ->orWhere(function($q) {
+                        $q->where('status', 'pending')
+                          ->whereHas('booking', function($b) {
+                              $b->where('expires_at', '>', now())
+                                ->orWhereNull('expires_at');
+                          });
+                    });
+            })
+            ->exists();
+
+        if ($exists) {
             return response()->json([
-                'status'     => true,
-                'booking_id' => $booking->id,
-            ]);
-        });
-    }
+                'status'  => false,
+                'message' => 'One or more slots already booked',
+            ], 409);
+        }
+
+        // Rest of your code...
+        $booking = Booking::create([...]);
+
+        foreach ($times as $time) {
+            BookingSlot::updateOrCreate(
+                [
+                    'date'        => $date,
+                    'time'        => $time,
+                    'workstation' => $workstation,
+                ],
+                [
+                    'booking_id'  => $booking->id,
+                    'status'      => 'booked',
+                ]
+            );
+        }
+
+        return response()->json([
+            'status'     => true,
+            'booking_id' => $booking->id,
+        ]);
+    });
+}
 
     public function calendarData(Request $request)
     {
@@ -167,93 +230,158 @@ class BookingController extends Controller
      * Store a guest (unauthenticated) booking.
      * Slot held for 30 minutes with status = pending.
      */
-    public function storeGuestBooking(Request $request)
-    {
-        $validated = $request->validate([
-            'guest_name'  => 'required|string|max:255',
-            'guest_phone' => 'required|string|max:20',
-            'date'        => 'required|date',
-            'start'       => 'required|string',
-            'hours'       => 'required|integer|min:1',
-            'lift'        => 'required|string',
-            'package'     => 'required|integer',
-            'workstation' => 'required|integer',
-            'total'       => 'required|numeric',
-            'product_id'  => 'nullable|exists:products,id',
-        ]);
+//     public function storeGuestBooking(Request $request)
+//     {
+//         $validated = $request->validate([
+//             'guest_name'  => 'required|string|max:255',
+//             'guest_phone' => 'required|string|max:20',
+//             'date'        => 'required|date',
+//             'start'       => 'required|string',
+//             'hours'       => 'required|integer|min:1',
+//             'lift'        => 'required|string',
+//             'package'     => 'required|integer',
+//             'workstation' => 'required|integer',
+//             'total'       => 'required|numeric',
+//             'product_id'  => 'nullable|exists:products,id',
+//         ]);
 
-        return DB::transaction(function () use ($validated) {
-            $date        = $validated['date'];
-            $startHour   = (int) substr($validated['start'], 0, 2);
-            $hours       = (int) $validated['hours'];
-            $workstation = (int) $validated['workstation'];
+//         return DB::transaction(function () use ($validated) {
+//             $date        = $validated['date'];
+//             $startHour   = (int) substr($validated['start'], 0, 2);
+//             $hours       = (int) $validated['hours'];
+//             $workstation = (int) $validated['workstation'];
 
-           $times = [];
+//            $times = [];
 
-for ($i = 0; $i < $hours; $i++) {
+// for ($i = 0; $i < $hours; $i++) {
 
-    $hour = $startHour + $i;
+//     $hour = $startHour + $i;
 
-    $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
-}
-            // Check for any already-booked or pending slots in the same window
-            $exists = BookingSlot::where('date', $date)
-                ->where('workstation', $workstation)
-                ->whereIn('time', $times)
-                ->whereIn('status', ['booked', 'pending'])
-                ->exists();
+//     $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+// }
+//             // Check for any already-booked or pending slots in the same window
+//             $exists = BookingSlot::where('date', $date)
+//                 ->where('workstation', $workstation)
+//                 ->whereIn('time', $times)
+//                 ->whereIn('status', ['booked', 'pending'])
+//                 ->exists();
 
-            if ($exists) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'One or more slots are already booked or reserved.',
-                ], 409);
-            }
+//             if ($exists) {
+//                 return response()->json([
+//                     'status'  => false,
+//                     'message' => 'One or more slots are already booked or reserved.',
+//                 ], 409);
+//             }
 
-            $expiresAt = now()->addMinutes(30);
+//             $expiresAt = now()->addMinutes(30);
 
-            $booking = Booking::create([
-                'user_id'       => null,
-                'guest_name'    => $validated['guest_name'],
-                'guest_phone'   => $validated['guest_phone'],
-                'date'          => $date,
-                'product_id'    => $validated['product_id'] ?? null,
-                'start_time'    => $validated['start'],
-                'hours'         => $hours,
-                'lift_type'     => $validated['lift'],
-                'workstation'   => $workstation,
-                'package_hours' => $validated['package'],
-                'rate_per_hour' => $validated['total'] / $hours,
-                'total'         => $validated['total'],
-                'status'        => 'pending',
-                'booking_type'  => 'guest',
-                'expires_at'    => $expiresAt,
-            ]);
+//             $booking = Booking::create([
+//                 'user_id'       => null,
+//                 'guest_name'    => $validated['guest_name'],
+//                 'guest_phone'   => $validated['guest_phone'],
+//                 'date'          => $date,
+//                 'product_id'    => $validated['product_id'] ?? null,
+//                 'start_time'    => $validated['start'],
+//                 'hours'         => $hours,
+//                 'lift_type'     => $validated['lift'],
+//                 'workstation'   => $workstation,
+//                 'package_hours' => $validated['package'],
+//                 'rate_per_hour' => $validated['total'] / $hours,
+//                 'total'         => $validated['total'],
+//                 'status'        => 'pending',
+//                 'booking_type'  => 'guest',
+//                 'expires_at'    => $expiresAt,
+//             ]);
 
-           foreach ($times as $time) {
+//            foreach ($times as $time) {
 
    
-    BookingSlot::updateOrCreate(
-        [
-            'date'        => $date,
-            'time'        => $time,
-            'workstation' => $workstation,
-        ],
-        [
-            'booking_id'  => $booking->id,
-            'status'      => 'booked',
-        ]
-    );
-}
+//     BookingSlot::updateOrCreate(
+//         [
+//             'date'        => $date,
+//             'time'        => $time,
+//             'workstation' => $workstation,
+//         ],
+//         [
+//             'booking_id'  => $booking->id,
+//             'status'      => 'booked',
+//         ]
+//     );
+// }
 
+//             return response()->json([
+//                 'status'     => true,
+//                 'booking_id' => $booking->id,
+//                 'expires_at' => $expiresAt->toIso8601String(),
+//             ]);
+//         });
+//     }
+
+
+public function storeGuestBooking(Request $request)
+{
+    $validated = $request->validate([...]);
+
+    return DB::transaction(function () use ($validated) {
+        $date        = $validated['date'];
+        $startHour   = (int) substr($validated['start'], 0, 2);
+        $hours       = (int) $validated['hours'];
+        $workstation = (int) $validated['workstation'];
+
+        $times = [];
+        for ($i = 0; $i < $hours; $i++) {
+            $hour = $startHour + $i;
+            $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+        }
+
+        // 🔧 FIX: Check only non-expired slots
+        $exists = BookingSlot::where('date', $date)
+            ->where('workstation', $workstation)
+            ->whereIn('time', $times)
+            ->where(function($query) {
+                $query->where('status', 'booked')
+                    ->orWhere(function($q) {
+                        $q->where('status', 'pending')
+                          ->whereHas('booking', function($b) {
+                              $b->where('expires_at', '>', now())
+                                ->orWhereNull('expires_at');
+                          });
+                    });
+            })
+            ->exists();
+
+        if ($exists) {
             return response()->json([
-                'status'     => true,
-                'booking_id' => $booking->id,
-                'expires_at' => $expiresAt->toIso8601String(),
-            ]);
-        });
-    }
+                'status'  => false,
+                'message' => 'One or more slots are already booked or reserved.',
+            ], 409);
+        }
 
+        $expiresAt = now()->addMinutes(30);
+
+        $booking = Booking::create([...]);
+
+        foreach ($times as $time) {
+            BookingSlot::updateOrCreate(
+                [
+                    'date'        => $date,
+                    'time'        => $time,
+                    'workstation' => $workstation,
+                ],
+                [
+                    'booking_id'  => $booking->id,
+                    'status'      => 'pending',
+                ]
+            );
+        }
+
+        return response()->json([
+            'status'     => true,
+            'booking_id' => $booking->id,
+            'expires_at' => $expiresAt->toIso8601String(),
+        ]);
+    });
+}
     /**
      * Confirm guest booking payment and update status to 'confirmed' (booked)
      */
