@@ -26,6 +26,18 @@ $(function () {
     function openModal(id)  { $(id).addClass('show').attr('aria-hidden', 'false'); }
     function closeModal(id) { $(id).removeClass('show').attr('aria-hidden', 'true'); }
 
+    // Add this near the top with other helper functions
+function showPendingRequestModal(data) {
+    if (!data.pending_request) return;
+    
+    var msg = data.message || 'You have a pending request.';
+    var planName = data.pending_request.plan_name || 'Membership';
+    var createdAt = data.pending_request.created_at || '—';
+    var hoursLeft = data.pending_request.hours_left || 0;
+    
+    alert(msg + '\n\nPlan: ' + planName + '\nSubmitted: ' + createdAt + '\nTime remaining: ' + hoursLeft + ' hours');
+}
+
     /* ================================================================
        PHONE FORMATTING
     ================================================================ */
@@ -513,6 +525,16 @@ $(function () {
                     payment_method:     'pending',
                 }),
             });
+
+            // In submitLoggedInRequestWithoutPayment function, after the fetch:
+if (!res.ok || !data.status) {
+    if (res.status === 429 && data.pending_request) {
+        showPendingRequestModal(data);
+    } else {
+        alert(data.message || 'Request failed.');
+    }
+    return;
+}
             var data = await res.json();
             if (!res.ok || !data.status) { alert(data.message || 'Request failed.'); return; }
             sessionStorage.removeItem('mx_membership_plan');
