@@ -26,17 +26,7 @@ $(function () {
     function openModal(id)  { $(id).addClass('show').attr('aria-hidden', 'false'); }
     function closeModal(id) { $(id).removeClass('show').attr('aria-hidden', 'true'); }
 
-    // Add this near the top with other helper functions
-function showPendingRequestModal(data) {
-    if (!data.pending_request) return;
     
-    var msg = data.message || 'You have a pending request.';
-    var planName = data.pending_request.plan_name || 'Membership';
-    var createdAt = data.pending_request.created_at || '—';
-    var hoursLeft = data.pending_request.hours_left || 0;
-    
-    alert(msg + '\n\nPlan: ' + planName + '\nSubmitted: ' + createdAt + '\nTime remaining: ' + hoursLeft + ' hours');
-}
 
     /* ================================================================
        PHONE FORMATTING
@@ -509,56 +499,39 @@ function showPendingRequestModal(data) {
     /* ================================================================
        LOGGED-IN REQUEST WITHOUT PAYMENT (admin-approval flow, current default)
     ================================================================ */
-   async function submitLoggedInRequestWithoutPayment() {
-
-    try {
-
-        var res = await fetch('/membership/request', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': window.MX_CSRF,
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                membership_plan_id: selectedPlan.id,
-                amount_paid: selectedPlan.price,
-                payment_method: 'pending',
-            }),
-        });
-
-        // FIRST decode response
-        var data = await res.json();
-
-        // THEN check response
-        if (!res.ok || !data.status) {
-
-            // Handle cooldown/pending request
-            if (res.status === 429 && data.pending_request) {
-
-                showPendingRequestModal(data);
-
-            } else {
-
-                alert(data.message || 'Request failed.');
-            }
-
-            return;
+    async function submitLoggedInRequestWithoutPayment() {
+        try {
+            var res  = await fetch('/membership/request', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.MX_CSRF,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    membership_plan_id: selectedPlan.id,
+                    amount_paid:        selectedPlan.price,
+                    payment_method:     'pending',
+                }),
+            });
+            var data = await res.json();
+            if (!res.ok || !data.status) { alert(data.message || 'Request failed.'); return; }
+            sessionStorage.removeItem('mx_membership_plan');
+            showLoggedInSuccessModal();
+        } catch (err) {
+            alert('Network error. Please try again.');
         }
-
-        // SUCCESS
-        sessionStorage.removeItem('mx_membership_plan');
-
-        showLoggedInSuccessModal();
-
-    } catch (err) {
-
-        console.log(err);
-
-        alert('Network error. Please try again.');
     }
-}
+
+    function showLoggedInSuccessModal() {
+        $('#mxMemberPlanName').text(selectedPlan.name);
+        $('#mxMsName').text(selectedPlan.name);
+        $('#mxMsDuration').text(selectedPlan.duration_days + ' days');
+        $('#mxMsAmount').text('$' + parseFloat(selectedPlan.price).toFixed(2));
+        openModal('#mxMemberSuccessModal');
+    }
+
     /* ================================================================
        CARD FORMATTING
     ================================================================ */
