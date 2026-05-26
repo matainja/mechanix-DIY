@@ -78,7 +78,8 @@ for ($i = 0; $i < $hours; $i++) {
 
             foreach ($times as $time) {
 
-    BookingSlot::firstOrCreate(
+    foreach ($times as $time) {
+    BookingSlot::updateOrCreate(
         [
             'date'        => $date,
             'time'        => $time,
@@ -231,7 +232,8 @@ for ($i = 0; $i < $hours; $i++) {
 
            foreach ($times as $time) {
 
-    BookingSlot::firstOrCreate(
+   foreach ($times as $time) {
+    BookingSlot::updateOrCreate(
         [
             'date'        => $date,
             'time'        => $time,
