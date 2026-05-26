@@ -858,15 +858,15 @@
                 onclick="closeAlreadyMemberModal()" aria-label="Close">&times;</button>
 
         {{-- Icon --}}
-        <div class="mx-success-anim" style="padding-top:32px;">
-            <svg width="56" height="56" viewBox="0 0 56 56" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-                <circle cx="28" cy="28" r="27" stroke="#dd2b31" stroke-width="2"/>
-                <path d="M28 16v14" stroke="#dd2b31" stroke-width="2.5"
-                      stroke-linecap="round"/>
-                <circle cx="28" cy="38" r="1.5" fill="#dd2b31"/>
-            </svg>
-        </div>
+       <div class="mx-success-anim" style="padding-top:12px;">
+    <svg width="32" height="32" viewBox="0 0 56 56" fill="none"
+         xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="28" r="27" stroke="#dd2b31" stroke-width="2"/>
+        <path d="M28 16v14" stroke="#dd2b31" stroke-width="2.5"
+              stroke-linecap="round"/>
+        <circle cx="28" cy="38" r="1.5" fill="#dd2b31"/>
+    </svg>
+</div>
 
         {{-- Title --}}
         <div id="mxAMTitle" class="mx-success-title"
