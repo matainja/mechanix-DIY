@@ -74,15 +74,19 @@ class BookingController extends Controller
             ]);
 
             foreach ($times as $time) {
-                BookingSlot::create([
-                    'booking_id'  => $booking->id,
-                    'date'        => $date,
-                    'time'        => $time,
-                    'workstation' => $workstation,
-                    'status'      => 'booked',
-                ]);
-            }
 
+    BookingSlot::firstOrCreate(
+        [
+            'date'        => $date,
+            'time'        => $time,
+            'workstation' => $workstation,
+        ],
+        [
+            'booking_id'  => $booking->id,
+            'status'      => 'booked',
+        ]
+    );
+}
             return response()->json([
                 'status'     => true,
                 'booking_id' => $booking->id,
@@ -220,15 +224,20 @@ class BookingController extends Controller
                 'expires_at'    => $expiresAt,
             ]);
 
-            foreach ($times as $time) {
-                BookingSlot::create([
-                    'booking_id'  => $booking->id,
-                    'date'        => $date,
-                    'time'        => $time,
-                    'workstation' => $workstation,
-                    'status'      => 'pending',
-                ]);
-            }
+           foreach ($times as $time) {
+
+    BookingSlot::firstOrCreate(
+        [
+            'date'        => $date,
+            'time'        => $time,
+            'workstation' => $workstation,
+        ],
+        [
+            'booking_id'  => $booking->id,
+            'status'      => 'booked',
+        ]
+    );
+}
 
             return response()->json([
                 'status'     => true,
