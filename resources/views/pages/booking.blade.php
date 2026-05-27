@@ -264,7 +264,7 @@
                                     alt="Lift preview" style="display:none;">
                             </div>
                             <ul class="mx-liftpoints" id="mxLiftPoints">
-                                <li>Select a lift type above to see details</li>
+                                <li>Select a lift type to preview</li>
                             </ul>
                         </div>
                     @endif
