@@ -41,6 +41,7 @@ Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/membership', [PageController::class, 'membership'])->name('membership');
 Route::get('/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy');
 Route::get('/commonpage', [PageController::class, 'commonpage'])->name('commonpage');
+Route::get('/rentals-new', [PageController::class, 'rentalsNew'])->name('rentals-new');
 // testing
 
 //admin
