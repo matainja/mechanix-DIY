@@ -2035,7 +2035,7 @@ $(function () {
             if (lift) {
                 $('#mxLiftPlaceholder').hide();
                 $('#mxLiftPreviewImg').attr('src', lift.img).show();
-                $('#mxLiftPoints').html(lift.points.map(function (p) { return '<li>' + p + '</li>'; }).join(''));
+                // $('#mxLiftPoints').html(lift.points.map(function (p) { return '<li>' + p + '</li>'; }).join(''));
             }
 
             $('#mxLiftPrompt').addClass('hidden');

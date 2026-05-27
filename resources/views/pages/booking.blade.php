@@ -101,7 +101,7 @@
 
         <div>
             <div class="mx-workstations" id="mxWorkstations">
-                <div class="mx-w-title active" data-ws="1">Workstation</div>
+                <div class="mx-w-title active" data-ws="1">Schedule</div>
             </div>
 
             @if (!$isProductMode)

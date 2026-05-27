@@ -98,10 +98,21 @@
             <img src="{{ asset('assets/images/rentals/ac-machine-r1234yf.png') }}" alt="AC Machine R1234yf">
         </div>
         <div class="list-content">
-            <h3>AC Machine (R1234yf)</h3>
-            <p>Professional A/C recovery and recharge machine for newer vehicles using R1234yf refrigerant (2017+). Fully automatic with leak detection and vacuum pump.</p>
+            <h3>Additional Equipment Options</h3>
+            {{-- <p>Professional A/C recovery and recharge machine for newer vehicles using R1234yf refrigerant (2017+). Fully automatic with leak detection and vacuum pump.</p> --}}
+         
+            <ul style="color:#000;">
+    <li>
+        Specialty tools can be added to any lift or rental booking upon request and availability.
+    </li>
+
+    <li>
+        Please contact our team during booking confirmation to reserve required specialty equipment in advance.
+    </li>
+</ul>
         </div>
-       <div class="list-action">
+
+       {{-- <div class="list-action">
     <a href="tel:7327307712" class="rental-btn">
         Call Now To Book
 
@@ -109,11 +120,11 @@
             732-730-7712 EXTENSION 3
         </span>
     </a>
-</div>
+</div> --}}
     </div>
 
     {{-- Demo Item 2 --}}
-    <div class="list-card">
+    {{-- <div class="list-card">
         <div class="list-image">
             <img src="{{ asset('assets/images/rentals/ac-machine-r134a.png') }}" alt="AC Machine R134a">
         </div>
@@ -130,10 +141,10 @@
         </span>
     </a>
 </div>
-    </div>
+    </div> --}}
 
     {{-- Demo Item 3 --}}
-    <div class="list-card">
+    {{-- <div class="list-card">
         <div class="list-image">
             <img src ="{{ asset('assets/images/rentals/diag-scanner.png') }}" alt="Diagnostic Scanner">
         </div>
@@ -150,8 +161,8 @@
         </span>
     </a>
 </div>
-    </div>
-<div class="speciality-note">
+    </div> --}}
+{{-- <div class="speciality-note">
     <ul>
         <li>
             Specialty tools can be added to any lift or rental booking upon request and availability.
@@ -161,7 +172,7 @@
             Please contact our team during booking confirmation to reserve required specialty equipment in advance.
         </li>
     </ul>
-</div>
+</div> --}}
 </section>
 
 
@@ -384,35 +395,52 @@
 
     {{-- Demo Item 1 --}}
     <div class="list-card">
-        <div class="list-image">
-            <img src="{{ asset('assets/images/rentals/shared image.jpg') }}" alt="Socket Set">
-        </div>
-        <div class="list-content">
-            <h3>Craftsman 230-Piece Mechanics Tool Set</h3>
-            <p>Complete socket and wrench set for all your DIY car repairs. Includes metric and SAE sizes for foreign and domestic vehicles.</p>
-        </div>
-        {{-- <div class="list-action">
-            <a href="#" class="rental-btn">
-                Reserve Tool
-            </a>
-        </div> --}}
+    <div class="list-image">
+        <img src="{{ asset('assets/images/rentals/shared image.jpg') }}" alt="Garage Tools">
     </div>
 
+    <div class="list-content">
+        <h3>Included Hand Tools And Equipment</h3>
+
+        <p>
+            Complete hand tool sets and professional garage equipment
+            available for DIY repairs, maintenance, and upgrades.
+        </p>
+
+        <div style="color:#000; line-height:1.8; font-size:14px;">
+            Sockets & Impact Sockets,
+            Wrenches & Ratchets,
+            Extensions,
+            Impact Drill,
+            Electric Ratchet,
+            Screwdrivers,
+            Allen Keys,
+            Picks,
+            Pliers,
+            Mini Sledge Hammer & More
+        </div>
+
+        <p style="margin-top:12px; color:#000; font-weight:600;">
+            Basic hand tools and cart included in bay rental.
+        </p>
+    </div>
+</div>
+
     {{-- Demo Item 2 --}}
-    <div class="list-card">
+    {{-- <div class="list-card">
         <div class="list-image">
             <img src="{{ asset('assets/images/rentals/shared image (1).jpg') }}" alt="Hydraulic Jack">
         </div>
         <div class="list-content">
             <h3>Professional Automotive Tool Set</h3>
 <p>High-quality hand tools and specialty garage equipment for efficient DIY repairs, maintenance work, and vehicle upgrades.</p>
-        </div>
+        </div> --}}
         {{-- <div class="list-action">
             <a href="#" class="rental-btn">
                 Reserve Tool
             </a>
         </div> --}}
-    </div>
+    {{-- </div>
 <div class="speciality-note">
     <ul>
         <li>
@@ -423,7 +451,7 @@
             Customers are encouraged to confirm tool availability with our team prior to or during booking confirmation.
         </li>
     </ul>
-</div>
+</div> --}}
 </section>
 
 </div>
