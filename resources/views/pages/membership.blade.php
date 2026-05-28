@@ -176,7 +176,7 @@
     gap: 8px;
     font-size: 16px;
     color: #d5d5d5;
-    width: 25%;
+    width: 30%;
     padding: 2px 0;
 }
 

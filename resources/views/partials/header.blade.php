@@ -40,8 +40,8 @@
                 </li>
 
                 <li class="nav-item desktop-only">
-                    {{-- <a class="nav-link {{ request()->routeIs('commonpage') ? 'active' : '' }}" href="{{ route('commonpage') }}#lift-rentals">  --}}
-                    <a class="nav-link {{ request()->routeIs('commonpage') && request('section') == 'lift-rentals' ? 'active' : '' }}" href="{{ route('commonpage') }}#lift-rentals">
+                    <a class="nav-link {{ request()->routeIs('rentals') ? 'active' : '' }}" href="{{ route('commonpage') }}#lift-rentals">
+                         
                         RENTALS
                     </a>
                 </li>
