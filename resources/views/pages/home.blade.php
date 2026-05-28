@@ -49,42 +49,42 @@
                     <li>
                         <a href="{{ route('commonpage') }}#lift-rentals">
                             <span class="hf-icon"></span>
-                            Four & Two-Post Lift Rentals
+                            <div>Four & Two-Post Lift Rentals</div>
                         </a>
                     </li>
 
                     <li>
                         <a href="{{ route('commonpage') }}#basic-tool">
                             <span class="hf-icon"></span>
-                            Basic Tools Provided
+                            <div>Basic Tools Provided</div>
                         </a>
                     </li>
 
                     <li>
                         <a href="#">
                             <span class="hf-icon"></span>
-                            Discounted Parts Available
+                            <div>Discounted Parts Available</div>
                         </a>
                     </li>
 
                     <li>
                         <a href="{{ route('rentals') }}">
                             <span class="hf-icon"></span>
-                            Hourly Rental
+                            <div>Hourly Rental</div>
                         </a>
                     </li>
 
                     <li>
                         <a href="{{ route('commonpage') }}#specialty-tools">
                             <span class="hf-icon"></span>
-                            Specialty Tools Available
+                            <div>Specialty Tools Available</div>
                         </a>
                     </li>
 
                     <li>
                         <a href="#">
                             <span class="hf-icon"></span>
-                            Mechanic On Site
+                            <div>Mechanic On Site</div>
                         </a>
                     </li>
 

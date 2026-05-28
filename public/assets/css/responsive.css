@@ -17,12 +17,13 @@
 
     .hero-title {
         font-size: 18px;
-        margin-bottom: 253px;
+        /* margin-bottom: 253px; */
     }
 
     .hero-buttons {
         flex-direction: column;
-            padding-top: 156px;
+            /* padding-top: 156px; */
+        padding-top: 25px;
     }
 
     .btn-hero-primary,
@@ -74,7 +75,8 @@
     }
 
     .hero-section {
-        height: 74vh;
+        /* height: 74vh; */
+        height: 80vh;
     }
     .services-icons {
         display: none;
