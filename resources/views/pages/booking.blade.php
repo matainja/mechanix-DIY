@@ -199,13 +199,13 @@
                                     src="{{ $defaultImage ? asset('storage/' . $defaultImage->image_path) : asset('assets/images/no-image.png') }}"
                                     alt="{{ $product->name }}">
                             </div>
-                            <ul class="mx-liftpoints" id="mxLiftPoints">
+                            {{-- <ul class="mx-liftpoints" id="mxLiftPoints">
                                 @foreach (explode("\n", $product->description ?? '') as $line)
                                     @if (trim($line))
                                         <li>{{ trim($line) }}</li>
                                     @endif
                                 @endforeach
-                            </ul>
+                            </ul> --}}
                         </div>
                     @elseif($product ?? null)
                         @foreach ($product->prices as $price)
