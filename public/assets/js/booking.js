@@ -2180,7 +2180,7 @@ $(function () {
             if (lift) {
                 $('#mxLiftPlaceholder').hide();
                 $('#mxLiftPreviewImg').attr('src', lift.img).show();
-                $('#mxLiftPoints').html(lift.points.map(function (pt) { return '<li>' + pt + '</li>'; }).join(''));
+                // $('#mxLiftPoints').html(lift.points.map(function (pt) { return '<li>' + pt + '</li>'; }).join(''));
             }
             $('#mxLiftPrompt').addClass('hidden');
         }
