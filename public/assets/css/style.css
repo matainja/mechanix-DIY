@@ -14,14 +14,14 @@ body {
   display: block;
 }
 
-@media (max-width: 1930px) {
+/* @media (max-width: 1930px) {
 .hero-section {
   
   height: 75vh !important;
 
   
 }
-}
+} */
 
 
 
@@ -331,7 +331,8 @@ body {
   /* background-image: url(../images/mechanix-banner-5.jpg); */
   background-size: cover;
   background-position: center;
-  padding-left: 4rem;
+  /* padding-left: 4rem; */
+  padding: 0px 0px 0px 15%;
   display: flex;
   background-position: center 12%;
   align-items: flex-start;
@@ -382,7 +383,8 @@ body {
 } */
  /* from here */
 .hero-title {
-    font-size: 3rem;
+    /* font-size: 3rem; */
+    font-size: 2rem;
     font-weight: 800;
     line-height: 1.15;
     color: #ffffff;
@@ -932,4 +934,83 @@ body {
 .rental-btn-disabled:hover {
     background-color: #6c757d !important;
     transform: none !important;
+}
+.hero-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 90px;
+  list-style: none;
+  padding: 0;
+  /* margin: 120px 0 0; */
+  margin: 190px 0px 0px 30px;
+  max-width: 950px;
+}
+
+.hero-features li{
+  width:100%;
+}
+
+.hero-features a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  color:#fff;
+  text-decoration:none;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+
+  opacity:1;
+  transition:.25s ease;
+}
+
+.hero-features a:hover{
+  color:#dd2b31;
+}
+
+/* YOUR PNG BULLET */
+.hf-icon{
+  width:18px;
+  height:18px;
+  flex-shrink:0;
+
+  background-image:url('../images/mechanix-bullate.png');
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position:center;
+}
+
+/* remove old css circle */
+.hf-icon::after{
+  display:none;
+}
+@media (max-width:991px){
+
+  .hero-features{
+    gap:16px 40px;
+    margin-top:90px;
+    max-width:700px;
+  }
+
+  .hero-features a{
+    font-size:13px;
+  }
+
+}
+
+@media (max-width:768px){
+
+  .hero-features{
+    grid-template-columns:1fr;
+    gap:14px;
+    margin-top:40px;
+    max-width:100%;
+  }
+
+  .hero-features a{
+    font-size:12px;
+  }
+
 }
