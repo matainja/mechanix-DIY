@@ -6,6 +6,12 @@
 (function() {
     'use strict';
 
+    // NEW ADD
+    const forgotPassword = document.getElementById('forgotPasswordBtn');
+    if (forgotPassword) {
+        forgotPassword.style.display='none';
+    }
+
     // =====================================================
     // GLOBAL VARIABLES
     // =====================================================
