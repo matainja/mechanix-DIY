@@ -39,12 +39,19 @@
                     </a>
                 </li>
 
-                <li class="nav-item desktop-only">
+                {{-- <li class="nav-item desktop-only">
                     <a class="nav-link {{ request()->routeIs('rentals') ? 'active' : '' }}" href="{{ route('commonpage') }}#lift-rentals">
                          
                         RENTALS
                     </a>
-                </li>
+                </li> --}}
+                <li class="nav-item desktop-only">
+    <a class="nav-link {{ request()->routeIs('commonpage') ? '' : '' }}"
+       id="rentals-link"
+       href="{{ route('commonpage') }}#lift-rentals">
+        RENTALS
+    </a>
+</li>
 
                 <li class="nav-item desktop-only">
                     <a class="nav-link {{ request()->routeIs('membership') ? 'active' : '' }}" href="{{ route('membership') }}">
@@ -251,7 +258,14 @@
 </nav>
 
 <div class="header-redline"></div>
-
+<script>
+if (
+    window.location.pathname === '/commonpage' &&
+    window.location.hash === '#lift-rentals'
+) {
+    document.getElementById('rentals-link').classList.add('active');
+}
+</script>
 <script>
     // Close mobile sidebar when clicking on links
     document.addEventListener('DOMContentLoaded', function() {
