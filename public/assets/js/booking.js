@@ -2559,9 +2559,26 @@ $(function () {
 /* ================================================================
    GLOBAL: close guest/member success modal (called from blade onclick)
 ================================================================ */
-function closeGuestMemberSuccessModal() {
-    var modal = document.getElementById('mxGuestSuccessModal');
-    if (!modal) return;
+
+// function closeGuestMemberSuccessModal() {
+//     var modal = document.getElementById('mxGuestSuccessModal');
+//     console.log("age",modal);
+
+    
+//     if (!modal) return;
+//     console.log("pore",modal);
+
+
+//     modal.classList.remove('show');
+//     modal.setAttribute('aria-hidden', 'true');
+// }
+document
+.getElementById('guestSuccessCloseBtn')
+.addEventListener('click', function () {
+
+    const modal = document.getElementById('mxGuestSuccessModal');
+
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden', 'true');
-}
+
+});

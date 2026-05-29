@@ -769,41 +769,45 @@
 
     {{-- ── GUEST SUCCESS MODAL ── --}}
     <div id="mxGuestSuccessModal" class="mx-modal-overlay" aria-hidden="true">
+        {{-- <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
+           <button type="button"
+        class="mx-modal-close"
+        onclick="closeGuestMemberSuccessModal()" > --}}
         <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
            <button type="button"
         class="mx-modal-close"
-        onclick="closeGuestMemberSuccessModal()">
+        id="guestSuccessCloseBtn">
 
-    &times;
+        &times;
 
-</button>
-           <div class="mx-success-anim"
-     style="
-        width:58px;
-        height:58px;
-        margin:0 auto 8px;
-     ">
+      </button>
+            <div class="mx-success-anim"
+        style="
+            width:58px;
+            height:58px;
+            margin:0 auto 8px;
+        ">
 
-    <svg class="mx-checkmark"
-         viewBox="0 0 52 52"
-         xmlns="http://www.w3.org/2000/svg"
-         style="
-            width:40px;
-            height:40px;
-         ">
+        <svg class="mx-checkmark"
+            viewBox="0 0 52 52"
+            xmlns="http://www.w3.org/2000/svg"
+            style="
+                width:40px;
+                height:40px;
+            ">
 
-        <circle class="mx-checkmark-circle"
-                cx="26"
-                cy="26"
-                r="25"
-                fill="none" />
+            <circle class="mx-checkmark-circle"
+                    cx="26"
+                    cy="26"
+                    r="25"
+                    fill="none" />
 
-        <path class="mx-checkmark-check"
-              fill="none"
-              d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-    </svg>
+            <path class="mx-checkmark-check"
+                fill="none"
+                d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
 
-</div>
+    </div>
             <div class="mx-success-title">Slot Reserved!</div>
             {{-- <div class="mx-success-sub">Booking ID: <strong id="mxGuestBookingId">—</strong></div> --}}
            <div class="mx-mini-timer"

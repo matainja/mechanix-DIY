@@ -1159,10 +1159,10 @@
                     {{-- GUEST --}}
                     <div class="tab-pane fade show active" id="guestMemberPane" role="tabpanel">
                         <div id="guestMemberErrorMsg" class="alert alert-danger d-none mb-3"></div>
-                        <div class="alert mb-3" style="background:#1a2a1a;border:1px solid #2a4a2a;color:#86efac;font-size:13px;">
+                        {{-- <div class="alert mb-3" style="background:#1a2a1a;border:1px solid #2a4a2a;color:#86efac;font-size:13px;">
                             <i class="fa-solid fa-info-circle me-1"></i>
                             Your membership request will be sent to admin for approval after payment.
-                        </div>
+                        </div> --}}
                         <form id="guestMemberForm">
                             @csrf
                             <div class="mb-3">

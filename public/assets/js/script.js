@@ -577,3 +577,25 @@ function closeGuestMemberSuccessModal() {
         .removeClass('show')
         .attr('aria-hidden', 'true');
 }
+
+// NEW ADD
+
+$('#mxAuthModal').on('hidden.bs.modal', function () {
+
+    // Reset forms
+    $('#guestBookingForm')[0].reset();
+    $('#mxLoginForm')[0].reset();
+    $('#mxRegisterForm')[0].reset();
+
+    // Clear errors
+    $('#guestErrorMsg,#loginErrorMsg,#registerErrorMsg')
+        .addClass('d-none')
+        .text('');
+
+    // Re-enable buttons
+    $('#mxAuthModal button[type=submit]')
+        .prop('disabled', false);
+
+    // Default tab
+    $('#guestTab').tab('show');
+});
