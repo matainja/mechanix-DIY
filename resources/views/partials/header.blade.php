@@ -360,17 +360,20 @@
     });
 </script>
 <script>
-if (
-    window.location.pathname === '/commonpage' &&
-    window.location.hash === '#lift-rentals'
-) {
-    document.getElementById('rentals-link').classList.add('active');
+function setActiveMenu() {
+    document.querySelectorAll('.nav-link').forEach(el => {
+        el.classList.remove('active');
+    });
+
+    if (window.location.hash === '#lift-rentals') {
+        document.getElementById('rentals-link').classList.add('active');
+    }
+
+    if (window.location.hash === '#speciality-tools') {
+        document.getElementById('speciality-link').classList.add('active');
+    }
 }
 
-if (
-    window.location.pathname === '/commonpage' &&
-    window.location.hash === '#speciality-tools'
-) {
-    document.getElementById('speciality-link').classList.add('active');
-}
+setActiveMenu(); // on page load
+window.addEventListener('hashchange', setActiveMenu); // when # changes
 </script>
