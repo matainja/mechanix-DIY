@@ -354,8 +354,24 @@ public function storeGuestBooking(Request $request)
 
         $times = [];
         for ($i = 0; $i < $hours; $i++) {
-            $hour = $startHour + $i;
+            $hour    = $startHour + $i;
             $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+        }
+
+        // ✅ Check: the slot at the END of the range must not exist
+        $endHour     = $startHour + $hours;
+        $endTimeSlot = str_pad($endHour, 2, '0', STR_PAD_LEFT) . ':00:00';
+
+        $endSlotExists = BookingSlot::where('date', $date)
+            ->where('workstation', $workstation)
+            ->where('time', $endTimeSlot)
+            ->exists();  // any row at all — booked, pending, anything
+
+        if ($endSlotExists) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'One or more slots are already booked or reserved.',
+            ], 409);
         }
 
         // 🔧 FIX: Check only non-expired slots
