@@ -33,8 +33,14 @@
 
                 <!-- Desktop Main Links -->
 
- <li class="nav-item desktop-only">
+ {{-- <li class="nav-item desktop-only">
                     <a class="nav-link {{ request()->routeIs('commonpage') ? 'active' : '' }}" href="{{ route('commonpage') }}#speciality-tools">
+                        SPECIALITY TOOLS
+                    </a>
+                </li> --}}
+                <li class="nav-item desktop-only">
+                    <a class="nav-link" id="speciality-link"
+                    href="{{ route('commonpage') }}#speciality-tools">
                         SPECIALITY TOOLS
                     </a>
                 </li>
@@ -46,12 +52,11 @@
                     </a>
                 </li> --}}
                 <li class="nav-item desktop-only">
-    <a class="nav-link {{ request()->routeIs('commonpage') ? '' : '' }}"
-       id="rentals-link"
-       href="{{ route('commonpage') }}#lift-rentals">
-        RENTALS
-    </a>
-</li>
+                    <a class="nav-link" id="rentals-link"
+                    href="{{ route('commonpage') }}#lift-rentals">
+                        RENTALS
+                    </a>
+                </li>
 
                 <li class="nav-item desktop-only">
                     <a class="nav-link {{ request()->routeIs('membership') ? 'active' : '' }}" href="{{ route('membership') }}">
@@ -259,14 +264,6 @@
 
 <div class="header-redline"></div>
 <script>
-if (
-    window.location.pathname === '/commonpage' &&
-    window.location.hash === '#lift-rentals'
-) {
-    document.getElementById('rentals-link').classList.add('active');
-}
-</script>
-<script>
     // Close mobile sidebar when clicking on links
     document.addEventListener('DOMContentLoaded', function() {
         const navbarCollapse = document.getElementById('navbarNav');
@@ -361,4 +358,19 @@ if (
             });
         });
     });
+</script>
+<script>
+if (
+    window.location.pathname === '/commonpage' &&
+    window.location.hash === '#lift-rentals'
+) {
+    document.getElementById('rentals-link').classList.add('active');
+}
+
+if (
+    window.location.pathname === '/commonpage' &&
+    window.location.hash === '#speciality-tools'
+) {
+    document.getElementById('speciality-link').classList.add('active');
+}
 </script>
