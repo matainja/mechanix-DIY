@@ -1953,7 +1953,8 @@ $(function () {
     function dayAvailClass(dateStr) {
         if (!getWorkingHours(dateStr)) return 'day-unavailable';
         var info = dayData[dateStr];
-        if (info && info.status === 'booked')      return 'day-booked';
+        // if (info && info.status === 'booked')      return 'day-booked';
+        if (info && info.status === 'booked')      return 'day-available';
         if (info && info.status === 'unavailable') return 'day-unavailable';
         if (!isDateAvailableByPackage(dateStr, selectedPackHours, selectedLift)) return 'day-unavailable';
         var r = dayFreeRatio(dateStr, selectedLift);
@@ -1992,8 +1993,7 @@ $(function () {
         disable: [function (date) {
             if (date.getDay() === 6) return true;
             var info = dayData[flatpickr.formatDate(date, 'Y-m-d')];
-            // return info && (info.status === 'unavailable' || info.status === 'booked');
-            return info && info.status === 'unavailable';
+            return info && (info.status === 'unavailable' || info.status === 'booked');
         }],
 
         onDayCreate: function (dObj, dStr, fp, dayElem) {
@@ -2010,12 +2010,12 @@ $(function () {
             // }
             if (dayElem.classList.contains('flatpickr-disabled')) {
                 var info = dayData[key];
-                dayElem.classList.add(
-                    (info && info.status === 'unavailable')
-                        ? 'day-unavailable'
-                        : 'day-available'
-                );
-                return;
+
+                if (info && info.status === 'booked') {
+                    dayElem.classList.add('day-available'); // booked looks available
+                } else {
+                    dayElem.classList.add('day-unavailable');
+                }
             }
             dayElem.classList.add(dayAvailClass(key));
 
