@@ -524,35 +524,17 @@ public function storeGuestBooking(Request $request)
         $date      = $request->date;
         $lift      = $request->lift;
         $startTime = $request->start_time;
-        $hours     = (int)$request->hours;
+        $hours     = (int) $request->hours;
 
+        // new booking range
         $newStart = Carbon::createFromFormat('H:i', $startTime);
         $newEnd   = (clone $newStart)->addHours($hours);
 
         $bookings = Booking::where('date', $date)
             ->where('lift_type', $lift)
-            ->where(function($q){
-
-                $q->where('status','booked')
-
-                ->orWhere(function($qq){
-
-                        $qq->where('status','pending')
-                        ->where(function($e){
-
-                                $e->where('expires_at','>',now())
-                                ->orWhereNull('expires_at');
-
-                        });
-
-                });
-
-            })
             ->get();
 
-        $conflict = false;
-
-        foreach($bookings as $booking){
+        foreach ($bookings as $booking) {
 
             $existingStart = Carbon::createFromFormat(
                 'H:i:s',
@@ -562,18 +544,21 @@ public function storeGuestBooking(Request $request)
             $existingEnd = (clone $existingStart)
                 ->addHours($booking->hours);
 
-            // overlap logic
-            if(
+            // overlap check
+            if (
                 $newStart < $existingEnd &&
                 $newEnd > $existingStart
-            ){
-                $conflict = true;
-                break;
+            ) {
+
+                return response()->json([
+                    'ok'      => false,
+                    'message' => 'Time slot occupied.'
+                ]);
             }
         }
 
         return response()->json([
-            'ok' => !$conflict
+            'ok' => true
         ]);
     }
 }
