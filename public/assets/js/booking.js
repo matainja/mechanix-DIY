@@ -1992,7 +1992,8 @@ $(function () {
         disable: [function (date) {
             if (date.getDay() === 6) return true;
             var info = dayData[flatpickr.formatDate(date, 'Y-m-d')];
-            return info && (info.status === 'unavailable' || info.status === 'booked');
+            // return info && (info.status === 'unavailable' || info.status === 'booked');
+            return info && info.status === 'unavailable';
         }],
 
         onDayCreate: function (dObj, dStr, fp, dayElem) {
