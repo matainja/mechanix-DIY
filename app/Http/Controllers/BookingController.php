@@ -137,7 +137,8 @@ class BookingController extends Controller
             ], 409);
         }
 
-       
+        $expiresAt = now()->addMinutes(30);
+
         // Create the booking
         $booking = Booking::create([
             'user_id'       => auth()->id(),
@@ -151,6 +152,7 @@ class BookingController extends Controller
             'rate_per_hour' => $request->total / $hours,
             'total'         => $request->total,
             'status'        => 'confirmed',
+            'expires_at'    => $expiresAt
         ]);
 
         // Create or update booking slots
