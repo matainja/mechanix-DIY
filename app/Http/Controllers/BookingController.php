@@ -107,6 +107,7 @@ class BookingController extends Controller
         $startHour   = (int) substr($request->start, 0, 2);
         $hours       = (int) $request->hours;
         $workstation = (int) $request->workstation;
+        $lift        = $request->lift;
 
         $times = [];
         for ($i = 0; $i < $hours; $i++) {
@@ -115,26 +116,63 @@ class BookingController extends Controller
         }
 
         // 🔧 FIX: Check only non-expired slots
-        $exists = BookingSlot::where('date', $date)
-            ->where('workstation', $workstation)
-            ->whereIn('time', $times)
-            ->where(function($query) {
-                $query->where('status', 'booked')
-                    ->orWhere(function($q) {
-                        $q->where('status', 'pending')
-                          ->whereHas('booking', function($b) {
-                              $b->where('expires_at', '>', now())
-                                ->orWhereNull('expires_at');
-                          });
+        // $exists = BookingSlot::where('date', $date)
+        //     ->where('workstation', $workstation)
+        //     ->whereIn('time', $times)
+        //     ->where(function($query) {
+        //         $query->where('status', 'booked')
+        //             ->orWhere(function($q) {
+        //                 $q->where('status', 'pending')
+        //                   ->whereHas('booking', function($b) {
+        //                       $b->where('expires_at', '>', now())
+        //                         ->orWhereNull('expires_at');
+        //                   });
+        //             });
+        //     })
+        //     ->exists();
+
+        // if ($exists) {
+        //     return response()->json([
+        //         'status'  => false,
+        //         'message' => 'One or more slots already booked',
+        //     ], 409);
+        // }
+          $exists = BookingSlot::join(
+            'bookings',
+            'booking_slots.booking_id',
+            '=',
+            'bookings.id'
+        )
+        ->where('booking_slots.date', $date)
+        ->where('booking_slots.workstation', $workstation)
+        ->where('bookings.lift_type', $lift)
+        ->whereIn('booking_slots.time', $times)
+        ->where(function ($query) {
+
+            $query->where('booking_slots.status', 'booked')
+
+                ->orWhere(function ($q) {
+
+                    $q->where('booking_slots.status', 'pending')
+                    ->where(function ($b) {
+
+                        $b->where('bookings.expires_at', '>', now())
+                            ->orWhereNull('bookings.expires_at');
+
                     });
-            })
-            ->exists();
+
+                });
+
+        })
+        ->exists();
 
         if ($exists) {
+
             return response()->json([
                 'status'  => false,
-                'message' => 'One or more slots already booked',
+                'message' => 'One or more slots are already booked or reserved.',
             ], 409);
+
         }
 
         $expiresAt = now()->addMinutes(30);
@@ -354,6 +392,7 @@ public function storeGuestBooking(Request $request)
         $startHour   = (int) substr($validated['start'], 0, 2);
         $hours       = (int) $validated['hours'];
         $workstation = (int) $validated['workstation'];
+        $lift        = $validated['lift'];
 
         $times = [];
         for ($i = 0; $i < $hours; $i++) {
@@ -362,26 +401,63 @@ public function storeGuestBooking(Request $request)
         }
 
         // 🔧 FIX: Check only non-expired slots
-        $exists = BookingSlot::where('date', $date)
-            ->where('workstation', $workstation)
-            ->whereIn('time', $times)
-            ->where(function($query) {
-                $query->where('status', 'booked')
-                    ->orWhere(function($q) {
-                        $q->where('status', 'pending')
-                          ->whereHas('booking', function($b) {
-                              $b->where('expires_at', '>', now())
-                                ->orWhereNull('expires_at');
-                          });
+        // $exists = BookingSlot::where('date', $date)
+        //     ->where('workstation', $workstation)
+        //     ->whereIn('time', $times)
+        //     ->where(function($query) {
+        //         $query->where('status', 'booked')
+        //             ->orWhere(function($q) {
+        //                 $q->where('status', 'pending')
+        //                   ->whereHas('booking', function($b) {
+        //                       $b->where('expires_at', '>', now())
+        //                         ->orWhereNull('expires_at');
+        //                   });
+        //             });
+        //     })
+        //     ->exists();
+
+        // if ($exists) {
+        //     return response()->json([
+        //         'status'  => false,
+        //         'message' => 'One or more slots are already booked or reserved.',
+        //     ], 409);
+        // }
+        $exists = BookingSlot::join(
+            'bookings',
+            'booking_slots.booking_id',
+            '=',
+            'bookings.id'
+        )
+        ->where('booking_slots.date', $date)
+        ->where('booking_slots.workstation', $workstation)
+        ->where('bookings.lift_type', $lift)
+        ->whereIn('booking_slots.time', $times)
+        ->where(function ($query) {
+
+            $query->where('booking_slots.status', 'booked')
+
+                ->orWhere(function ($q) {
+
+                    $q->where('booking_slots.status', 'pending')
+                    ->where(function ($b) {
+
+                        $b->where('bookings.expires_at', '>', now())
+                            ->orWhereNull('bookings.expires_at');
+
                     });
-            })
-            ->exists();
+
+                });
+
+        })
+        ->exists();
 
         if ($exists) {
+
             return response()->json([
                 'status'  => false,
                 'message' => 'One or more slots are already booked or reserved.',
             ], 409);
+
         }
         
         $expiresAt = now()->addMinutes(30);
