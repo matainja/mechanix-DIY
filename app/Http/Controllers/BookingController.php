@@ -108,6 +108,36 @@ class BookingController extends Controller
         $hours       = (int) $request->hours;
         $workstation = (int) $request->workstation;
 
+        $times = [];
+        for ($i = 0; $i < $hours; $i++) {
+            $hour = $startHour + $i;
+            $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+        }
+
+        // 🔧 FIX: Check only non-expired slots
+        $exists = BookingSlot::where('date', $date)
+            ->where('workstation', $workstation)
+            ->whereIn('time', $times)
+            ->where(function($query) {
+                $query->where('status', 'booked')
+                    ->orWhere(function($q) {
+                        $q->where('status', 'pending')
+                          ->whereHas('booking', function($b) {
+                              $b->where('expires_at', '>', now())
+                                ->orWhereNull('expires_at');
+                          });
+                    });
+            })
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'One or more slots already booked',
+            ], 409);
+        }
+
+       
         // Create the booking
         $booking = Booking::create([
             'user_id'       => auth()->id(),
