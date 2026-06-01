@@ -1679,21 +1679,68 @@ $(function () {
         $('#mxHMinus, #mxHPlus').prop('disabled', lock).toggleClass('mx-disabled', lock);
     }
 
+    // function setHours(val) {
+    //     var maxHours = selectedPackHours === 1 ? 8 : selectedPackHours;
+    //     selectedHours = Math.max(selectedPackHours, Math.min(val, maxHours));
+    //     var startH = parseInt(selectedStartTime.slice(0, 2), 10);
+    //     var check  = validateConsecutiveCrossDay(selectedDate, selectedStartTime, selectedHours);
+
+    //     $('#mxSelectedHours').text(selectedHours);
+    //     $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
+    //     $('#mxSlotText').text(prettyRange(selectedDate, startH, selectedHours));
+    //     $('#mxHintText').text(
+    //         check.ok
+    //             ? 'Continuous booking for ' + selectedHours + ' hour' + (selectedHours > 1 ? 's' : '') + '.'
+    //             : check.message
+    //     );
+    //     $('#mxModalConfirm').prop('disabled', !check.ok).css('opacity', check.ok ? '1' : '.5');
+    // }
     function setHours(val) {
-        var maxHours = selectedPackHours === 1 ? 8 : selectedPackHours;
-        selectedHours = Math.max(selectedPackHours, Math.min(val, maxHours));
-        var startH = parseInt(selectedStartTime.slice(0, 2), 10);
-        var check  = validateConsecutiveCrossDay(selectedDate, selectedStartTime, selectedHours);
+
+        var wh = getWorkingHours(selectedDate);
+
+        var maxHours = selectedPackHours === 1 ? 9 : selectedPackHours;
+
+        selectedHours = Math.max(
+            selectedPackHours,
+            Math.min(val, maxHours)
+        );
+
+        var startH = parseInt(selectedStartTime.slice(0,2),10);
+
+        var check = validateConsecutiveCrossDay(
+            selectedDate,
+            selectedStartTime,
+            selectedHours
+        );
+
+        var endHour = startH + selectedHours;
 
         $('#mxSelectedHours').text(selectedHours);
         $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
-        $('#mxSlotText').text(prettyRange(selectedDate, startH, selectedHours));
+        $('#mxSlotText').text(
+            prettyRange(selectedDate, startH, selectedHours)
+        );
+
         $('#mxHintText').text(
             check.ok
-                ? 'Continuous booking for ' + selectedHours + ' hour' + (selectedHours > 1 ? 's' : '') + '.'
+                ? 'Continuous booking for ' +
+                selectedHours +
+                ' hour' +
+                (selectedHours > 1 ? 's' : '') +
+                '.'
                 : check.message
         );
-        $('#mxModalConfirm').prop('disabled', !check.ok).css('opacity', check.ok ? '1' : '.5');
+
+        $('#mxModalConfirm')
+            .prop('disabled', !check.ok)
+            .css('opacity', check.ok ? '1' : '.5');
+
+        // dynamic close hour check
+        $('#mxHPlus').prop(
+            'disabled',
+            !wh || endHour >= wh.end
+        );
     }
 
     $('#mxHMinus').on('click', function () { setHours(selectedHours - 1); });
@@ -1729,7 +1776,7 @@ $(function () {
        TIME-SLOT GRID (per-lift aware)
     ================================================================ */
     function renderTimeSlots(dateStr, timeArray) {
-        console.log(timeArray);
+        console.log("timearray",timeArray);
         
         var $grid = $('#mxTimeGrid').empty();
 
@@ -1743,6 +1790,8 @@ $(function () {
         $('#mxContinueBtn').prop('disabled', true);
 
         var wh = getWorkingHours(dateStr);
+        console.log("date check",wh);
+        
         if (!wh) {
             $grid.html('<div class="mx-slot-closed">This day is closed. No slots available.</div>');
             return;
@@ -2157,21 +2206,68 @@ $(function () {
     /* ================================================================
        CONTINUE → slot modal
     ================================================================ */
-    $('#mxContinueBtn').on('click', function () {
-        if (!selectedDate || !selectedStartTime) return;
-        selectedHours = selectedPackHours;
-        var startH = parseInt(selectedStartTime.slice(0, 2), 10);
-        var check  = validateConsecutiveCrossDay(selectedDate, selectedStartTime, selectedHours);
+    // $('#mxContinueBtn').on('click', function () {
+    //     if (!selectedDate || !selectedStartTime) return;
+    //     selectedHours = selectedPackHours;
+    //     var startH = parseInt(selectedStartTime.slice(0, 2), 10);
+    //     var check  = validateConsecutiveCrossDay(selectedDate, selectedStartTime, selectedHours);
 
-        $('#mxSlotText').text(prettyRange(selectedDate, startH, selectedHours));
+    //     $('#mxSlotText').text(prettyRange(selectedDate, startH, selectedHours));
+    //     $('#mxSelectedHours').text(selectedHours);
+    //     $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
+    //     $('#mxHintText').text(
+    //         check.ok
+    //             ? 'Continuous booking for ' + selectedHours + ' hour' + (selectedHours > 1 ? 's' : '') + '.'
+    //             : check.message
+    //     );
+    //     $('#mxModalConfirm').prop('disabled', !check.ok).css('opacity', check.ok ? '1' : '.5');
+    //     openSlotModal();
+    // });
+    $('#mxContinueBtn').on('click', function () {
+
+        if (!selectedDate || !selectedStartTime) return;
+
+        selectedHours = selectedPackHours;
+
+        var startH = parseInt(selectedStartTime.slice(0, 2), 10);
+
+        var check = validateConsecutiveCrossDay(
+            selectedDate,
+            selectedStartTime,
+            selectedHours
+        );
+
+        $('#mxSlotText').text(
+            prettyRange(selectedDate, startH, selectedHours)
+        );
+
         $('#mxSelectedHours').text(selectedHours);
         $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
+
         $('#mxHintText').text(
             check.ok
-                ? 'Continuous booking for ' + selectedHours + ' hour' + (selectedHours > 1 ? 's' : '') + '.'
+                ? 'Continuous booking for ' + selectedHours + ' hour' +
+                (selectedHours > 1 ? 's' : '') + '.'
                 : check.message
         );
-        $('#mxModalConfirm').prop('disabled', !check.ok).css('opacity', check.ok ? '1' : '.5');
+
+        $('#mxModalConfirm')
+            .prop('disabled', !check.ok)
+            .css('opacity', check.ok ? '1' : '.5');
+
+        /* ---------- IMPORTANT ---------- */
+
+        var wh = getWorkingHours(selectedDate);
+
+        // actual ending hour
+        var endHour = startH + selectedHours;
+
+        // disable + if next hour exceeds day's closing time
+        $('#mxHPlus').prop(
+            'disabled',
+            !wh || endHour >= wh.end
+        );
+
         openSlotModal();
     });
 

@@ -108,33 +108,90 @@ class BookingController extends Controller
         $hours       = (int) $request->hours;
         $workstation = (int) $request->workstation;
 
+        // $times = [];
+        // for ($i = 0; $i < $hours; $i++) {
+        //     $hour = $startHour + $i;
+        //     $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+        // }
+
+        // // 🔧 FIX: Check only non-expired slots
+        // $exists = BookingSlot::where('date', $date)
+        //     ->where('workstation', $workstation)
+        //     ->whereIn('time', $times)
+        //     ->where(function($query) {
+        //         $query->where('status', 'booked')
+        //             ->orWhere(function($q) {
+        //                 $q->where('status', 'pending')
+        //                   ->whereHas('booking', function($b) {
+        //                       $b->where('expires_at', '>', now())
+        //                         ->orWhereNull('expires_at');
+        //                   });
+        //             });
+        //     })
+        //     ->exists();
+
+        // if ($exists) {
+        //     return response()->json([
+        //         'status'  => false,
+        //         'message' => 'One or more slots already booked',
+        //     ], 409);
+        // }
+
+        $liftType    = $request->lift;
+
         $times = [];
-        for ($i = 0; $i < $hours; $i++) {
-            $hour = $startHour + $i;
-            $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+
+        for($i=0;$i<$hours;$i++){
+            $times[] = $startHour + $i;
         }
 
-        // 🔧 FIX: Check only non-expired slots
-        $exists = BookingSlot::where('date', $date)
-            ->where('workstation', $workstation)
-            ->whereIn('time', $times)
-            ->where(function($query) {
-                $query->where('status', 'booked')
-                    ->orWhere(function($q) {
-                        $q->where('status', 'pending')
-                          ->whereHas('booking', function($b) {
-                              $b->where('expires_at', '>', now())
-                                ->orWhereNull('expires_at');
-                          });
-                    });
-            })
-            ->exists();
+        $bookings = Booking::where('date',$date)
+            ->where('lift_type',$liftType)
+            ->where(function($q){
 
-        if ($exists) {
+                $q->where('status','booked')
+
+                ->orWhere(function($qq){
+
+                    $qq->where('status','pending')
+                        ->where(function($e){
+
+                            $e->where('expires_at','>',now())
+                            ->orWhereNull('expires_at');
+
+                        });
+
+                });
+
+            })
+            ->get();
+
+        $conflict = false;
+
+        foreach($bookings as $booking){
+
+            $existingStart = (int) substr($booking->start_time,0,2);
+
+            $existingHours = [];
+
+            for($i=0;$i<$booking->hours;$i++){
+                $existingHours[] = $existingStart + $i;
+            }
+
+            if(count(array_intersect($times,$existingHours))){
+
+                $conflict = true;
+                break;
+            }
+        }
+
+        if($conflict){
+
             return response()->json([
-                'status'  => false,
-                'message' => 'One or more slots already booked',
-            ], 409);
+                'status'=>false,
+                'message'=>'One or more slots are already booked or reserved.'
+            ],409);
+
         }
 
         // Create the booking
@@ -610,12 +667,31 @@ public function storeGuestBooking(Request $request)
 
     public function getBlockedTimes(Request $request)
     {
-        $startTimes = Booking::where('lift_type', $request->lift_type)
+        $bookings = Booking::where('lift_type', $request->lift_type)
             ->whereDate('date', $request->date)
-            ->pluck('start_time');
+            ->get(['start_time', 'hours']);
+
+        $times = [];
+
+        foreach ($bookings as $booking) {
+
+            $startHour = (int) substr($booking->start_time, 0, 2);
+
+            for ($i = 0; $i < $booking->hours; $i++) {
+
+                $times[] =
+                    str_pad($startHour + $i, 2, '0', STR_PAD_LEFT)
+                    . ':00:00';
+            }
+        }
+
+        // remove duplicates + reindex
+        $times = array_values(array_unique($times));
+
+        sort($times);
 
         return response()->json([
-            'start_times' => $startTimes
+            'start_times' => $times
         ]);
     }
 }
