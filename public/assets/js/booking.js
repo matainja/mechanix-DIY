@@ -2759,6 +2759,10 @@ document
 
 });
 
+document.getElementById('mxSuccessCloseBtn')?.addEventListener('click', function () {
+    document.getElementById('mxSuccessModal').classList.remove('show');
+});
+
 function getBlockedTimes(selectedLift, selectedDate, callback) {
 
     $.ajax({

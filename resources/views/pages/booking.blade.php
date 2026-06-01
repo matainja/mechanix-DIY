@@ -8,17 +8,17 @@
         <link rel="stylesheet" href="{{ asset('assets/css/booking.css') }}">
         <style>
             .mx-slot.blocked {
-    background: #d3d3d3;
-    color: #777;
-    cursor: not-allowed;
-    opacity: 0.7;
-}
+                background: #d3d3d3;
+                color: #777;
+                cursor: not-allowed;
+                opacity: 0.7;
+            }
 
-.mx-slot-badge.blocked-badge {
-    background: #999;
-    color: #fff;
-}
-            </style>
+            .mx-slot-badge.blocked-badge {
+                background: #999;
+                color: #fff;
+            }
+        </style>
     @endpush
 
     @php
@@ -72,7 +72,7 @@
         $liftKeyMapForPrices = [
             'four-post lift' => 'four',
             'four post lift' => 'four',
-             'four-post style lift' => 'four',
+            'four-post style lift' => 'four',
             'two-post lift' => 'two',
             'two post lift' => 'two',
             'scissor lift' => 'scissor',
@@ -524,36 +524,34 @@
         <div id="mxSuccessModal" class="mx-modal-overlay" aria-hidden="true">
             <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true"
                 aria-labelledby="mxSuccessTitle">
-                <div class="mx-success-anim"
-     style="
-        width:58px;
-        height:58px;
-        margin:0 auto 8px;
-     ">
 
-    <svg class="mx-checkmark"
-         viewBox="0 0 52 52"
-         xmlns="http://www.w3.org/2000/svg"
-         style="
+                <!-- Close Button -->
+                <button type="button" class="mx-modal-close" id="mxSuccessCloseBtn">
+                    &times;
+                </button>
+
+                <div class="mx-success-anim"
+                    style="
+                width:58px;
+                height:58px;
+                margin:0 auto 8px;
+            ">
+
+                    <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"
+                        style="
             width:40px;
             height:40px;
          ">
 
-        <circle class="mx-checkmark-circle"
-                cx="26"
-                cy="26"
-                r="25"
-                fill="none" />
+                        <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
 
-        <path class="mx-checkmark-check"
-              fill="none"
-              d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-    </svg>
+                        <path class="mx-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                    </svg>
 
-</div>
+                </div>
                 <div id="mxSuccessTitle" class="mx-success-title">Booking Confirmed!</div>
-                        <div class="mx-garage-contact"
-     style="
+                <div class="mx-garage-contact"
+                    style="
         background:#1e293b;
         padding:8px 10px;
         border-radius:8px;
@@ -562,19 +560,19 @@
         line-height:1.2;
      ">
 
-    <p style="
+                    <p
+                        style="
         color:#94a3b8;
         margin:0 0 4px;
         font-size:10px;
         font-weight:600;
         letter-spacing:.4px;
     ">
-        CALL TO CONFIRM
-    </p>
+                        CALL TO CONFIRM
+                    </p>
 
-    <a href="tel:+17327307712"
-       class="mx-phone-link"
-       style="
+                    <a href="tel:+17327307712" class="mx-phone-link"
+                        style="
           color:#22c55e;
           font-size:14px;
           font-weight:700;
@@ -585,20 +583,20 @@
           margin:0;
        ">
 
-        <i class="fa-solid fa-phone" style="font-size:11px;"></i>
+                        <i class="fa-solid fa-phone" style="font-size:11px;"></i>
 
-        732-730-7712 EXT. 3
-    </a>
+                        732-730-7712 EXT. 3
+                    </a>
 
-    <p style="
+                    <p style="
         color:#94a3b8;
         margin:4px 0 0;
         font-size:9px;
     ">
-        Mon–Fri 9AM–6PM • Sat 9AM–12PM
-    </p>
+                        Mon–Fri 9AM–6PM • Sat 9AM–12PM
+                    </p>
 
-</div>
+                </div>
                 {{-- <div class="mx-success-sub">Your booking ID is <strong id="mxSuccessBookingId">—</strong></div> --}}
                 <div class="mx-receipt mx-success-receipt">
                     <div class="mx-receipt-row"><span class="mx-receipt-label">Workstation</span><span
@@ -749,16 +747,17 @@
                                 @csrf
                                 <div class="mb-3">
                                     <label class="form-label small text-white">Full Name</label>
-                                    <input type="text" class="form-control border-0" name="guest_name" id="guestName"
-                                        placeholder="Enter your full name"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;-webkit-text-fill-color:#fff;"
+                                    <input type="text" class="form-control border-0 guest-input" name="guest_name"
+                                        id="guestName" placeholder="Enter your full name"
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
                                         required>
                                 </div>
+
                                 <div class="mb-3">
                                     <label class="form-label small text-white">US Phone Number</label>
-                                    <input type="tel" class="form-control border-0" name="guest_phone"
+                                    <input type="tel" class="form-control border-0 guest-input" name="guest_phone"
                                         id="guestPhone" placeholder="(XXX) XXX-XXXX"
-                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;-webkit-text-fill-color:#fff;"
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
                                         required>
                                 </div>
                                 <div class="form-check mb-3">
@@ -787,44 +786,34 @@
         class="mx-modal-close"
         onclick="closeGuestMemberSuccessModal()" > --}}
         <div class="mx-modal-card mx-success-card" role="dialog" aria-modal="true">
-           <button type="button"
-        class="mx-modal-close"
-        id="guestSuccessCloseBtn">
+            <button type="button" class="mx-modal-close" id="guestSuccessCloseBtn">
 
-        &times;
+                &times;
 
-      </button>
+            </button>
             <div class="mx-success-anim"
-        style="
+                style="
             width:58px;
             height:58px;
             margin:0 auto 8px;
         ">
 
-        <svg class="mx-checkmark"
-            viewBox="0 0 52 52"
-            xmlns="http://www.w3.org/2000/svg"
-            style="
+                <svg class="mx-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"
+                    style="
                 width:40px;
                 height:40px;
             ">
 
-            <circle class="mx-checkmark-circle"
-                    cx="26"
-                    cy="26"
-                    r="25"
-                    fill="none" />
+                    <circle class="mx-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
 
-            <path class="mx-checkmark-check"
-                fill="none"
-                d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-        </svg>
+                    <path class="mx-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
 
-    </div>
+            </div>
             <div class="mx-success-title">Slot Reserved!</div>
             {{-- <div class="mx-success-sub">Booking ID: <strong id="mxGuestBookingId">—</strong></div> --}}
-           <div class="mx-mini-timer"
-     style="
+            <div class="mx-mini-timer"
+                style="
         background:#1e293b;
         border:1px solid #334155;
         border-radius:8px;
@@ -838,35 +827,34 @@
         line-height:1;
      ">
 
-    <i class="fa-solid fa-clock"
-       style="
+                <i class="fa-solid fa-clock" style="
           color:#f59e0b;
           font-size:12px;
        "></i>
 
-    <span style="color:#cbd5e1;">
-        Time Left:
-    </span>
+                <span style="color:#cbd5e1;">
+                    Time Left:
+                </span>
 
-    <strong id="mxGuestTimer"
-            style="
+                <strong id="mxGuestTimer"
+                    style="
                 color:#fbbf24;
                 font-size:13px;
                 margin-right:4px;
             ">
-        30:00
-    </strong>
+                    30:00
+                </strong>
 
-    <span style="
+                <span style="
         color:#64748b;
         font-size:11px;
     ">
-        Slot auto releases
-    </span>
+                    Slot auto releases
+                </span>
 
-</div>
+            </div>
             <div class="mx-garage-contact"
-     style="
+                style="
         background:#1e293b;
         padding:10px 14px;
         border-radius:10px;
@@ -878,19 +866,19 @@
         flex-wrap:wrap;
      ">
 
-    <span style="
+                <span
+                    style="
         color:#94a3b8;
         font-size:11px;
         font-weight:700;
         letter-spacing:.4px;
         line-height:1;
     ">
-        CALL TO CONFIRM
-    </span>
+                    CALL TO CONFIRM
+                </span>
 
-    <a href="tel:+11234567890"
-       class="mx-phone-link"
-       style="
+                <a href="tel:+11234567890" class="mx-phone-link"
+                    style="
           color:#22c55e;
           font-size:15px;
           font-weight:700;
@@ -901,21 +889,22 @@
           line-height:1;
        ">
 
-        <i class="fa-solid fa-phone" style="font-size:12px;"></i>
+                    <i class="fa-solid fa-phone" style="font-size:12px;"></i>
 
-        732-730-7712 EXT 3
-    </a>
+                    732-730-7712 EXT 3
+                </a>
 
-    <span style="
+                <span
+                    style="
         color:#94a3b8;
         font-size:10px;
         line-height:1;
         white-space:nowrap;
     ">
-        Mon–Fri 9AM–6PM
-    </span>
+                    Mon–Fri 9AM–6PM
+                </span>
 
-</div>
+            </div>
             <div class="mx-receipt mx-success-receipt">
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Name</span><span class="mx-receipt-value"
                         id="mxgName">—</span></div>
@@ -946,7 +935,7 @@
                     <i class="fa-solid fa-phone"></i> Call Now to Confirm
                 </a>
             </div>
-             {{-- <div class="mx-modal-actions">
+            {{-- <div class="mx-modal-actions">
                    
                     <button type="button" class="mx-btn-solid" id="mxSummaryPay">Pay Now &nbsp;<i
                             class="fa-solid fa-lock"></i></button>
