@@ -2676,6 +2676,9 @@ $(function () {
             // After login, continue the booking that was in progress
             setTimeout(function () { mxContinueAfterAuth(); }, 400);
 
+            // Reload page
+            window.location.reload();
+
         } catch (err) {
             $err.text('Network error. Please try again.').removeClass('d-none');
         }
