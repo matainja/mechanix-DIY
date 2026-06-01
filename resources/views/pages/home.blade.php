@@ -29,7 +29,7 @@
 
                 <!-- Desktop image -->
                 {{-- <img src="{{ asset('assets/images/shared image (2).jpg') }}" alt="Hero Image"> --}}
-                <img src="{{ asset('assets/images/mechanix-banner-2.jpg') }}" alt="Hero Image">
+                <img src="{{ asset('assets/images/mechanix-banner-01.6.jpg') }}" alt="Hero Image">
             </picture>
         </div>
 
@@ -37,13 +37,13 @@
 
         <div class="container hero-content">
             <h1 class="hero-title">Your Car, Your Rules, Your Skills</h1>
-            <div class="hero-buttons">
+            {{-- <div class="hero-buttons">
                 <a href="{{ route('booking') }}" class="btn btn-primary btn-lg btn-hero-primary">Book Now</a>
                 <a href="{{ route('rentals') }}" class="btn btn-outline-light btn-lg btn-hero-secondary">View Rentals</a>
-            </div>
+            </div> --}}
 
             {{-- ADD HERE  --}}
-            <div class="hero-features-wrapper">
+            {{-- <div class="hero-features-wrapper">
 
                 <ul class="hero-features">
                     <li>
@@ -90,7 +90,7 @@
 
                 </ul>
 
-            </div>
+            </div> --}}
         </div>
 
     </section>
@@ -137,14 +137,65 @@
 
     <!-- VIP Membership -->
     <section class="membership-section">
-        <div class="container text-center">
-            <h2 class="membership-title">Join Our VIP Membership</h2>
-            <p class="membership-subtitle">Exclusive Benefits & Discounts</p>
-            <a href="{{ route('membership') }}" class="btn btn-primary btn-lg btn-member">
-                <span>Become a Member</span>
-            </a>
+    <div class="container">
+        <div class="membership-row">
+
+            {{-- Left 3 bullets --}}
+            <ul class="hf-side hf-left">
+                <li>
+                    <a href="{{ route('commonpage') }}#lift-rentals">
+                        <span class="hf-icon"></span>
+                        <div>Four & Two-Post Lift Rentals</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('commonpage') }}#basic-tool">
+                        <span class="hf-icon"></span>
+                        <div>Basic Tools Provided</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="hf-icon"></span>
+                        <div>Discounted Parts Available</div>
+                    </a>
+                </li>
+            </ul>
+
+            {{-- Center Membership CTA --}}
+            <div class="membership-center text-center">
+                <h2 class="membership-title">Join Our VIP Membership</h2>
+                <p class="membership-subtitle">Exclusive Benefits & Discounts</p>
+                <a href="{{ route('membership') }}" class="btn btn-primary btn-lg btn-member">
+                    <span>Become a Member</span>
+                </a>
+            </div>
+
+            {{-- Right 3 bullets --}}
+           <ul class="hf-side hf-right">
+    <li>
+        <a href="{{ route('booking') }}">
+            <span class="hf-icon"></span>
+            <div>Hourly Rental</div>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('commonpage') }}#specialty-tools">
+            <span class="hf-icon"></span>
+            <div>Specialty Tools Available</div>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <span class="hf-icon"></span>
+            <div>Mechanic On Site</div>
+        </a>
+    </li>
+</ul>
+
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Routes for JS -->
     <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}">

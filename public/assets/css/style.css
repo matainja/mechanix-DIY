@@ -383,16 +383,14 @@ body {
 } */
  /* from here */
 .hero-title {
-    /* font-size: 3rem; */
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 800;
     line-height: 1.15;
     color: #ffffff;
-
+    text-align: left;
     text-shadow:
         0 2px 4px rgba(0,0,0,0.8),
         0 4px 12px rgba(0,0,0,0.7);
-
     max-width: 900px;
 }
 
@@ -1013,4 +1011,87 @@ body {
     font-size:12px;
   }
 
+}
+
+.membership-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.hf-side {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: 1;
+}
+
+.hf-left {
+    align-items: flex-start;
+    padding-left: 45px;
+}
+
+.hf-right {
+    align-items: flex-start;
+    padding-right: 45px;
+}
+
+.hf-right li {
+    width: 100%;
+}
+
+.hf-right li a {
+    flex-direction: row;
+    justify-content: flex-start;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.hf-side li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    transition: .25s ease;
+    white-space: nowrap;   /* prevent text wrapping */
+}
+
+.hf-side li a:hover {
+    color: #dd2b31;
+}
+
+.membership-center {
+    flex: 0 0 280px;        /* fixed width so it doesn't grow */
+}
+
+.btn-member {
+    white-space: nowrap;    /* stop "Become a Member" from wrapping */
+    width: auto !important; /* don't stretch full width */
+    padding: 7px 40px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .membership-row {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hf-left,
+    .hf-right {
+        align-items: center;
+    }
+
+    .hf-right li a {
+        justify-content: center;
+    }
 }
