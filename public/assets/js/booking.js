@@ -1953,7 +1953,8 @@ $(function () {
     function dayAvailClass(dateStr) {
         if (!getWorkingHours(dateStr)) return 'day-unavailable';
         var info = dayData[dateStr];
-        if (info && info.status === 'booked')      return 'day-booked';
+        // if (info && info.status === 'booked')      return 'day-booked';
+        if (info && info.status === 'booked')      return 'day-available';
         if (info && info.status === 'unavailable') return 'day-unavailable';
         if (!isDateAvailableByPackage(dateStr, selectedPackHours, selectedLift)) return 'day-unavailable';
         var r = dayFreeRatio(dateStr, selectedLift);
