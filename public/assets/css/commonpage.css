@@ -127,3 +127,27 @@ body{
     margin-bottom:0;
 }
 
+/* desc css  */
+
+.tools-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px 25px;
+    padding-left:20px;
+}
+
+.tools-grid li{
+    margin-bottom:0;
+}
+
+@media (max-width:991px){
+    .tools-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media (max-width:576px){
+    .tools-grid{
+        grid-template-columns:1fr;
+    }
+}

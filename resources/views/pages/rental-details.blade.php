@@ -44,32 +44,28 @@
                     </h1>
 
                     {{-- Description --}}
-                    <p class="details-desc">
+                    {{-- <p class="details-desc">
                         {{ $rental->description ?? 'No description available.' }}
-                    </p>
+                    </p> --}}
 
 
                     {{-- FEATURES (optional: split by comma or newline) --}}
-                    @if($rental->description)
+                    {{-- @if($rental->description) --}}
                         <ul class="details-features">
-                            @foreach(explode("\n", $rental->description) as $line)
-                                <li>{{ $line }}</li>
-                            @endforeach
-                            {{-- FEATURES  basic toool bullet point --}}
-                            @if($rental->description)
-                                <ul class="details-features">
 
-                                    @foreach(explode("\n", $rental->description) as $line)
-                                        <li>{{ $line }}</li>
-                                    @endforeach
+    @if($rental->description)
+        @foreach(explode("\n", $rental->description) as $line)
+            @if(trim($line))
+                <li>{{ $line }}</li>
+            @endif
+        @endforeach
+    {{-- @endif --}}
 
-                                    <li>
-                                        Basic hand tools and tool carts are available with bay rentals based on availability.
-                                    </li>
+    <li>
+        Basic hand tools and tool carts are available with bay rentals based on availability.
+    </li>
 
-                                </ul>
-                            @endif
-                        </ul>
+</ul>
                     @endif
 
 

@@ -12,7 +12,7 @@
 
     {{-- SECTION 1 --}}
     <section id="lift-rentals" class="service-section">
-        <h2 class="section-title">Lift  & Tool Rentals</h2>
+        <h2 class="section-title">Lift Rentals</h2>
 
         @forelse($rentals as $rental)
 
@@ -28,7 +28,7 @@
 
                 <div class="list-content">
                     <h3>{{ $rental->name }}</h3>
-                    <p>Premium rental product available for booking.</p>
+                    <p>{{$rental->description}}</p>
                 </div>
 
                 <div class="list-action">
@@ -98,17 +98,33 @@
             <img src="{{ asset('assets/images/rentals/ac-machine-r1234yf.png') }}" alt="AC Machine R1234yf">
         </div>
         <div class="list-content">
-            <h3>Additional Equipment Options</h3>
+            {{-- <h3>Additional Equipment Options</h3> --}}
             {{-- <p>Professional A/C recovery and recharge machine for newer vehicles using R1234yf refrigerant (2017+). Fully automatic with leak detection and vacuum pump.</p> --}}
          
             <ul style="color:#000;">
-    <li>
+    {{-- <li>
         Specialty tools can be added to any lift or rental booking upon request and availability.
-    </li>
+    </li> --}}
 
-    <li>
-        Please contact our team during booking confirmation to reserve required specialty equipment in advance.
-    </li>
+   <ul class="details-features tools-grid">
+    <li>A/C Machine</li>
+    <li>Tire Changer & Balancer</li>
+    <li>20-Ton Shop Press</li>
+    <li>Engine Hoist</li>
+    <li>Pipe Bender</li>
+    <li>Nitrogen Tire Welder</li>
+    <li>Bearing Puller</li>
+    <li>O2 Sensor Socket Set</li>
+    <li>Rear Caliper Tool</li>
+    <li>Strut Spring Compressor</li>
+    <li>Compression Tester</li>
+    <li>Radiator Pressure Test Kit</li>
+    <li>Disconnect Tool Set</li>
+    <li>Fan Clutch Wrench Set</li>
+    <li>Fuel Pressure Tester</li>
+    <li>Oxy-Acetylene Torch</li>
+    <li>MAP Gas Torch</li>
+</ul>
 </ul>
         </div>
 
@@ -402,10 +418,10 @@
     <div class="list-content">
         <h3>Included Hand Tools And Equipment</h3>
 
-        <p>
+        {{-- <p>
             Complete hand tool sets and professional garage equipment
             available for DIY repairs, maintenance, and upgrades.
-        </p>
+        </p> --}}
 
         <div style="color:#000; line-height:1.8; font-size:14px;">
             Sockets & Impact Sockets,

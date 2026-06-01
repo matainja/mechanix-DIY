@@ -9,25 +9,54 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthPopupController extends Controller
 {
+    // public function login(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required|string|min:6',
+    //     ]);
+
+    //     if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']], true)) {
+    //         $request->session()->regenerate();
+
+    //         return response()->json([
+    //             'ok' => true,
+    //             'csrf' => csrf_token(), //  send fresh token
+    //         ]);
+    //     }
+
+
+    //     return response()->json(['ok' => false, 'message' => 'Invalid email or password.'], 422);
+    // }
+
     public function login(Request $request)
-    {
-        $data = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
+{
+    $data = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string|min:6',
+    ]);
+
+    if (Auth::attempt([
+        'email' => $data['email'],
+        'password' => $data['password']
+    ], true)) {
+
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+
+        return response()->json([
+            'ok'   => true,
+            'csrf' => csrf_token(),
+            'role' => $user->role,
         ]);
-
-        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']], true)) {
-            $request->session()->regenerate();
-
-            return response()->json([
-                'ok' => true,
-                'csrf' => csrf_token(), //  send fresh token
-            ]);
-        }
-
-
-        return response()->json(['ok' => false, 'message' => 'Invalid email or password.'], 422);
     }
+
+    return response()->json([
+        'ok' => false,
+        'message' => 'Invalid email or password.'
+    ], 422);
+}
 
     public function register(Request $request)
     {

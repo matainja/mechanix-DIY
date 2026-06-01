@@ -1888,7 +1888,8 @@ $(function () {
             console.log("slot:", value);
 
             var h = parseInt(value.slice(0,2),10);
-            var label = formatTimePoint(h) + ' – ' + formatTimePoint(h + 1);
+            // var label = formatTimePoint(h) + ' – ' + formatTimePoint(h + 1);
+var label = formatTimePoint(h);
 
             var booked = isSlotBooked(dateStr, value, selectedLift);
             var blocked = blockedTimes.has(value);
@@ -1906,16 +1907,16 @@ $(function () {
                 ),
                 disabled: isDisabled,
                 'data-value': value,
-                html:
-                    '<span class="mx-slot-time">' + label + '</span>' +
-                    '<span class="mx-slot-badge ' +
-                    (booked ? 'taken' :
-                    blocked ? 'blocked-badge' :
-                    'free') + '">' +
-                    (booked ? 'Booked' :
-                    blocked ? 'Blocked' :
-                    'Available') +
-                    '</span>'
+               html:
+    '<span class="mx-slot-time">' + label + '</span>' +
+    '<span class="mx-slot-badge ' +
+    (booked ? 'taken' :
+    blocked ? 'blocked-badge' :
+    'free') + '">' +
+    (booked ? 'Booked' :
+    blocked ? 'Blocked' :
+    'Available') +
+    '</span>'
             });
 
             if (!isDisabled) {
@@ -2125,11 +2126,15 @@ $(function () {
         }
 
         var html = liftData.prices.map(function (p, i) {
-            var label    = p.hours === 1 ? '1 Hour' : p.hours + ' Hours';
-            var priceStr = p.is_membership
-                ? 'Members Only'
-                : (p.hours > 1 ? '$' + p.price + ' / hour' : '$' + p.price);
+           var label = p.hours === 1
+    ? 'Hourly Rental'
+    : p.hours + ' Hour Package';
 
+var priceStr = p.is_membership
+    ? 'Members Only'
+    : (liftKey === 'flat2'
+        ? '$' + p.price
+        : '$' + p.price + (p.hours > 1 ? ' / hour' : ''));
             var card = '<div class="mx-pricecard ' + (i === 0 && !p.is_membership ? 'mx-selected' : '') + '"' +
                        ' data-hours="' + p.hours + '"' +
                        ' data-price="' + p.price + '"' +
@@ -2144,10 +2149,10 @@ $(function () {
         }).join('');
 
         html += '<a href="/membership" class="mx-pricecard-link">' +
-                '<div class="mx-pricecard mx-membership">' +
-                '<span class="mx-hours">18 Hours</span>' +
-                '<span class="mx-price">Members Only</span>' +
-                '</div></a>';
+        '<div class="mx-pricecard mx-membership">' +
+        '<span class="mx-hours">Membership Plan</span>' +
+        '<span class="mx-price"></span>' +
+        '</div></a>';
 
         wrap.innerHTML = html;
 
@@ -2642,7 +2647,30 @@ $(function () {
         e.preventDefault();
         var $err = $('#loginErrorMsg').addClass('d-none').text('');
         var loginUrl = $('#mx-routes').data('login-url') || '/popup-login';
+        var email = $(this).find('[name=email]').val().trim();
+var password = $(this).find('[name=password]').val();
 
+if (!email) {
+    $err.text('Email is required.').removeClass('d-none');
+    return;
+}
+
+var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(email)) {
+    $err.text('Please enter a valid email address.').removeClass('d-none');
+    return;
+}
+
+if (!password) {
+    $err.text('Password is required.').removeClass('d-none');
+    return;
+}
+
+if (password.length < 6) {
+    $err.text('Password must be at least 6 characters.').removeClass('d-none');
+    return;
+}
         try {
             var res = await fetch(loginUrl, {
                 method: 'POST', credentials: 'same-origin',
@@ -2689,7 +2717,63 @@ $(function () {
         e.preventDefault();
         var $err = $('#registerErrorMsg').addClass('d-none').text('');
         var registerUrl = $('#mx-routes').data('register-url') || '/popup-register';
+ var email = $(this).find('[name=email]').val().trim();
+var mobile = $(this).find('[name=mobile_no]').val().trim();
+var password = $(this).find('[name=password]').val();
+var confirmPassword = $(this).find('[name=password_confirmation]').val();
 
+var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+var phoneRegex = /^[0-9]{10}$/;
+
+if (!email) {
+    $err.text('Email is required.').removeClass('d-none');
+    return;
+}
+
+if (!emailRegex.test(email)) {
+    $err.text('Please enter a valid email address.').removeClass('d-none');
+    return;
+}
+
+if (!mobile) {
+    $err.text('Mobile number is required.').removeClass('d-none');
+    return;
+}
+
+if (!phoneRegex.test(mobile)) {
+    $err.text('Mobile number must be exactly 10 digits.').removeClass('d-none');
+    return;
+}
+
+if (!password) {
+    $err.text('Password is required.').removeClass('d-none');
+    return;
+}
+
+if (password.length < 8) {
+    $err.text('Password must be at least 8 characters long.').removeClass('d-none');
+    return;
+}
+
+if (!/[A-Z]/.test(password)) {
+    $err.text('Password must contain at least one uppercase letter.').removeClass('d-none');
+    return;
+}
+
+if (!/[a-z]/.test(password)) {
+    $err.text('Password must contain at least one lowercase letter.').removeClass('d-none');
+    return;
+}
+
+if (!/[0-9]/.test(password)) {
+    $err.text('Password must contain at least one number.').removeClass('d-none');
+    return;
+}
+
+if (password !== confirmPassword) {
+    $err.text('Password confirmation does not match.').removeClass('d-none');
+    return;
+}
         try {
             var res = await fetch(registerUrl, {
                 method: 'POST', credentials: 'same-origin',
@@ -2727,6 +2811,9 @@ $(function () {
 
             // After register, continue the booking that was in progress
             setTimeout(function () { mxContinueAfterAuth(); }, 400);
+
+             // Reload page
+            window.location.reload();
 
         } catch (err) {
             $err.text('Network error. Please try again.').removeClass('d-none');
@@ -2790,6 +2877,8 @@ document
 
 document.getElementById('mxSuccessCloseBtn')?.addEventListener('click', function () {
     document.getElementById('mxSuccessModal').classList.remove('show');
+     // Reload page
+            window.location.reload();
 });
 
 function getBlockedTimes(selectedLift, selectedDate, callback) {

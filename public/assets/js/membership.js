@@ -116,44 +116,68 @@ $(document).on('click', '.join-btn[data-plan-id]', function () {
     });
 
     /* ====================== AUTH — LOGIN (FIXED) ====================== */
-    $('#mxLoginForm').on('submit', async function (e) {
-        e.preventDefault();
-        var $err = $('#loginErrorMsg').addClass('d-none').text('');
-        try {
-            var res  = await fetch('/popup-login', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    email:    $(this).find('[name=email]').val(),
-                    password: $(this).find('[name=password]').val(),
-                }),
-            });
-            var data = await res.json().catch(function () { return {}; });
-            if (!res.ok) { 
-                $err.text(data.message || 'Login failed.').removeClass('d-none'); 
-                return; 
-            }
+   
+$('#mxLoginForm').on('submit', async function (e) {
+    e.preventDefault();
 
-            // Close modal and reload page to update auth state
-            bootstrap.Modal.getInstance(document.getElementById('mxAuthModal')).hide();
-            
-            // Store plan data before reload
-            sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
-            sessionStorage.setItem('mx_after_login', 'true');
-            
-            // Reload page
-            window.location.reload();
-            
-        } catch (_) {
-            $err.text('Network error.').removeClass('d-none');
+    var $err = $('#loginErrorMsg').addClass('d-none').text('');
+
+    try {
+
+        var res = await fetch('/popup-login', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.MX_CSRF,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                email: $(this).find('[name=email]').val(),
+                password: $(this).find('[name=password]').val(),
+            }),
+        });
+
+        var data = await res.json().catch(function () {
+            return {};
+        });
+
+        if (!res.ok) {
+            $err.text(data.message || 'Login failed.')
+                .removeClass('d-none');
+            return;
         }
-    });
 
+        // Close modal
+        var modal = bootstrap.Modal.getInstance(
+            document.getElementById('mxAuthModal')
+        );
+
+        if (modal) {
+            modal.hide();
+        }
+
+        // Admin redirect
+        if (data.role == 1) {
+            window.location.href = '/admin';
+            return;
+        }
+
+        // Normal user flow
+        sessionStorage.setItem(
+            'mx_membership_plan',
+            JSON.stringify(selectedPlan)
+        );
+
+        sessionStorage.setItem('mx_after_login', 'true');
+
+        window.location.reload();
+
+    } catch (_) {
+        $err.text('Network error.')
+            .removeClass('d-none');
+    }
+});
     /* ====================== CHECK AFTER LOGIN RELOAD ====================== */
     $(document).ready(function() {
         if (sessionStorage.getItem('mx_after_login') === 'true') {
