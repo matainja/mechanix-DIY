@@ -1736,7 +1736,7 @@ $(function () {
             .prop('disabled', !check.ok)
             .css('opacity', check.ok ? '1' : '.5');
 
-        // dynamic close hour check zx
+        // dynamic close hour check
         $('#mxHPlus').prop(
             'disabled',
             !wh || endHour >= wh.end
@@ -2002,9 +2002,18 @@ $(function () {
             if (dayElem.classList.contains('prevMonthDay')) { dayElem.classList.add('day-prevmonth'); return; }
 
             var key = fp.formatDate(dayElem.dateObj, 'Y-m-d');
+            // if (dayElem.classList.contains('flatpickr-disabled')) {
+            //     var info = dayData[key];
+            //     dayElem.classList.add((info && info.status === 'booked') ? 'day-booked' : 'day-unavailable');
+            //     return;
+            // }
             if (dayElem.classList.contains('flatpickr-disabled')) {
                 var info = dayData[key];
-                dayElem.classList.add((info && info.status === 'booked') ? 'day-booked' : 'day-unavailable');
+                dayElem.classList.add(
+                    (info && info.status === 'unavailable')
+                        ? 'day-unavailable'
+                        : 'day-available'
+                );
                 return;
             }
             dayElem.classList.add(dayAvailClass(key));
