@@ -1736,7 +1736,7 @@ $(function () {
             .prop('disabled', !check.ok)
             .css('opacity', check.ok ? '1' : '.5');
 
-        // dynamic close hour check
+        // dynamic close hour check zx
         $('#mxHPlus').prop(
             'disabled',
             !wh || endHour >= wh.end
