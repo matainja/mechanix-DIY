@@ -358,7 +358,6 @@ public function storeGuestBooking(Request $request)
             $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
         }
 
-        // ✅ Check: the slot at the END of the range must not exist
         $endHour     = $startHour + $hours;
         $endTimeSlot = str_pad($endHour, 2, '0', STR_PAD_LEFT) . ':00:00';
 
@@ -370,7 +369,7 @@ public function storeGuestBooking(Request $request)
         if ($endSlotExists) {
             return response()->json([
                 'status'  => false,
-                'message' => 'One or more slots are already booked or reserved.',
+                'message' => 'One or more slots are already booked or reserved heheheheh.',
             ], 409);
         }
 
@@ -393,7 +392,7 @@ public function storeGuestBooking(Request $request)
         if ($exists) {
             return response()->json([
                 'status'  => false,
-                'message' => 'One or more slots are already booked or reserved.',
+                'message' => 'One or more slots are already booked or reserved asassasasa.',
             ], 409);
         }
 
@@ -502,5 +501,16 @@ public function storeGuestBooking(Request $request)
                 ], 500);
             }
         });
+    }
+
+    public function getBlockedTimes(Request $request)
+    {
+        $startTimes = Booking::where('lift_type', $request->lift_type)
+            ->whereDate('date', $request->date)
+            ->pluck('start_time');
+
+        return response()->json([
+            'start_times' => $startTimes
+        ]);
     }
 }

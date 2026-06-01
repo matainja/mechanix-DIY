@@ -6,6 +6,19 @@
 
     @push('styles')
         <link rel="stylesheet" href="{{ asset('assets/css/booking.css') }}">
+        <style>
+            .mx-slot.blocked {
+    background: #d3d3d3;
+    color: #777;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.mx-slot-badge.blocked-badge {
+    background: #999;
+    color: #fff;
+}
+            </style>
     @endpush
 
     @php

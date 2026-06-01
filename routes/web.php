@@ -103,3 +103,5 @@ Route::post('/membership/request', [MembershipController::class, 'submitRequest'
 Route::post('/membership/guest-request', [MembershipController::class, 'submitGuestRequest'])->name('membership.guest-request');
 Route::post('/membership/guest-payment', [MembershipController::class, 'guestPayment'])->name('membership.guest-payment');  // ← Add this
 Route::get('/membership/my-membership', [MembershipController::class, 'myMembership']);
+
+Route::post('/get-blocked-times', [BookingController::class, 'getBlockedTimes']);   

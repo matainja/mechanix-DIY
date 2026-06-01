@@ -1728,7 +1728,9 @@ $(function () {
     /* ================================================================
        TIME-SLOT GRID (per-lift aware)
     ================================================================ */
-    function renderTimeSlots(dateStr) {
+    function renderTimeSlots(dateStr, timeArray) {
+        console.log(timeArray);
+        
         var $grid = $('#mxTimeGrid').empty();
 
         $('#mxSelectedDateText').text(
@@ -1775,29 +1777,84 @@ $(function () {
             return;
         }
 
+        // slots.forEach(function (value) {
+        //     var h      = parseInt(value.slice(0, 2), 10);
+        //     var label  = formatTimePoint(h) + ' \u2013 ' + formatTimePoint(h + 1);
+        //     var booked = isSlotBooked(dateStr, value, selectedLift);
+
+        //     var $btn = $('<button>', {
+        //         type: 'button',
+        //         class: 'mx-slot ' + (booked ? 'booked' : 'available'),
+        //         disabled: booked,
+        //         'data-value': value,
+        //         html: '<span class="mx-slot-time">' + label + '</span>' +
+        //               '<span class="mx-slot-badge ' + (booked ? 'taken' : 'free') + '">' +
+        //               (booked ? 'Booked' : 'Available') + '</span>',
+        //     });
+
+        //     if (!booked) {
+        //         $btn.on('click', function () {
+        //             $('.mx-slot').removeClass('selected'); $(this).addClass('selected');
+        //             selectedStartTime = value;
+        //             $('#mxPickedTimeText').text(label);
+        //             $('#mxContinueBtn').prop('disabled', false);
+        //         });
+        //     }
+        //     $grid.append($btn);
+        // });
+        // Create blocked time lookup
+        var blockedTimes = new Set(
+            timeArray.map(function(t){
+                return t.slice(0,5);
+            })
+        );
+
         slots.forEach(function (value) {
-            var h      = parseInt(value.slice(0, 2), 10);
-            var label  = formatTimePoint(h) + ' \u2013 ' + formatTimePoint(h + 1);
+
+            console.log("slot:", value);
+
+            var h = parseInt(value.slice(0,2),10);
+            var label = formatTimePoint(h) + ' – ' + formatTimePoint(h + 1);
+
             var booked = isSlotBooked(dateStr, value, selectedLift);
+            var blocked = blockedTimes.has(value);
+
+            console.log(value, "blocked?", blocked);
+
+            var isDisabled = booked || blocked;
 
             var $btn = $('<button>', {
                 type: 'button',
-                class: 'mx-slot ' + (booked ? 'booked' : 'available'),
-                disabled: booked,
+                class: 'mx-slot ' + (
+                    booked ? 'booked' :
+                    blocked ? 'blocked' :
+                    'available'
+                ),
+                disabled: isDisabled,
                 'data-value': value,
-                html: '<span class="mx-slot-time">' + label + '</span>' +
-                      '<span class="mx-slot-badge ' + (booked ? 'taken' : 'free') + '">' +
-                      (booked ? 'Booked' : 'Available') + '</span>',
+                html:
+                    '<span class="mx-slot-time">' + label + '</span>' +
+                    '<span class="mx-slot-badge ' +
+                    (booked ? 'taken' :
+                    blocked ? 'blocked-badge' :
+                    'free') + '">' +
+                    (booked ? 'Booked' :
+                    blocked ? 'Blocked' :
+                    'Available') +
+                    '</span>'
             });
 
-            if (!booked) {
+            if (!isDisabled) {
                 $btn.on('click', function () {
-                    $('.mx-slot').removeClass('selected'); $(this).addClass('selected');
+                    $('.mx-slot').removeClass('selected');
+                    $(this).addClass('selected');
+
                     selectedStartTime = value;
                     $('#mxPickedTimeText').text(label);
                     $('#mxContinueBtn').prop('disabled', false);
                 });
             }
+
             $grid.append($btn);
         });
     }
@@ -1932,7 +1989,9 @@ $(function () {
         });
         toggleHourControls(hours === 9 || hours === 18);
         if (fpInstance) fpInstance.redraw();
-        if (selectedDate) renderTimeSlots(selectedDate);
+        if (selectedDate) getBlockedTimes(selectedLift, selectedDate, function(timeArray){
+            renderTimeSlots(selectedDate, timeArray);
+        });
     }
 
     (function initPackage() {
@@ -2041,7 +2100,9 @@ $(function () {
             $('#mxLiftPrompt').addClass('hidden');
 
             if (fpInstance) fpInstance.redraw();
-            if (selectedDate && $('#mxTimeView').is(':visible')) renderTimeSlots(selectedDate);
+            if (selectedDate && $('#mxTimeView').is(':visible'))  getBlockedTimes(selectedLift, selectedDate, function(timeArray){
+                renderTimeSlots(selectedDate, timeArray);
+            });
 
             if (selectedDate && !isDateAvailableByPackage(selectedDate, selectedPackHours, selectedLift)) {
                 selectedDate = null;
@@ -2067,7 +2128,10 @@ $(function () {
         $(this).prop('disabled', true).removeClass('enabled');
         $('.mx-gridWrap, .mx-legendMini').hide();
         showTimeView();
-        renderTimeSlots(selectedDate);
+        getBlockedTimes(selectedLift, selectedDate, function(timeArray){
+            renderTimeSlots(selectedDate, timeArray);
+        });
+
     });
 
     $('#openDayCalendarMb').on('click', function () {
@@ -2076,7 +2140,12 @@ $(function () {
         $('.mx-gridWrap, .mx-legendMini').hide();
         $(this).hide();
         showTimeView();
-        renderTimeSlots(selectedDate);
+
+        getBlockedTimes(selectedLift, selectedDate, function(timeArray){
+            renderTimeSlots(selectedDate, timeArray);
+        });
+        console.log(selectedLift);
+        
     });
 
     $('#mxBackToDate').on('click', function () {
@@ -2582,3 +2651,28 @@ document
     modal.setAttribute('aria-hidden', 'true');
 
 });
+
+function getBlockedTimes(selectedLift, selectedDate, callback) {
+
+    $.ajax({
+        url: '/get-blocked-times',
+        type: 'POST',
+        data: {
+            lift_type: selectedLift,
+            date: selectedDate,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+
+            // response.start_times = ["10:00:00","09:00:00",...]
+            callback(response.start_times);
+
+        },
+        error: function(xhr) {
+            console.error('Error fetching blocked times', xhr);
+
+            // fallback empty array
+            callback([]);
+        }
+    });
+}
