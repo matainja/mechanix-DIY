@@ -1695,7 +1695,6 @@ $(function () {
     //     );
     //     $('#mxModalConfirm').prop('disabled', !check.ok).css('opacity', check.ok ? '1' : '.5');
     // }
-    //test
     function setHours(val) {
 
         var wh = getWorkingHours(selectedDate);
