@@ -1907,16 +1907,16 @@ var label = formatTimePoint(h);
                 ),
                 disabled: isDisabled,
                 'data-value': value,
-               html:
-    '<span class="mx-slot-time">' + label + '</span>' +
-    '<span class="mx-slot-badge ' +
-    (booked ? 'taken' :
-    blocked ? 'blocked-badge' :
-    'free') + '">' +
-    (booked ? 'Booked' :
-    blocked ? 'Blocked' :
-    'Available') +
-    '</span>'
+                html:
+                    '<span class="mx-slot-time">' + label + '</span>' +
+                    '<span class="mx-slot-badge ' +
+                    (booked ? 'taken' :
+                    blocked ? 'blocked-badge' :
+                    'free') + '">' +
+                    (booked ? 'Booked' :
+                    blocked ? 'Blocked' :
+                    'Available') +
+                    '</span>'
             });
 
             if (!isDisabled) {
@@ -2125,28 +2125,29 @@ var label = formatTimePoint(h);
             return;
         }
 
-        var html = liftData.prices.map(function (p, i) {
-           var label = p.hours === 1
-    ? 'Hourly Rental'
-    : p.hours + ' Hour Package';
+       var html = liftData.prices.map(function (p, i) {
+    var label = liftKey === 'flat2'
+        ? ''
+        : (p.hours === 1
+            ? 'Hourly Rental'
+            : p.hours + ' Hour Package');
 
-var priceStr = p.is_membership
-    ? 'Members Only'
-    : (liftKey === 'flat2'
-        ? '$' + p.price
-        : '$' + p.price + (p.hours > 1 ? ' / hour' : ''));
-            var card = '<div class="mx-pricecard ' + (i === 0 && !p.is_membership ? 'mx-selected' : '') + '"' +
-                       ' data-hours="' + p.hours + '"' +
-                       ' data-price="' + p.price + '"' +
-                       ' data-total="' + (p.price * p.hours) + '">' +
-                       '<span class="mx-hours">' + label + '</span>' +
-                       '<span class="mx-price">' + priceStr + '</span>' +
-                       '</div>';
+    var priceStr = p.is_membership
+        ? 'Members Only'
+        : '$' + p.price;
 
-            return p.is_membership
-                ? '<a href="/membership" class="mx-pricecard-link">' + card + '</a>'
-                : card;
-        }).join('');
+    var card = '<div class="mx-pricecard ' + (i === 0 && !p.is_membership ? 'mx-selected' : '') + '"' +
+               ' data-hours="' + p.hours + '"' +
+               ' data-price="' + p.price + '"' +
+               ' data-total="' + (p.price * p.hours) + '">' +
+               (label ? '<span class="mx-hours">' + label + '</span>' : '') +
+               '<span class="mx-price">' + priceStr + '</span>' +
+               '</div>';
+
+    return p.is_membership
+        ? '<a href="/membership" class="mx-pricecard-link">' + card + '</a>'
+        : card;
+}).join('');
 
         html += '<a href="/membership" class="mx-pricecard-link">' +
         '<div class="mx-pricecard mx-membership">' +
