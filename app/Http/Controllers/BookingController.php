@@ -518,4 +518,62 @@ public function storeGuestBooking(Request $request)
             'start_times' => $times
         ]);
     }
+
+    public function checkBookingHours(Request $request)
+    {
+        $date      = $request->date;
+        $lift      = $request->lift;
+        $startTime = $request->start_time;
+        $hours     = (int)$request->hours;
+
+        $newStart = Carbon::createFromFormat('H:i', $startTime);
+        $newEnd   = (clone $newStart)->addHours($hours);
+
+        $bookings = Booking::where('date', $date)
+            ->where('lift_type', $lift)
+            ->where(function($q){
+
+                $q->where('status','booked')
+
+                ->orWhere(function($qq){
+
+                        $qq->where('status','pending')
+                        ->where(function($e){
+
+                                $e->where('expires_at','>',now())
+                                ->orWhereNull('expires_at');
+
+                        });
+
+                });
+
+            })
+            ->get();
+
+        $conflict = false;
+
+        foreach($bookings as $booking){
+
+            $existingStart = Carbon::createFromFormat(
+                'H:i:s',
+                $booking->start_time
+            );
+
+            $existingEnd = (clone $existingStart)
+                ->addHours($booking->hours);
+
+            // overlap logic
+            if(
+                $newStart < $existingEnd &&
+                $newEnd > $existingStart
+            ){
+                $conflict = true;
+                break;
+            }
+        }
+
+        return response()->json([
+            'ok' => !$conflict
+        ]);
+    }
 }

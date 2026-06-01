@@ -1695,6 +1695,7 @@ $(function () {
     //     );
     //     $('#mxModalConfirm').prop('disabled', !check.ok).css('opacity', check.ok ? '1' : '.5');
     // }
+
     function setHours(val) {
 
         var wh = getWorkingHours(selectedDate);
@@ -1744,7 +1745,31 @@ $(function () {
     }
 
     $('#mxHMinus').on('click', function () { setHours(selectedHours - 1); });
-    $('#mxHPlus').on('click',  function () { setHours(selectedHours + 1); });
+    // $('#mxHPlus').on('click',  function () { setHours(selectedHours + 1); });
+    $('#mxHPlus').on('click', async function () {
+
+        let nextHours = selectedHours + 1;
+
+        let result = await checkBookingAvailability(
+            selectedDate,
+            selectedLift,
+            selectedStartTime,
+            nextHours
+        );
+
+        if(!result.ok){
+
+            $('#mxHintText')
+            .removeClass('text-success text-muted')
+            .addClass('text-danger fw-bold')
+            .html('⚠️ Cannot extend booking. Time slot already occupied.');
+
+            return;
+        }
+
+        setHours(nextHours);
+
+    });
 
     /* ================================================================
        SUMMARY MODAL
@@ -2234,6 +2259,7 @@ $(function () {
     //     $('#mxModalConfirm').prop('disabled', !check.ok).css('opacity', check.ok ? '1' : '.5');
     //     openSlotModal();
     // });
+
     $('#mxContinueBtn').on('click', function () {
 
         if (!selectedDate || !selectedStartTime) return;
@@ -2785,5 +2811,22 @@ function getBlockedTimes(selectedLift, selectedDate, callback) {
             // fallback empty array
             callback([]);
         }
+    });
+}
+async function checkBookingAvailability(date, lift, startTime, hours){
+
+    return $.ajax({
+
+        url:'/check-booking-hours',
+        type:'POST',
+
+        data:{
+            _token:$('meta[name="csrf-token"]').attr('content'),
+            date: date,
+            lift: lift,
+            start_time: startTime,
+            hours: hours
+        }
+
     });
 }
