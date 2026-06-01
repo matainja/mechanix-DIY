@@ -687,12 +687,7 @@ span.flatpickr-weekday {
       border-color: transparent;
       cursor: default
 }
-.flatpickr-day.flatpickr-disabled.day-available,
-.flatpickr-day.flatpickr-disabled.day-available:hover {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-    color: inherit;
-}
+
 .flatpickr-day.flatpickr-disabled,
 .flatpickr-day.flatpickr-disabled:hover {
       cursor: not-allowed;
