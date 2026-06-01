@@ -359,21 +359,6 @@ public function storeGuestBooking(Request $request)
             $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
         }
 
-        $endHour     = $startHour + $hours;
-        $endTimeSlot = str_pad($endHour, 2, '0', STR_PAD_LEFT) . ':00:00';
-
-        $endSlotExists = BookingSlot::where('date', $date)
-            ->where('workstation', $workstation)
-            ->where('time', $endTimeSlot)
-            ->exists();  // any row at all — booked, pending, anything
-
-        if ($endSlotExists) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'One or more slots are already booked or reserved heheheheh.',
-            ], 409);
-        }
-
         // 🔧 FIX: Check only non-expired slots
         $exists = BookingSlot::where('date', $date)
             ->where('workstation', $workstation)
@@ -393,7 +378,7 @@ public function storeGuestBooking(Request $request)
         if ($exists) {
             return response()->json([
                 'status'  => false,
-                'message' => 'One or more slots are already booked or reserved asassasasa.',
+                'message' => 'One or more slots are already booked or reserved.',
             ], 409);
         }
         
