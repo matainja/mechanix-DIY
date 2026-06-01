@@ -467,43 +467,80 @@ public function storeGuestBooking(Request $request)
         }
 
 
-        $endHour = $startHour + $hours;
+        // $endHour = $startHour + $hours;
 
-        $checkTimes = $times;
-        $checkTimes[] = str_pad($endHour, 2, '0', STR_PAD_LEFT) . ':00:00';
+        // $checkTimes = $times;
+        // $checkTimes[] = str_pad($endHour, 2, '0', STR_PAD_LEFT) . ':00:00';
 
-        $exists = BookingSlot::join('bookings', 'booking_slots.booking_id', '=', 'bookings.id')
-            ->where('bookings.date', $date)
-            ->where('bookings.lift_type', $liftType)
-            ->where('booking_slots.workstation', $workstation)
-            ->whereIn('booking_slots.time', $checkTimes)
-            ->where(function ($query) {
+        // $exists = BookingSlot::join('bookings', 'booking_slots.booking_id', '=', 'bookings.id')
+        //     ->where('bookings.date', $date)
+        //     ->where('bookings.lift_type', $liftType)
+        //     ->where('booking_slots.workstation', $workstation)
+        //     ->whereIn('booking_slots.time', $checkTimes)
+        //     ->where(function ($query) {
 
-                $query->where('booking_slots.status', 'booked')
+        //         $query->where('booking_slots.status', 'booked')
 
-                    ->orWhere(function ($q) {
+        //             ->orWhere(function ($q) {
 
-                        $q->where('booking_slots.status', 'pending')
-                        ->where(function ($p) {
+        //                 $q->where('booking_slots.status', 'pending')
+        //                 ->where(function ($p) {
 
-                            $p->where('bookings.expires_at', '>', now())
-                                ->orWhereNull('bookings.expires_at');
+        //                     $p->where('bookings.expires_at', '>', now())
+        //                         ->orWhereNull('bookings.expires_at');
 
-                        });
+        //                 });
 
-                    });
+        //             });
 
-            })
-            ->exists();
+        //     })
+        //     ->exists();
 
-        if ($exists) {
+        // if ($exists) {
 
-            return response()->json([
-                'status' => false,
-                'message' => 'One or more slots are already booked or reserved.',
-            ], 409);
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'One or more slots are already booked or reserved.',
+        //     ], 409);
 
-        }
+        // }
+        $exists = BookingSlot::join(
+        'bookings',
+        'booking_slots.booking_id',
+        '=',
+        'bookings.id'
+    )
+    ->where('booking_slots.date', $date)
+    ->where('bookings.lift_type', $liftType)
+    ->where('booking_slots.workstation', $workstation)
+    ->whereIn('booking_slots.time', $times)
+    ->where(function ($query) {
+
+        $query->where('booking_slots.status', 'booked')
+
+            ->orWhere(function ($q) {
+
+                $q->where('booking_slots.status', 'pending')
+                  ->where(function ($p) {
+
+                        $p->where('bookings.expires_at', '>', now())
+                          ->orWhereNull('bookings.expires_at');
+
+                  });
+
+            });
+
+    })
+    ->exists();
+
+if ($exists) {
+
+    return response()->json([
+        'status'  => false,
+        'message' => 'One or more slots are already booked or reserved.',
+    ], 409);
+
+}
         
         $expiresAt = now()->addMinutes(30);
 
