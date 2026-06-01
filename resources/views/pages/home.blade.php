@@ -68,7 +68,7 @@
                     </li>
 
                     <li>
-                        <a href="{{ route('rentals') }}">
+                        <a href="{{ route('booking') }}">
                             <span class="hf-icon"></span>
                             <div>Hourly Rental</div>
                         </a>
