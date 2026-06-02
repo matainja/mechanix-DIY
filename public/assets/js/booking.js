@@ -2081,37 +2081,68 @@ var label = formatTimePoint(h);
              return info && info.status === 'unavailable';
         }],
 
+        // onDayCreate: function (dObj, dStr, fp, dayElem) {
+        //     dayElem.classList.remove('day-available','day-partial','day-scarce',
+        //                              'day-booked','day-unavailable','day-nextmonth','day-prevmonth');
+        //     if (dayElem.classList.contains('nextMonthDay')) { dayElem.classList.add('day-nextmonth'); return; }
+        //     if (dayElem.classList.contains('prevMonthDay')) { dayElem.classList.add('day-prevmonth'); return; }
+
+        //     var key = fp.formatDate(dayElem.dateObj, 'Y-m-d');
+        //     // if (dayElem.classList.contains('flatpickr-disabled')) {
+        //     //     var info = dayData[key];
+        //     //     dayElem.classList.add((info && info.status === 'booked') ? 'day-booked' : 'day-unavailable');
+        //     //     return;
+        //     // }
+        //     if (dayElem.classList.contains('flatpickr-disabled')) {
+        //         var info = dayData[key];
+
+        //         if (info && info.status === 'booked') {
+        //             dayElem.classList.add('day-available'); // booked looks available
+        //         } else {
+        //             dayElem.classList.add('day-unavailable');
+        //         }
+        //     }
+        //     dayElem.classList.add(dayAvailClass(key));
+
+        //     var slots = getWorkingSlots(key);
+        //     var free  = slots.filter(function (t) { return !isSlotBooked(key, t, selectedLift); }).length;
+        //     if (slots.length > 0 && free > 0 && free < slots.length) {
+        //         dayElem.setAttribute('title', free + ' of ' + slots.length + ' slots available');
+        //         var dot = document.createElement('span');
+        //         dot.className = 'mx-day-dot';
+        //         dayElem.appendChild(dot);
+        //     }
+        // },
         onDayCreate: function (dObj, dStr, fp, dayElem) {
-            dayElem.classList.remove('day-available','day-partial','day-scarce',
-                                     'day-booked','day-unavailable','day-nextmonth','day-prevmonth');
-            if (dayElem.classList.contains('nextMonthDay')) { dayElem.classList.add('day-nextmonth'); return; }
-            if (dayElem.classList.contains('prevMonthDay')) { dayElem.classList.add('day-prevmonth'); return; }
+
+            dayElem.classList.remove(
+                'day-available','day-partial','day-scarce',
+                'day-booked','day-unavailable',
+                'day-nextmonth','day-prevmonth'
+            );
+
+            if (dayElem.classList.contains('nextMonthDay')) {
+                dayElem.classList.add('day-nextmonth');
+            }
+
+            if (dayElem.classList.contains('prevMonthDay')) {
+                dayElem.classList.add('day-prevmonth');
+            }
 
             var key = fp.formatDate(dayElem.dateObj, 'Y-m-d');
-            // if (dayElem.classList.contains('flatpickr-disabled')) {
-            //     var info = dayData[key];
-            //     dayElem.classList.add((info && info.status === 'booked') ? 'day-booked' : 'day-unavailable');
-            //     return;
-            // }
+
             if (dayElem.classList.contains('flatpickr-disabled')) {
                 var info = dayData[key];
 
-                if (info && info.status === 'booked') {
-                    dayElem.classList.add('day-available'); // booked looks available
-                } else {
-                    dayElem.classList.add('day-unavailable');
-                }
+                dayElem.classList.add(
+                    (info && info.status === 'booked')
+                        ? 'day-booked'
+                        : 'day-unavailable'
+                );
+                return;
             }
-            dayElem.classList.add(dayAvailClass(key));
 
-            var slots = getWorkingSlots(key);
-            var free  = slots.filter(function (t) { return !isSlotBooked(key, t, selectedLift); }).length;
-            if (slots.length > 0 && free > 0 && free < slots.length) {
-                dayElem.setAttribute('title', free + ' of ' + slots.length + ' slots available');
-                var dot = document.createElement('span');
-                dot.className = 'mx-day-dot';
-                dayElem.appendChild(dot);
-            }
+            dayElem.classList.add(dayAvailClass(key));
         },
 
         onChange: function (selectedDates, dateStr) {
