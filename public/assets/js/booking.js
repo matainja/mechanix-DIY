@@ -2097,7 +2097,7 @@ var label = formatTimePoint(h);
                 var info = dayData[key];
 
                 if (info && info.status === 'booked') {
-                    dayElem.classList.add('day-available'); // booked looks available
+                    dayElem.classList.add('day-unavailable'); // booked looks available
                 } else {
                     dayElem.classList.add('day-unavailable');
                 }
