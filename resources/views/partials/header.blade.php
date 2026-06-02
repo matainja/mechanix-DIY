@@ -69,7 +69,7 @@
                
 
                 <li class="nav-item desktop-only">
-                    <a class="btn btn-book-now w-100 mt-2" href="{{ route('booking') }}">
+                    <a class="btn btn-book-now" href="{{ route('booking') }}">
                         Book Now
                     </a>
                 </li>

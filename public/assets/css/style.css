@@ -1102,6 +1102,7 @@ body {
     }
 }
 
+/* navbar slogan css */
 .desktop-tagline {
     display: none;
 }
@@ -1109,9 +1110,48 @@ body {
 @media (min-width: 1600px) {
     .desktop-tagline {
         display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: 0.5px;
+        margin-left: 20px;
+        white-space: nowrap;
+        font-style: italic;
     }
 
     .hero-title {
         display: none;
+    }
+}
+
+
+@media (min-width: 992px) {
+
+    .navbar-nav {
+        display: flex;
+        align-items: center;
+        gap: 2px; /* reduced gap */
+    }
+
+    .navbar-nav > li {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-nav .nav-link,
+    .navbar-nav .dropdown-toggle {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px !important; /* reduced horizontal padding */
+    }
+
+    .btn-book-now {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0 !important;
+        margin-left: 8px; /* small space before button */
     }
 }
