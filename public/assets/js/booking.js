@@ -2074,36 +2074,11 @@ var label = formatTimePoint(h);
         },
         onYearChange:  function (s, d, fp) { updateMonthNav(fp); fp.redraw(); },
 
-        // disable: [function (date) {
-        //     if (date.getDay() === 6) return true;
-        //     var info = dayData[flatpickr.formatDate(date, 'Y-m-d')];
-        //     // return info && (info.status === 'unavailable' || info.status === 'booked');
-        //      return info && info.status === 'unavailable';
-        // }],
         disable: [function (date) {
-
-            // block previous dates
-            var today = new Date();
-            today.setHours(0,0,0,0);
-
-            if (date < today) {
-                return true;
-            }
-
-            // block Saturday
-            if (date.getDay() === 6) {
-                return true;
-            }
-
-            var key  = flatpickr.formatDate(date, 'Y-m-d');
-            var info = dayData[key];
-
-            return info &&
-                (
-                    info.status === 'unavailable' ||
-                    info.status === 'booked'
-                );
-
+            if (date.getDay() === 6) return true;
+            var info = dayData[flatpickr.formatDate(date, 'Y-m-d')];
+            // return info && (info.status === 'unavailable' || info.status === 'booked');
+             return info && info.status === 'unavailable';
         }],
 
         onDayCreate: function (dObj, dStr, fp, dayElem) {
