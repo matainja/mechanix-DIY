@@ -139,7 +139,7 @@
     <section class="membership-section">
     <div class="container">
         <div class="membership-row">
-
+           <div>
             {{-- Left 3 bullets --}}
             <ul class="hf-side hf-left">
                 <li>
@@ -161,7 +161,7 @@
                     </a>
                 </li>
             </ul>
-
+           </div>
             {{-- Center Membership CTA --}}
             <div class="membership-center text-center">
                 <h2 class="membership-title">Join Our VIP Membership</h2>
@@ -170,7 +170,7 @@
                     <span>Become a Member</span>
                 </a>
             </div>
-
+<div>
             {{-- Right 3 bullets --}}
            <ul class="hf-side hf-right">
     <li>
@@ -192,7 +192,7 @@
         </a>
     </li>
 </ul>
-
+</div>
         </div>
     </div>
 </section>

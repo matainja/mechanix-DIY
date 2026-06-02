@@ -112,7 +112,7 @@
     <li>20-Ton Shop Press</li>
     <li>Engine Hoist</li>
     <li>Pipe Bender</li>
-    <li>Nitrogen Tire Welder</li>
+    <li>Nitrogen Tire Filter</li><li>Welding Machine</li>
     <li>Bearing Puller</li>
     <li>O2 Sensor Socket Set</li>
     <li>Rear Caliper Tool</li>

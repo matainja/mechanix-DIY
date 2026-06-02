@@ -1027,7 +1027,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 18px;
-    flex: 1;
+    /* flex: 1; */
 }
 
 .hf-left {
@@ -1038,6 +1038,10 @@ body {
 .hf-right {
     align-items: flex-start;
     padding-right: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
 }
 
 .hf-right li {
