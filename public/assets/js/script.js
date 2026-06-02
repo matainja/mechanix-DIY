@@ -190,7 +190,7 @@
 
                 // Success
                 ModalHandler.hideAuthModal();
-                window.location.href = '/';
+                window.location.href = '/admin';
 
             } catch (error) {
                 Utils.showError(loginError, 'Network error. Please try again.');

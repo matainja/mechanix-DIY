@@ -24,12 +24,12 @@
             <picture>
                 <!-- Mobile image -->
                 {{-- <source media="(max-width: 768px)" srcset="{{ asset('assets/images/shared image (3).jpg') }}"> --}}
-                <source media="(max-width: 768px)" srcset="{{ asset('assets/images/mechanix-banner-2-MOB.jpg') }}">
+                <source media="(max-width: 768px)" srcset="{{ asset('assets/images/banner.jpg') }}">
 
 
                 <!-- Desktop image -->
                 {{-- <img src="{{ asset('assets/images/shared image (2).jpg') }}" alt="Hero Image"> --}}
-                <img src="{{ asset('assets/images/mechanix-banner-01.6.jpg') }}" alt="Hero Image">
+                <img src="{{ asset('assets/images/shared image (2).jpg') }}" alt="Hero Image">
             </picture>
         </div>
 

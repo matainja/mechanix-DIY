@@ -2706,7 +2706,9 @@ if (password.length < 6) {
             setTimeout(function () { mxContinueAfterAuth(); }, 400);
 
             // Reload page
-            window.location.reload();
+            // window.location.reload();
+            //redirect to admin dashboard after login
+            window.location.href = '/admin';
 
         } catch (err) {
             $err.text('Network error. Please try again.').removeClass('d-none');
@@ -2814,8 +2816,9 @@ if (password !== confirmPassword) {
             setTimeout(function () { mxContinueAfterAuth(); }, 400);
 
              // Reload page
-            window.location.reload();
-
+            // window.location.reload();
+//redirect to admin dashboard after registration
+window.location.href = '/admin';
         } catch (err) {
             $err.text('Network error. Please try again.').removeClass('d-none');
         }
