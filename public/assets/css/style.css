@@ -332,7 +332,7 @@ body {
   background-size: cover;
   background-position: center;
   /* padding-left: 4rem; */
-  padding: 0px 0px 0px 15%;
+  padding: 0px 0px 0px 0%;
   display: flex;
   background-position: center 12%;
   align-items: flex-start;
@@ -353,9 +353,10 @@ body {
 .hero-content {
   position: relative;
   z-index: 2;
-  text-align: left;
-  max-width: 1498px;
+  /* text-align: left; */
+  /* max-width: 1498px; */
   margin-top: 30px;
+  left:4.9%;
 }
 
 .hero-image {
@@ -1073,9 +1074,10 @@ body {
     color: #dd2b31;
 }
 
-.membership-center {
-    flex: 0 0 280px;        /* fixed width so it doesn't grow */
-}
+/* .membership-center {
+    flex: 0 0 280px;   
+        
+} */
 
 .btn-member {
     white-space: nowrap;    /* stop "Become a Member" from wrapping */
@@ -1097,5 +1099,19 @@ body {
 
     .hf-right li a {
         justify-content: center;
+    }
+}
+
+.desktop-tagline {
+    display: none;
+}
+
+@media (min-width: 1600px) {
+    .desktop-tagline {
+        display: block;
+    }
+
+    .hero-title {
+        display: none;
     }
 }
