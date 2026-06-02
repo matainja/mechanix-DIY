@@ -628,7 +628,7 @@
 
     </section>
 
-    <div class="mx-demo-ribbon" aria-label="Demo Mode">DEMO<small>Work in progress</small></div>
+    {{-- <div class="mx-demo-ribbon" aria-label="Demo Mode">DEMO<small>Work in progress</small></div> --}}
 
     <div id="mx-auth-state" data-logged-in="{{ auth()->check() ? '1' : '0' }}"></div>
     <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}">

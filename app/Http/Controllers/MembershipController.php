@@ -39,12 +39,12 @@ class MembershipController extends Controller
     try {
         // Check if user already submitted a request within the last 24 hours
         $recentRequest = MembershipRequest::where('user_id', auth()->id())
-            ->where('created_at', '>=', now()->subHours(1))
+            ->where('created_at', '>=', now()->subHours(24))
             ->latest()
             ->first();
 
         if ($recentRequest) {
-            $availableAt = $recentRequest->created_at->addHours(1)->diffForHumans();
+            $availableAt = $recentRequest->created_at->addHours(24)->diffForHumans();
 
             return response()->json([
                 'status'  => false,

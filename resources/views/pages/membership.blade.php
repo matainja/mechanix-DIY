@@ -1079,6 +1079,58 @@
 </style>
 </main>
 
+
+<!-- Membership Confirmation Modal -->
+<div class="modal fade" id="mxConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:#1f1f1f;color:#fff;border-radius:10px;border:none;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-white fw-bold">Confirm Membership</h5>
+                <button type="button" class="btn-close btn-close-white" id="mxConfirmClose" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 py-3">
+
+                {{-- Plan Summary Card --}}
+                <div style="background:#2d2d2d;border-radius:8px;padding:20px;text-align:center;margin-bottom:16px;">
+                    <div style="font-size:2.2rem;margin-bottom:8px;">👑</div>
+                    <div style="font-size:0.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">
+                        You are about to join
+                    </div>
+                    <div id="mxConfirmPlanName" style="font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:10px;">—</div>
+                    <div style="display:flex;justify-content:center;gap:24px;">
+                        <div style="text-align:center;">
+                            <div style="font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;">Duration</div>
+                            <div id="mxConfirmDuration" style="font-size:1rem;font-weight:600;color:#fff;">—</div>
+                        </div>
+                        <div style="width:1px;background:#3d3d3d;"></div>
+                        <div style="text-align:center;">
+                            <div style="font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;">Amount</div>
+                            <div id="mxConfirmPrice" style="font-size:1rem;font-weight:600;color:#fff;">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Info Notice --}}
+                <div style="background:#1a2a1a;border:1px solid #2a4a2a;border-radius:6px;padding:10px 14px;font-size:0.82rem;color:#86efac;display:flex;align-items:flex-start;gap:8px;">
+                    <i class="ti ti-info-circle" style="margin-top:1px;flex-shrink:0;"></i>
+                    <span>Your request will be sent for <strong>admin approval</strong>. You will be notified once it is reviewed.</span>
+                </div>
+
+            </div>
+            <div class="modal-footer border-0 pt-0 px-4 pb-4 d-flex gap-2">
+                <button type="button" class="btn w-50" id="mxConfirmCancelBtn"
+                    style="background:#2d2d2d;color:#94a3b8;border:none;border-radius:6px;padding:10px;">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-auth w-50" id="mxConfirmProceedBtn">
+                    <span id="mxConfirmBtnText">Confirm & Proceed</span>
+                    <span id="mxConfirmSpinner" class="spinner-border spinner-border-sm d-none ms-1"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- AUTH MODAL --}}
 <div class="modal fade" id="mxAuthModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

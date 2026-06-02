@@ -93,7 +93,30 @@ $(function () {
     //         openMembershipPayModal();
     //     } else {
 
-        /* ====================== SELECT PLAN ====================== */
+//         /* ====================== SELECT PLAN ====================== */
+// $(document).on('click', '.join-btn[data-plan-id]', function () {
+//     var planId = $(this).data('plan-id');
+//     selectedPlan = (window.membershipPlans || []).find(function (p) { return p.id == planId; });
+//     if (!selectedPlan) { alert('Plan not found.'); return; }
+
+//     sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
+
+//     if (window.MX_IS_LOGGED_IN) {
+//         isGuestFlow = false;
+//         // Skip payment modal and directly submit request for logged-in users
+//         submitLoggedInRequestWithoutPayment();
+//         // FUTURE: Uncomment below to enable payment modal for logged-in users
+//         // openMembershipPayModal();
+//     } else {
+//             isGuestFlow = true;
+//             var modal = new bootstrap.Modal(document.getElementById('mxAuthModal'));
+//             modal.show();
+//             bootstrap.Tab.getOrCreateInstance(document.getElementById('guestMemberTab')).show();
+//         }
+//     });
+
+
+/* ====================== SELECT PLAN ====================== */
 $(document).on('click', '.join-btn[data-plan-id]', function () {
     var planId = $(this).data('plan-id');
     selectedPlan = (window.membershipPlans || []).find(function (p) { return p.id == planId; });
@@ -101,19 +124,50 @@ $(document).on('click', '.join-btn[data-plan-id]', function () {
 
     sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
 
-    if (window.MX_IS_LOGGED_IN) {
-        isGuestFlow = false;
-        // Skip payment modal and directly submit request for logged-in users
-        submitLoggedInRequestWithoutPayment();
-        // FUTURE: Uncomment below to enable payment modal for logged-in users
-        // openMembershipPayModal();
-    } else {
+    // Show confirmation modal first
+    openConfirmModal();
+});
+
+
+/* ====================== CONFIRMATION MODAL ====================== */
+function openConfirmModal() {
+    if (!selectedPlan) return;
+
+    $('#mxConfirmPlanName').text(selectedPlan.name);
+    $('#mxConfirmDuration').text(selectedPlan.duration_days + ' days');
+    $('#mxConfirmPrice').text('$' + parseFloat(selectedPlan.price).toFixed(2));
+    $('#mxConfirmBtnText').text('Confirm & Proceed');
+    $('#mxConfirmSpinner').addClass('d-none');
+    $('#mxConfirmProceedBtn').prop('disabled', false);
+
+    var modal = new bootstrap.Modal(document.getElementById('mxConfirmModal'));
+    modal.show();
+}
+
+$('#mxConfirmCancelBtn, #mxConfirmClose').on('click', function () {
+    bootstrap.Modal.getInstance(document.getElementById('mxConfirmModal')).hide();
+});
+
+$('#mxConfirmProceedBtn').on('click', function () {
+    bootstrap.Modal.getInstance(document.getElementById('mxConfirmModal')).hide();
+
+    setTimeout(function () {
+        if (window.MX_IS_LOGGED_IN) {
+            isGuestFlow = false;
+            submitLoggedInRequestWithoutPayment();
+        } else {
             isGuestFlow = true;
-            var modal = new bootstrap.Modal(document.getElementById('mxAuthModal'));
-            modal.show();
+            var authModal = new bootstrap.Modal(document.getElementById('mxAuthModal'));
+            authModal.show();
             bootstrap.Tab.getOrCreateInstance(document.getElementById('guestMemberTab')).show();
         }
-    });
+    }, 300);
+});
+
+/* Hover effect for cancel button */
+$('#mxConfirmCancelBtn')
+    .on('mouseenter', function () { $(this).css('background', '#3d3d3d'); })
+    .on('mouseleave', function () { $(this).css('background', '#2d2d2d'); });
 
     /* ====================== AUTH — LOGIN (FIXED) ====================== */
    
