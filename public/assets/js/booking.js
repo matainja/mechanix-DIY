@@ -2684,7 +2684,7 @@ var label = formatTimePoint(h);
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
         });
         $('#mxSuccessBookingId').text(bookingId);
-        $('#mxrWorkstation').text('Workstation 1');
+        $('#mxrWorkstation').text('100 Midstreams Rd, Brick, NJ');
         $('#mxrLift').text(LIFT_LABELS[payload.lift] || getActiveLiftLabel());
         $('#mxrDate').text(dateFmt);
         $('#mxrStart').text(formatTimePoint(startH));
