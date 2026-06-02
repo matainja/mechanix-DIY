@@ -1822,26 +1822,84 @@ $(function () {
             return;
         }
 
+        // if (selectedPackHours === 9 || selectedPackHours === 18) {
+        //     var startVal = pad2(wh.start) + ':00';
+        //     var chk      = validateConsecutiveCrossDay(dateStr, startVal, selectedPackHours);
+        //     if (!chk.ok) {
+        //         $grid.html(
+        //             '<div class="mx-slot-unavail">Not available for <strong>' + selectedPackHours +
+        //             'h</strong> from 9:00 AM.<br><small>' + chk.message + '</small></div>'
+        //         );
+        //         return;
+        //     }
+        //     $('<button>', {
+        //         type: 'button', class: 'mx-slot available', 'data-value': startVal,
+        //         html: '<span class="mx-slot-time">Start at ' + formatTimePoint(wh.start) + '</span>' +
+        //               '<span class="mx-slot-badge free">Full ' + selectedPackHours + 'h block</span>',
+        //     }).on('click', function () {
+        //         $('.mx-slot').removeClass('selected'); $(this).addClass('selected');
+        //         selectedStartTime = startVal;
+        //         $('#mxPickedTimeText').text(formatTimePoint(wh.start));
+        //         $('#mxContinueBtn').prop('disabled', false);
+        //     }).appendTo($grid);
+        //     return;
+        // }
         if (selectedPackHours === 9 || selectedPackHours === 18) {
+
             var startVal = pad2(wh.start) + ':00';
-            var chk      = validateConsecutiveCrossDay(dateStr, startVal, selectedPackHours);
-            if (!chk.ok) {
-                $grid.html(
-                    '<div class="mx-slot-unavail">Not available for <strong>' + selectedPackHours +
-                    'h</strong> from 9:00 AM.<br><small>' + chk.message + '</small></div>'
-                );
-                return;
+
+            var blockedTimes = new Set(
+                timeArray.map(function(t){
+                    return t.slice(0,5);
+                })
+            );
+
+            var blocked = blockedTimes.has(startVal);
+
+            var chk = validateConsecutiveCrossDay(
+                dateStr,
+                startVal,
+                selectedPackHours
+            );
+
+            var isDisabled = blocked || !chk.ok;
+
+            var $btn = $('<button>', {
+                type: 'button',
+                class: 'mx-slot ' + (
+                    blocked ? 'blocked' :
+                    !chk.ok ? 'booked' :
+                    'available'
+                ),
+                disabled: isDisabled,
+                'data-value': startVal,
+                html:
+                    '<span class="mx-slot-time">Start at ' +
+                    formatTimePoint(wh.start) +
+                    '</span>' +
+                    '<span class="mx-slot-badge ' +
+                    (blocked ? 'blocked-badge' :
+                    !chk.ok ? 'taken' :
+                    'free') +
+                    '">' +
+                    (blocked ? 'Blocked' :
+                    !chk.ok ? 'Unavailable' :
+                    'Full ' + selectedPackHours + 'h block') +
+                    '</span>'
+            });
+
+            if (!isDisabled) {
+                $btn.on('click', function () {
+                    $('.mx-slot').removeClass('selected');
+                    $(this).addClass('selected');
+
+                    selectedStartTime = startVal;
+                    $('#mxPickedTimeText').text(formatTimePoint(wh.start));
+                    $('#mxContinueBtn').prop('disabled', false);
+                });
             }
-            $('<button>', {
-                type: 'button', class: 'mx-slot available', 'data-value': startVal,
-                html: '<span class="mx-slot-time">Start at ' + formatTimePoint(wh.start) + '</span>' +
-                      '<span class="mx-slot-badge free">Full ' + selectedPackHours + 'h block</span>',
-            }).on('click', function () {
-                $('.mx-slot').removeClass('selected'); $(this).addClass('selected');
-                selectedStartTime = startVal;
-                $('#mxPickedTimeText').text(formatTimePoint(wh.start));
-                $('#mxContinueBtn').prop('disabled', false);
-            }).appendTo($grid);
+
+            $grid.append($btn);
             return;
         }
 
@@ -2877,6 +2935,7 @@ document
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden', 'true');
 
+    window.location.reload();
 });
 
 document.getElementById('mxSuccessCloseBtn')?.addEventListener('click', function () {
