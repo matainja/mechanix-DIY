@@ -28,7 +28,7 @@
 
                 <div class="list-content">
                     <h3>{{ $rental->name }}</h3>
-                    <p>{{$rental->description}}</p>
+                    {{-- <p>{{$rental->description}}</p> --}}
                 </div>
 
                 <div class="list-action">

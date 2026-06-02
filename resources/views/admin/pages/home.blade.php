@@ -299,9 +299,9 @@
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
+                                <th>Guest Name</th>
+                                <th>Registered User Email</th>
+                                <th>Guest Phone</th>
                                 <th>Date</th>
                                 <th>Time</th>
                                 <th>Hours</th>

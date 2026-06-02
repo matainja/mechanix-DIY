@@ -1410,9 +1410,9 @@
 
         <div class="mx-success-actions">
             <button type="button" class="mx-btn-outline" onclick="location.reload()">Done</button>
-            <a href="/rentals" class="mx-btn-solid" style="text-decoration:none;">
+            {{-- <a href="/rentals" class="mx-btn-solid" style="text-decoration:none;">
                 <i class="fa-solid fa-gauge"></i> Rentals
-            </a>
+            </a> --}}
         </div>
     </div>
 </div>

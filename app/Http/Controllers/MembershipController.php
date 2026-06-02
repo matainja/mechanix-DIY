@@ -28,40 +28,55 @@ class MembershipController extends Controller
     /**
      * Submit membership request (for logged-in users)
      */
-    public function submitRequest(Request $request)
-    {
-        $validated = $request->validate([
-            'membership_plan_id' => 'required|exists:membership_plans,id',
-            'amount_paid' => 'required|numeric|min:0',
-            'payment_method' => 'required|string',
+   public function submitRequest(Request $request)
+{
+    $validated = $request->validate([
+        'membership_plan_id' => 'required|exists:membership_plans,id',
+        'amount_paid'        => 'required|numeric|min:0',
+        'payment_method'     => 'required|string',
+    ]);
+
+    try {
+        // Check if user already submitted a request within the last 24 hours
+        $recentRequest = MembershipRequest::where('user_id', auth()->id())
+            ->where('created_at', '>=', now()->subHours(1))
+            ->latest()
+            ->first();
+
+        if ($recentRequest) {
+            $availableAt = $recentRequest->created_at->addHours(1)->diffForHumans();
+
+            return response()->json([
+                'status'  => false,
+                'message' => "You already submitted a membership request. You can submit again {$availableAt}.",
+            ], 429);
+        }
+
+        $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
+
+        $membershipRequest = MembershipRequest::create([
+            'user_id'            => auth()->id(),
+            'membership_plan_id' => $validated['membership_plan_id'],
+            'amount_paid'        => $validated['amount_paid'],
+            'payment_method'     => $validated['payment_method'],
+            'status'             => 'pending',
         ]);
 
-        try {
-            $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
+        return response()->json([
+            'status'     => true,
+            'message'    => 'Membership request submitted successfully! Admin will review it shortly.',
+            'request_id' => $membershipRequest->id,
+        ]);
 
-            $membershipRequest = MembershipRequest::create([
-                'user_id' => auth()->id(),
-                'membership_plan_id' => $validated['membership_plan_id'],
-                'amount_paid' => $validated['amount_paid'],
-                'payment_method' => $validated['payment_method'],
-                'status' => 'pending',
-            ]);
+    } catch (\Exception $e) {
+        Log::error('Membership request error: ' . $e->getMessage());
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Membership request submitted successfully! Admin will review it shortly.',
-                'request_id' => $membershipRequest->id,
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Membership request error: ' . $e->getMessage());
-            
-            return response()->json([
-                'status' => false,
-                'message' => 'Failed to submit membership request.'
-            ], 500);
-        }
+        return response()->json([
+            'status'  => false,
+            'message' => 'Failed to submit membership request.',
+        ], 500);
     }
+}
 
     /**
      * Submit guest membership request
