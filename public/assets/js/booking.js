@@ -2082,11 +2082,6 @@ var label = formatTimePoint(h);
         }],
 
         onDayCreate: function (dObj, dStr, fp, dayElem) {
-            console.log( "first",
-                key,
-                dayElem.className,
-                dayElem.classList.contains('flatpickr-disabled')
-            );
             dayElem.classList.remove('day-available','day-partial','day-scarce',
                                      'day-booked','day-unavailable','day-nextmonth','day-prevmonth');
             if (dayElem.classList.contains('nextMonthDay')) { dayElem.classList.add('day-nextmonth'); return; }
@@ -2106,6 +2101,8 @@ var label = formatTimePoint(h);
                 } else {
                     dayElem.classList.add('day-unavailable');
                 }
+
+                return;
             }
             dayElem.classList.add(dayAvailClass(key));
 
@@ -2118,11 +2115,6 @@ var label = formatTimePoint(h);
                 dayElem.appendChild(dot);
             }
 
-            console.log( "last",
-                key,
-                dayElem.className,
-                dayElem.classList.contains('flatpickr-disabled')
-            );
         },
 
         onChange: function (selectedDates, dateStr) {
