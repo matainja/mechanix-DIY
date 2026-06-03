@@ -151,3 +151,39 @@ body{
         grid-template-columns:1fr;
     }
 }
+
+
+/* ── Unavailable card ─────────────────────────────── */
+.list-card {
+    position: relative;   /* needed for overlay positioning */
+    overflow: hidden;     /* keeps overlay inside card bounds */
+}
+
+.disabled-row {
+    opacity: 0.7;
+}
+
+.unavailable-overlay {
+    position: absolute;
+    inset: 0;                          /* covers the entire card */
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: inherit;            /* matches card's border-radius */
+    pointer-events: none;              /* lets clicks pass through if needed */
+}
+
+.unavailable-badge {
+    background: #dd2b31;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}

@@ -21,24 +21,30 @@
                 $isAvailable = $rental->status == 1;
             @endphp
 
-            <div class="list-card {{ !$isAvailable ? 'disabled-row' : '' }}">
-                <div class="list-image">
-                    <img src="{{ $img ? asset('storage/'.$img->image_path) : asset('assets/images/no-image.png') }}">
-                </div>
+           <div class="list-card {{ !$isAvailable ? 'disabled-row' : '' }}">
+    <div class="list-image">
+        <img src="{{ $img ? asset('storage/'.$img->image_path) : asset('assets/images/no-image.png') }}">
+    </div>
 
-                <div class="list-content">
-                    <h3>{{ $rental->name }}</h3>
-                    {{-- <p>{{$rental->description}}</p> --}}
-                </div>
+    {{-- ↓ Move overlay OUTSIDE list-image, inside list-card ↓ --}}
+    @if(!$isAvailable)
+        <div class="unavailable-overlay">
+            <span class="unavailable-badge">Unavailable</span>
+        </div>
+    @endif
 
-                <div class="list-action">
-                    <a href="{{ route('rental.details',$rental->id) }}" class="rental-btn">
-                     Book Now
-                    </a>
-                </div>
+    <div class="list-content">
+        <h3>{{ $rental->name }}</h3>
+    </div>
 
-                
-            </div>
+    <div class="list-action">
+        <a href="{{ route('rental.details',$rental->id) }}" 
+           class="rental-btn {{ !$isAvailable ? 'disabled' : '' }}"
+           {{ !$isAvailable ? 'style=pointer-events:none;opacity:0.5;' : '' }}>
+            Book Now
+        </a>
+    </div>
+</div>
 
         @empty
             <p class="text-white">No rentals available</p>
