@@ -10,6 +10,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\UserProfileController;
 
 
 //Page Controller
@@ -85,6 +86,11 @@ Route::delete('/bookings/{id}',       [AdminController::class, 'deleteBooking'])
 
         });
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [UserProfileController::class, 'index'])->name('user.profile');
+    Route::put('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
+});
 //Loin & Register Popup
 
 Route::post('/popup-login', [AuthPopupController::class, 'login'])->name('popup.login');
@@ -100,6 +106,7 @@ Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPa
 // Membership routes
 Route::get('/membership/plans', [MembershipController::class, 'getPlans'])->name('membership.plans');
 Route::post('/membership/request', [MembershipController::class, 'submitRequest'])->middleware('auth')->name('membership.request');
+Route::get('/membership/check-active', [MembershipController::class, 'checkActiveMembership'])->middleware('auth');
 Route::post('/membership/guest-request', [MembershipController::class, 'submitGuestRequest'])->name('membership.guest-request');
 Route::post('/membership/guest-payment', [MembershipController::class, 'guestPayment'])->name('membership.guest-payment');  // ← Add this
 Route::get('/membership/my-membership', [MembershipController::class, 'myMembership']);

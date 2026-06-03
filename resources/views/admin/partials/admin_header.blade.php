@@ -91,14 +91,14 @@
                                 <hr class="dropdown-divider">
                             </li>
 
-                            <li>
+                            {{-- <li>
                                 <a href="{{ route('admin.home') }}" class="dropdown-item">
                                     <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
                                 </a>
-                            </li>
-                            <li>
+                            </li> --}}
+                            {{-- <li>
                                 <hr class="dropdown-divider">
-                            </li>
+                            </li> --}}
                             <li>
                                 <a href="{{ route('home') }}" class="dropdown-item">
                                     <i class="bi bi-speedometer2 me-2"></i> Front end

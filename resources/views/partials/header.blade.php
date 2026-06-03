@@ -226,6 +226,16 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
+
+                             <li>
+        <a href="{{ url('/profile') }}" class="dropdown-item">
+            <i class="bi bi-gear me-2"></i>
+            Profile Settings
+        </a>
+    </li>
+     <li>
+        <hr class="dropdown-divider">
+    </li>
                             {{-- admin dashboard --}}
                             {{-- <li>
             <a href="{{ route('admin.home') }}" class="dropdown-item">

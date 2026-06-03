@@ -117,16 +117,55 @@ $(function () {
 
 
 /* ====================== SELECT PLAN ====================== */
-$(document).on('click', '.join-btn[data-plan-id]', function () {
+$(document).on('click', '.join-btn[data-plan-id]', async function () {
     var planId = $(this).data('plan-id');
     selectedPlan = (window.membershipPlans || []).find(function (p) { return p.id == planId; });
     if (!selectedPlan) { alert('Plan not found.'); return; }
 
     sessionStorage.setItem('mx_membership_plan', JSON.stringify(selectedPlan));
 
-    // Show confirmation modal first
+    // If logged in, check for an active membership first
+    if (window.MX_IS_LOGGED_IN) {
+        try {
+            var res  = await fetch('/membership/check-active', {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' },
+            });
+            var data = await res.json();
+
+            if (data.has_active) {
+                showAlreadyMemberModal(data.membership);
+                return;           // ← Stop here. Don't open confirm modal.
+            }
+        } catch (e) {
+            // Network error — fall through and let the confirm modal handle it
+        }
+    }
+
+    // No active membership (or guest) — proceed normally
     openConfirmModal();
 });
+
+function showAlreadyMemberModal(m) {
+    $('#mxAMPlanName').text(m.plan_name);
+    $('#mxAMPrice').text('$' + parseFloat(m.price).toFixed(2));
+    $('#mxAMDuration').text(m.duration_days + ' days');
+    $('#mxAMStartDate').text(m.start_date);
+    $('#mxAMEndDate').text(m.end_date);
+    $('#mxAMDaysLeft').text(m.days_left + ' days remaining');
+
+    // Render features list
+    var features = [];
+    try { features = JSON.parse(m.features || '[]'); } catch (e) {}
+    var featureHtml = features.map(function (f) {
+        return '<li><span class="mx-am-check">✓</span>' + f + '</li>';
+    }).join('');
+    $('#mxAMFeatureList').html(featureHtml || '<li style="color:#64748b;font-size:12px;">No features listed</li>');
+
+    openModal('#mxAlreadyMemberModal');
+}
+
+
 
 
 /* ====================== CONFIRMATION MODAL ====================== */
@@ -585,6 +624,10 @@ async function submitLoggedInRequestWithoutPayment() {
 
     /* ====================== INIT ====================== */
     loadPlans();
+    function closeAlreadyMemberModal() {
+    closeModal('#mxAlreadyMemberModal');
+}
+window.closeAlreadyMemberModal = closeAlreadyMemberModal;
 });
 
 function closeMemberSuccessModal() {
@@ -594,3 +637,4 @@ function closeMemberSuccessModal() {
 function closeGuestMemberSuccessModal() {
     $('#mxGuestMemberSuccessModal').removeClass('show').attr('aria-hidden', 'true');
 }
+

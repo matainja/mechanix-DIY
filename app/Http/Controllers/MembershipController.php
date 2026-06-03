@@ -52,6 +52,19 @@ class MembershipController extends Controller
             ], 429);
         }
 
+// Check if user already has an active membership
+$activeMembership = UserMembership::where('user_id', auth()->id())
+    ->where('status', 'active')
+    ->where('end_date', '>=', now())
+    ->first();
+
+if ($activeMembership) {
+    return response()->json([
+        'status'  => false,
+        'message' => 'You already have an active membership.',
+    ], 409);
+}
+
         $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
 
         $membershipRequest = MembershipRequest::create([
@@ -400,5 +413,45 @@ public function myMembership()
     ]);
 }
  
+
+/**
+ * Check if authenticated user has an active membership
+ */
+public function checkActiveMembership()
+{
+    if (!auth()->check()) {
+        return response()->json(['has_active' => false]);
+    }
+
+    $membership = \App\Models\UserMembership::with('membershipPlan')
+        ->where('user_id', auth()->id())
+        ->where('status', 'active')
+        ->where('end_date', '>=', now())
+        ->latest('start_date')
+        ->first();
+
+    if (!$membership) {
+        return response()->json(['has_active' => false]);
+    }
+
+    return response()->json([
+        'has_active' => true,
+        'membership' => [
+            'plan_name'     => optional($membership->membershipPlan)->name ?? 'Membership',
+            'price'         => optional($membership->membershipPlan)->price ?? 0,
+            'duration_days' => optional($membership->membershipPlan)->duration_days ?? 0,
+            'start_date'    => $membership->start_date
+                                ? \Carbon\Carbon::parse($membership->start_date)->format('M d, Y')
+                                : '—',
+            'end_date'      => $membership->end_date
+                                ? \Carbon\Carbon::parse($membership->end_date)->format('M d, Y')
+                                : '—',
+            'days_left'     => $membership->end_date
+                                ? max(0, (int) now()->diffInDays($membership->end_date, false))
+                                : 0,
+            'features'      => optional($membership->membershipPlan)->features ?? '[]',
+        ],
+    ]);
+}
 
 }
