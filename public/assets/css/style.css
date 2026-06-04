@@ -1298,7 +1298,7 @@ body {
     .desktop-tagline {
         display: block;   /* <-- add this */
         font-family: 'Ethnocentric', sans-serif !important;
-        font-size: 12px;
+        font-size: 13px;
         letter-spacing: 1px;
         text-transform: uppercase;
         color: #fff;
