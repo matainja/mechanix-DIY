@@ -1425,12 +1425,12 @@
 $(function () {
 
     // Add at the top of the $(function(){...}) block:
-$('<style>')
-    .text(
-        '.mx-liftbtn--unavailable{opacity:.4;cursor:not-allowed;position:relative;}' +
-        '.mx-lift-unavail-badge{position:absolute;top:4px;right:4px;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;letter-spacing:.5px;}'
-    )
-    .appendTo('head');
+    $('<style>')
+        .text(
+            '.mx-liftbtn--unavailable{opacity:.4;cursor:not-allowed;position:relative;}' +
+            '.mx-lift-unavail-badge{position:absolute;top:4px;right:4px;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;letter-spacing:.5px;}'
+        )
+        .appendTo('head');
 
     /* ================================================================
        SCROLL HELPER
@@ -1621,11 +1621,11 @@ $('<style>')
     function getPackageTotal(hours) { return getRatePerHour() * hours; }
 
     // ADD HERE ↓
-function getEffectiveTotal(hours) {
-    var base  = getPackageTotal(hours);
-    var addon = addonSelected ? (addonPrice * hours) : 0;
-    return base + addon;
-}
+    function getEffectiveTotal(hours) {
+        var base = getPackageTotal(hours);
+        var addon = addonSelected ? (addonPrice * hours) : 0;
+        return base + addon;
+    }
     /* ================================================================
        LIFT LABELS
     ================================================================ */
@@ -2252,146 +2252,135 @@ function getEffectiveTotal(hours) {
         });
 
         // ADD THESE 6 LINES:
-    if (liftKey === 'four') {
-        renderAddonSection();
-    } else {
-        $('#mxAddonSection').hide();
-        addonSelected = false;
-        addonPrice    = 0;
-    }
-    }
-
-
-function renderAddonSection() {
-    if (liftStatuses['flat2'] && liftStatuses['flat2'].status === 0) {
-        $('#mxAddonSection').hide();
-        return;
-    }
-
-    var raw = document.getElementById('mxAllLiftPrices');
-    if (!raw) {
-        console.warn('mxAllLiftPrices not found');
-        return;
-    }
-
-    var allPrices = {};
-    try {
-        allPrices = JSON.parse(raw.textContent || raw.innerText);
-    } catch (e) {
-        console.error('Price JSON parse error', e);
-        return;
-    }
-
-    var flat2Data = allPrices['flat2'];
-    if (!flat2Data || !flat2Data.prices || !flat2Data.prices.length) {
-        console.warn('flat2 pricing not found:', allPrices);
-        return;
-    }
-
-    var hourlyPrice = flat2Data.prices.find(function (p) { return p.hours === 1; });
-    if (!hourlyPrice) hourlyPrice = flat2Data.prices[0];
-    addonPrice = hourlyPrice ? parseFloat(hourlyPrice.price) : 0;
-
-    // ── Read product meta (image, name, description) ──
-    var productMeta = { name: 'Alignment Rack', description: '', image: 'assets/images/rentals/allignmentrack.jpg' };
-    var metaRaw = document.getElementById('mxAddonProductData');
-    if (metaRaw) {
-        try {
-            productMeta = JSON.parse(metaRaw.textContent || metaRaw.innerText);
-        } catch (e) {}
-    }
-
-    // ── Build description lines (split by newline, take first 3) ──
-    var descLines = (productMeta.description || '')
-        .split('\n')
-        .map(function (l) { return l.trim(); })
-        .filter(function (l) { return l.length > 0; })
-        .slice(0, 3);
-
-    var descHtml = descLines.length
-        ? '<ul style="margin:4px 0 0 0;padding-left:14px;list-style:disc;">' +
-          descLines.map(function (l) {
-              return '<li style="font-size:11px;color:#94a3b8;margin-bottom:2px;">' + l + '</li>';
-          }).join('') +
-          '</ul>'
-        : '';
-
-    // ── Build all price pills ──
-    var pricePillsHtml = flat2Data.prices
-        .filter(function (p) { return !p.is_membership; })
-        .map(function (p) {
-            return '<span style="' +
-                'display:inline-block;' +
-                'background:#1e293b;' +
-                'border:1px solid #334155;' +
-                'border-radius:4px;' +
-                'padding:2px 7px;' +
-                'font-size:11px;' +
-                'color:#e2e8f0;' +
-                'margin-right:4px;' +
-                'margin-top:4px;">' +
-                (p.hours === 1 ? '1 hr' : p.hours + ' hrs') +
-                ' — <strong style="color:#e74c3c;">$' + p.price + '</strong>' +
-                '</span>';
-        }).join('');
-
-    var $section = $('#mxAddonSection');
-
-    $section.html(
-        '<div style="border:1px dashed #e74c3c;border-radius:10px;overflow:hidden;margin-top:4px;">' +
-
-            // Header badge
-            '<div style="background:#e74c3c;padding:3px 10px;">' +
-                '<span style="font-size:10px;font-weight:700;color:#fff;letter-spacing:.8px;">ADD-ON</span>' +
-            '</div>' +
-
-            // Body
-            '<div style="padding:10px 12px;display:flex;gap:10px;align-items:flex-start;">' +
-
-                // Image
-                '<div style="flex-shrink:0;width:72px;height:72px;border-radius:6px;overflow:hidden;background:#1e293b;">' +
-                    '<img src="' + productMeta.image + '" alt="' + productMeta.name + '"' +
-                    ' style="width:100%;height:100%;object-fit:cover;" ' +
-                    ' onerror="this.src=\'assets/images/rentals/allignmentrack.jpg\'">' +
-                '</div>' +
-
-                // Info
-                '<div style="flex:1;min-width:0;">' +
-
-                    // Checkbox row
-                    '<label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0 0 4px 0;">' +
-                        '<input type="checkbox" id="mxAddonAlignmentRack"' +
-                        ' style="width:15px;height:15px;accent-color:#e74c3c;flex-shrink:0;">' +
-                        '<span style="font-size:13px;font-weight:700;color:#fff;">' + productMeta.name + '</span>' +
-                    '</label>' +
-
-                    // Description bullets
-                    descHtml +
-
-                    // Price pills
-                    '<div style="margin-top:6px;">' +
-                        pricePillsHtml +
-                    '</div>' +
-
-                    // Note
-                    '<div style="font-size:10px;color:#64748b;margin-top:5px;">' +
-                        'Booked for the same time slot as your lift.' +
-                    '</div>' +
-
-                '</div>' +
-            '</div>' +
-        '</div>'+
-        '<br>'
-    ).show();
-
-    // Bind checkbox
-    $('#mxAddonAlignmentRack').off('change').on('change', function () {
-        addonSelected = $(this).is(':checked');
-        if ($('#mxSlotModal').hasClass('show')) {
-            $('#mxTotalText').text(formatMoney(getEffectiveTotal(selectedHours)));
+        if (liftKey === 'four') {
+            renderAddonSection();
+        } else {
+            $('#mxAddonSection').hide();
+            addonSelected = false;
+            addonPrice = 0;
         }
-    });
-}
+    }
+
+
+    function renderAddonSection() {
+        if (liftStatuses['flat2'] && liftStatuses['flat2'].status === 0) {
+            $('#mxAddonSection').hide();
+            return;
+        }
+
+        var raw = document.getElementById('mxAllLiftPrices');
+        if (!raw) {
+            console.warn('mxAllLiftPrices not found');
+            return;
+        }
+
+        var allPrices = {};
+        try {
+            allPrices = JSON.parse(raw.textContent || raw.innerText);
+        } catch (e) {
+            console.error('Price JSON parse error', e);
+            return;
+        }
+
+        var flat2Data = allPrices['flat2'];
+        if (!flat2Data || !flat2Data.prices || !flat2Data.prices.length) {
+            console.warn('flat2 pricing not found:', allPrices);
+            return;
+        }
+
+        var hourlyPrice = flat2Data.prices.find(function (p) { return p.hours === 1; });
+        if (!hourlyPrice) hourlyPrice = flat2Data.prices[0];
+        addonPrice = hourlyPrice ? parseFloat(hourlyPrice.price) : 0;
+
+        // ── Read product meta (image, name, description) ──
+        var productMeta = { name: 'Alignment Rack', description: '', image: 'assets/images/rentals/allignmentrack.jpg' };
+        var metaRaw = document.getElementById('mxAddonProductData');
+        if (metaRaw) {
+            try {
+                productMeta = JSON.parse(metaRaw.textContent || metaRaw.innerText);
+            } catch (e) { }
+        }
+
+        // ── Build description lines (split by newline, take first 3) ──
+        var descLines = (productMeta.description || '')
+            .split('\n')
+            .map(function (l) { return l.trim(); })
+            .filter(function (l) { return l.length > 0; })
+            .slice(0, 3);
+
+        var descHtml = descLines.length
+            ? '<ul style="margin:4px 0 0 0;padding-left:14px;list-style:disc;">' +
+            descLines.map(function (l) {
+                return '<li style="font-size:11px;color:#94a3b8;margin-bottom:2px;">' + l + '</li>';
+            }).join('') +
+            '</ul>'
+            : '';
+
+        // ── Build all price pills ──
+        var pricePillsHtml = flat2Data.prices
+            .filter(function (p) { return !p.is_membership; })
+            .map(function (p) {
+                return '<span style="' +
+                    'display:inline-block;' +
+                    'background:#1e293b;' +
+                    'border:1px solid #334155;' +
+                    'border-radius:4px;' +
+                    'padding:2px 7px;' +
+                    'font-size:11px;' +
+                    'color:#e2e8f0;' +
+                    'margin-right:4px;' +
+                    'margin-top:4px;">' +
+                    (p.hours === 1 ? '1 hr' : p.hours + ' hrs') +
+                    ' — <strong style="color:#e74c3c;">$' + p.price + '</strong>' +
+                    '</span>';
+            }).join('');
+
+        var $section = $('#mxAddonSection');
+
+      $section.html(
+    '<div class="mx-addon-wrapper">' +
+
+        '<div class="mx-addon-badge">ADD-ON</div>' +
+
+        '<div class="mx-pricecard mx-addon-card">' +
+
+            '<label class="mx-addon-label">' +
+
+                '<input type="checkbox" id="mxAddonAlignmentRack" hidden>' +
+
+                '<img class="mx-addon-image" src="' + productMeta.image + '"' +
+                ' alt="' + productMeta.name + '"' +
+                ' onerror="this.src=\'assets/images/rentals/allignmentrack.jpg\'">' +
+
+                '<div class="mx-addon-info">' +
+                    '<span class="mx-hours">' + productMeta.name + '</span>' +
+                    '<span class="mx-price">$' + addonPrice + '/hr</span>' +
+                '</div>' +
+
+            '</label>' +
+
+        '</div>' +
+
+    '</div>'
+).show();
+
+        // Bind checkbox
+       $('#mxAddonAlignmentRack').off('change').on('change', function () {
+
+    addonSelected = $(this).is(':checked');
+
+    $('.mx-addon-card').toggleClass(
+        'active',
+        addonSelected
+    );
+
+    if ($('#mxSlotModal').hasClass('show')) {
+        $('#mxTotalText').text(
+            formatMoney(getEffectiveTotal(selectedHours))
+        );
+    }
+});
+    }
     // Replace the entire "if (!PRODUCT_MODE)" block
     if (!PRODUCT_MODE) {
         $('.mx-liftbtn').removeClass('active');
@@ -2590,20 +2579,20 @@ function renderAddonSection() {
         return (v === 1 || v === '1' || v === true);
     }());
 
-   function mxGetBookingPayload() {
-    return {
-        date:        selectedDate,
-        start:       selectedStartTime,
-        hours:       selectedHours,
-        total:       getEffectiveTotal(selectedHours),   // changed
-        lift:        selectedLift,
-        package:     selectedPackHours,
-        workstation: 1,
-        product_id:  PRODUCT_MODE ? ($meta.data('product-id') || null) : null,
-        addon_lift:  addonSelected ? ADDON_LIFT_KEY : null,   // new
-        addon_price: addonSelected ? addonPrice : 0,          // new
-    };
-}
+    function mxGetBookingPayload() {
+        return {
+            date: selectedDate,
+            start: selectedStartTime,
+            hours: selectedHours,
+            total: getEffectiveTotal(selectedHours),   // changed
+            lift: selectedLift,
+            package: selectedPackHours,
+            workstation: 1,
+            product_id: PRODUCT_MODE ? ($meta.data('product-id') || null) : null,
+            addon_lift: addonSelected ? ADDON_LIFT_KEY : null,   // new
+            addon_price: addonSelected ? addonPrice : 0,          // new
+        };
+    }
 
     /* ================================================================
        SLOT MODAL CONFIRM → auth gate

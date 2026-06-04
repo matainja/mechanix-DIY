@@ -26,7 +26,7 @@ class BookingController extends Controller
 
         $allLiftProducts = Product::with('prices')
             ->where('status', 1)
-            ->whereIn('id', [15, 16, 18, 21, 22])
+            ->whereIn('id', [15, 16, 18, 21, 22,24])
             ->get();
 
         return view('pages.booking', compact('product', 'allLiftProducts'));
@@ -456,7 +456,7 @@ class BookingController extends Controller
 
     public function getLiftStatuses()
     {
-        $lifts = Product::whereIn('id', [15, 16, 18, 21, 22])
+        $lifts = Product::whereIn('id', [15, 16, 18, 21, 22,24])
             ->get(['id', 'name', 'status']);
 
         $liftKeyMap = [

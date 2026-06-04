@@ -1506,3 +1506,66 @@
     box-shadow:0 0 0 1000px #2d2d2d inset !important;
     caret-color:#fff;
 }
+
+/* ==========================================
+   ADDON CARD
+========================================== */
+
+.mx-addon-wrapper{
+    margin-bottom: 12px;
+}
+
+.mx-addon-badge{
+    display: inline-block;
+    background: #e8282b;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 0px;
+}
+
+.mx-addon-card{
+    position: relative;
+}
+
+.mx-addon-label{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    margin:0;
+    cursor:pointer;
+}
+
+.mx-addon-image{
+    width:80px;
+    height:60px;
+    object-fit:cover;
+    border-radius:8px;
+    flex-shrink:0;
+}
+
+.mx-addon-info{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.mx-addon-info .mx-hours{
+    color:#fff;
+    font-size:18px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.mx-addon-info .mx-price{
+    color:#fbbf24;
+    font-size:26px;
+    font-weight:900;
+    white-space:nowrap;
+}

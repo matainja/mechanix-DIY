@@ -153,10 +153,10 @@
                         <img src="{{ asset('assets/images/icons/moto-lift.png') }}" class="mx-ic" alt="">
                         <span>Motorcycle Lift</span>
                     </button>
-                    <button class="mx-liftbtn" data-lift="flat2">
+                    {{-- <button class="mx-liftbtn" data-lift="flat2">
                         <img src="{{ asset('assets/images/icons/alignment-rack.png') }}" class="mx-ic" alt="">
                         <span>Alignment Rack</span>
-                    </button>
+                    </button> --}}
                 </div>
 
                 <div class="mx-lift-prompt" id="mxLiftPrompt">
@@ -284,7 +284,7 @@
                             </div>
                         </div>
                         {{-- ADD THIS LINE: --}}
-    <div id="mxAddonSection" style="display:none;"></div>
+    {{-- <div id="mxAddonSection" style="display:none;"></div> --}}
 
                         <div class="mx-liftpreview">
                             <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
@@ -304,7 +304,8 @@
                             </ul>
                         </div>
                     @endif
-
+{{-- ADD THIS LINE: --}}
+    <div id="mxAddonSection" style="display:none;"></div>
                     <div class="mx-leftbottom" id="leftupButton">
                         <button class="mx-bookbig" id="openDayCalendar" disabled>Book Now</button>
                         <p class="mx-book-hint" id="mxBookHintTop">
