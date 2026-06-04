@@ -3,7 +3,7 @@
         <a class="navbar-brand" href="{{ route('home') }}">
             <img src="{{ asset('assets/images/logomain.png') }}" alt="Mechanix Logo" class="logo-img">
         </a>
-<div style="font-family: Ethnocentric;">
+<div class="desktop-tagline ">
     YOUR CAR. YOUR RULES. YOUR SKILLS.
 </div>
 

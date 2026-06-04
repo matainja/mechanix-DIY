@@ -1,10 +1,4 @@
-@font-face {
-    font-family: 'Ethnocentric';
-    src: url('/assets/fonts/Ethnocentric-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
+
 
 * {
   margin: 0;
@@ -529,6 +523,7 @@ body {
 } */
  /* from here */
 .hero-title {
+  font-family: 'Ethnocentric', sans-serif;
     font-size: 1.5rem;
     font-weight: 800;
     line-height: 1.15;
@@ -1286,25 +1281,33 @@ body {
     }
 }
 
+@font-face {
+    font-family: 'Ethnocentric';
+    src: url('/assets/fonts/Ethnocentric-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* navbar slogan css */
 .desktop-tagline {
     display: none;
 }
 
 @media (min-width: 1600px) {
-   .desktop-tagline {
-    font-family: 'Ethnocentric', sans-serif !important;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #fff;
-}
+    .desktop-tagline {
+        display: block;   /* <-- add this */
+        font-family: 'Ethnocentric', sans-serif !important;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #fff;
+    }
 
     .hero-title {
         display: none;
     }
 }
-
 
 
 
