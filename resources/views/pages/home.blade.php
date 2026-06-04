@@ -36,7 +36,7 @@
         <div class="hero-overlay"></div>
 
         <div class=" hero-content">
-            <h1 class="hero-title"> Your Car. Your Rules. Your Skills. </h1>
+            <h1 class="hero-title"> YOUR CAR. YOUR RULES. YOUR SKILLS. </h1>
             {{-- <div class="hero-buttons">
                 <a href="{{ route('booking') }}" class="btn btn-primary btn-lg btn-hero-primary">Book Now</a>
                 <a href="{{ route('rentals') }}" class="btn btn-outline-light btn-lg btn-hero-secondary">View Rentals</a>

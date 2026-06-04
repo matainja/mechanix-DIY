@@ -4,7 +4,7 @@
             <img src="{{ asset('assets/images/logomain.png') }}" alt="Mechanix Logo" class="logo-img">
         </a>
 <div class="desktop-tagline">
-    Your Car. Your Rules. Your Skills.
+    YOUR CAR. YOUR RULES. YOUR SKILLS.
 </div>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
