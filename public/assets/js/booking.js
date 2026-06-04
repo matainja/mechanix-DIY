@@ -2270,7 +2270,7 @@ function renderAddonSection() {
 
     var raw = document.getElementById('mxAllLiftPrices');
     if (!raw) {
-        console.warn('mxAllLiftPrices script tag not found');
+        console.warn('mxAllLiftPrices not found');
         return;
     }
 
@@ -2284,7 +2284,7 @@ function renderAddonSection() {
 
     var flat2Data = allPrices['flat2'];
     if (!flat2Data || !flat2Data.prices || !flat2Data.prices.length) {
-        console.warn('flat2 pricing not found in JSON:', allPrices);
+        console.warn('flat2 pricing not found:', allPrices);
         return;
     }
 
@@ -2292,23 +2292,98 @@ function renderAddonSection() {
     if (!hourlyPrice) hourlyPrice = flat2Data.prices[0];
     addonPrice = hourlyPrice ? parseFloat(hourlyPrice.price) : 0;
 
-    // Use existing blade div — no need to create or inject
+    // ── Read product meta (image, name, description) ──
+    var productMeta = { name: 'Alignment Rack', description: '', image: 'assets/images/rentals/allignmentrack.jpg' };
+    var metaRaw = document.getElementById('mxAddonProductData');
+    if (metaRaw) {
+        try {
+            productMeta = JSON.parse(metaRaw.textContent || metaRaw.innerText);
+        } catch (e) {}
+    }
+
+    // ── Build description lines (split by newline, take first 3) ──
+    var descLines = (productMeta.description || '')
+        .split('\n')
+        .map(function (l) { return l.trim(); })
+        .filter(function (l) { return l.length > 0; })
+        .slice(0, 3);
+
+    var descHtml = descLines.length
+        ? '<ul style="margin:4px 0 0 0;padding-left:14px;list-style:disc;">' +
+          descLines.map(function (l) {
+              return '<li style="font-size:11px;color:#94a3b8;margin-bottom:2px;">' + l + '</li>';
+          }).join('') +
+          '</ul>'
+        : '';
+
+    // ── Build all price pills ──
+    var pricePillsHtml = flat2Data.prices
+        .filter(function (p) { return !p.is_membership; })
+        .map(function (p) {
+            return '<span style="' +
+                'display:inline-block;' +
+                'background:#1e293b;' +
+                'border:1px solid #334155;' +
+                'border-radius:4px;' +
+                'padding:2px 7px;' +
+                'font-size:11px;' +
+                'color:#e2e8f0;' +
+                'margin-right:4px;' +
+                'margin-top:4px;">' +
+                (p.hours === 1 ? '1 hr' : p.hours + ' hrs') +
+                ' — <strong style="color:#e74c3c;">$' + p.price + '</strong>' +
+                '</span>';
+        }).join('');
+
     var $section = $('#mxAddonSection');
 
     $section.html(
-        '<div style="margin-top:4px;padding:10px 12px;border:1px dashed #e74c3c;border-radius:8px;">' +
-        '<div style="font-size:11px;color:#94a3b8;font-weight:700;letter-spacing:.6px;margin-bottom:8px;">ADD-ON</div>' +
-        '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;">' +
-        '<input type="checkbox" id="mxAddonAlignmentRack" style="width:16px;height:16px;accent-color:#e74c3c;flex-shrink:0;">' +
-        '<div>' +
-        '<div style="font-size:13px;font-weight:600;color:#fff;">Alignment Rack</div>' +
-        '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">Same slot alongside your lift &nbsp;|&nbsp;' +
-        '<span style="color:#e74c3c;font-weight:700;"> +$' + addonPrice + '/hr</span></div>' +
-        '</div>' +
-        '</label>' +
+        '<div style="border:1px dashed #e74c3c;border-radius:10px;overflow:hidden;margin-top:4px;">' +
+
+            // Header badge
+            '<div style="background:#e74c3c;padding:3px 10px;">' +
+                '<span style="font-size:10px;font-weight:700;color:#fff;letter-spacing:.8px;">ADD-ON</span>' +
+            '</div>' +
+
+            // Body
+            '<div style="padding:10px 12px;display:flex;gap:10px;align-items:flex-start;">' +
+
+                // Image
+                '<div style="flex-shrink:0;width:72px;height:72px;border-radius:6px;overflow:hidden;background:#1e293b;">' +
+                    '<img src="' + productMeta.image + '" alt="' + productMeta.name + '"' +
+                    ' style="width:100%;height:100%;object-fit:cover;" ' +
+                    ' onerror="this.src=\'assets/images/rentals/allignmentrack.jpg\'">' +
+                '</div>' +
+
+                // Info
+                '<div style="flex:1;min-width:0;">' +
+
+                    // Checkbox row
+                    '<label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0 0 4px 0;">' +
+                        '<input type="checkbox" id="mxAddonAlignmentRack"' +
+                        ' style="width:15px;height:15px;accent-color:#e74c3c;flex-shrink:0;">' +
+                        '<span style="font-size:13px;font-weight:700;color:#fff;">' + productMeta.name + '</span>' +
+                    '</label>' +
+
+                    // Description bullets
+                    descHtml +
+
+                    // Price pills
+                    '<div style="margin-top:6px;">' +
+                        pricePillsHtml +
+                    '</div>' +
+
+                    // Note
+                    '<div style="font-size:10px;color:#64748b;margin-top:5px;">' +
+                        'Booked for the same time slot as your lift.' +
+                    '</div>' +
+
+                '</div>' +
+            '</div>' +
         '</div>'
     ).show();
 
+    // Bind checkbox
     $('#mxAddonAlignmentRack').off('change').on('change', function () {
         addonSelected = $(this).is(':checked');
         if ($('#mxSlotModal').hasClass('show')) {

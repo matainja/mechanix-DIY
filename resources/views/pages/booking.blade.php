@@ -258,6 +258,26 @@
                             {!! json_encode($allLiftPricesJson, JSON_UNESCAPED_UNICODE) !!}
                         </script>
 
+                        {{-- ADD THIS: alignment rack product details for addon section --}}
+@php
+    $alignmentProduct = $allLiftProducts->first(function($p) {
+        return str_contains(strtolower($p->name), 'alignment');
+    });
+    $alignmentImage = $alignmentProduct
+        ? ($alignmentProduct->images->firstWhere('is_default', 1) ?? $alignmentProduct->images->first())
+        : null;
+@endphp
+
+<script id="mxAddonProductData" type="application/json">
+    {!! json_encode([
+        'name'        => $alignmentProduct->name ?? 'Alignment Rack',
+        'description' => $alignmentProduct->description ?? '',
+        'image'       => $alignmentImage
+                            ? asset('storage/' . $alignmentImage->image_path)
+                            : asset('assets/images/rentals/allignmentrack.jpg'),
+    ], JSON_UNESCAPED_UNICODE) !!}
+</script>
+
                         <div id="mxPriceCardsWrap">
                             <div class="mx-lift-price-placeholder text-muted small py-3">
                                 Select a lift type above to see pricing.
