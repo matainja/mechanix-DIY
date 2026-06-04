@@ -56,11 +56,16 @@ Route::middleware(['auth', 'admin'])
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
 
         // Products - using resource route (creates index, create, store, show, edit, update, destroy)
-        Route::resource('products', ProductController::class);
-        
-        // Additional product routes
-        Route::patch('/products/{id}/toggle', [ProductController::class, 'toggle'])->name('products.toggle');
-        Route::delete('/products/images/{id}', [ProductController::class, 'deleteImage'])->name('products.images.delete');
+        Route::middleware('superadmin')->group(function () {
+
+            Route::resource('products', ProductController::class);
+
+            Route::patch('/products/{id}/toggle', [ProductController::class, 'toggle'])
+                ->name('products.toggle');
+
+            Route::delete('/products/images/{id}', [ProductController::class, 'deleteImage'])
+                ->name('products.images.delete');
+        });
 
         // Users
         Route::get('/users', [UserController::class, 'index'])->name('users');
@@ -75,16 +80,15 @@ Route::middleware(['auth', 'admin'])
         Route::get('/membership-requests', [MembershipController::class, 'getAllRequests'])->name('admin.membership.requests');
         Route::post('/membership-requests/{id}/approve', [MembershipController::class, 'approveRequest'])->name('admin.membership.approve');
         Route::post('/membership-requests/{id}/reject', [MembershipController::class, 'rejectRequest'])->name('admin.membership.reject');
-        
+
         Route::post('/membership-plans', [MembershipController::class, 'storePlan'])->name('membership.plans.store');
         Route::delete('/membership-plan/{id}', [MembershipController::class, 'deletePlan'])
-    ->name('membership.plan.delete');
+            ->name('membership.plan.delete');
 
-    Route::post('/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('bookings.approve');
-Route::post('/bookings/{id}/cancel',  [AdminController::class, 'cancelBooking'])->name('bookings.cancel');
-Route::delete('/bookings/{id}',       [AdminController::class, 'deleteBooking'])->name('bookings.delete');
-
-        });
+        Route::post('/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('bookings.approve');
+        Route::post('/bookings/{id}/cancel',  [AdminController::class, 'cancelBooking'])->name('bookings.cancel');
+        Route::delete('/bookings/{id}',       [AdminController::class, 'deleteBooking'])->name('bookings.delete');
+    });
 
 
 Route::middleware(['auth'])->group(function () {
@@ -111,5 +115,5 @@ Route::post('/membership/guest-request', [MembershipController::class, 'submitGu
 Route::post('/membership/guest-payment', [MembershipController::class, 'guestPayment'])->name('membership.guest-payment');  // ← Add this
 Route::get('/membership/my-membership', [MembershipController::class, 'myMembership']);
 
-Route::post('/get-blocked-times', [BookingController::class, 'getBlockedTimes']);   
-Route::post('/check-booking-hours',[BookingController::class,'checkBookingHours']);
+Route::post('/get-blocked-times', [BookingController::class, 'getBlockedTimes']);
+Route::post('/check-booking-hours', [BookingController::class, 'checkBookingHours']);

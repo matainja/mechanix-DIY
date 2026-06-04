@@ -1111,12 +1111,13 @@ body {
     .desktop-tagline {
         display: block;
         font-size: 13px;
-        font-weight: 600;
+         font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
         color: rgba(255, 255, 255, 0.9);
         letter-spacing: 0.5px;
         margin-left: 20px;
         white-space: nowrap;
-        font-style: italic;
+        /* font-style: italic; */
     }
 
     .hero-title {
