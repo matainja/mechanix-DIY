@@ -2380,7 +2380,8 @@ function renderAddonSection() {
 
                 '</div>' +
             '</div>' +
-        '</div>'
+        '</div>'+
+        '<br>'
     ).show();
 
     // Bind checkbox
