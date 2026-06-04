@@ -29,7 +29,7 @@
 
                 <!-- Desktop image -->
                 {{-- <img src="{{ asset('assets/images/shared image (2).jpg') }}" alt="Hero Image"> --}}
-                <img src="{{ asset('assets/images/mechanix-banner-06.02-01.jpg') }}" alt="Hero Image">
+                <img src="{{ asset('assets/images/bg (2).jpg') }}" alt="Hero Image">
             </picture>
         </div>
 
