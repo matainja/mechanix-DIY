@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'Ethnocentric';
+    src: url('/assets/fonts/Ethnocentric-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -1283,23 +1291,21 @@ body {
     display: none;
 }
 
-@media (min-width: 1600px) {
-    .desktop-tagline {
-        display: block;
-        font-size: 14px;
-         font-family: 'Ethnocentric', sans-serif;
-        font-weight: 800;
-        color: rgba(255, 255, 255, 0.9);
-        letter-spacing: 0.5px;
-        margin-left: 20px;
-        white-space: nowrap;
-        /* font-style: italic; */
-    }
+@media (min-width: 160px) {
+   .desktop-tagline {
+    font-family: 'Ethnocentric', sans-serif !important;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+}
 
     .hero-title {
         display: none;
     }
 }
+
+
 
 
 @media (min-width: 992px) {
