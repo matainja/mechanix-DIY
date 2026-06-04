@@ -24,7 +24,7 @@
             <picture>
                 <!-- Mobile image -->
                 {{-- <source media="(max-width: 768px)" srcset="{{ asset('assets/images/shared image (3).jpg') }}"> --}}
-                <source media="(max-width: 768px)" srcset="{{ asset('assets/images/mechanix-banner-06.02-01.jpg') }}">
+                <source media="(max-width: 768px)" srcset="{{ asset('assets/images/bg (2).jpg') }}">
 
 
                 <!-- Desktop image -->

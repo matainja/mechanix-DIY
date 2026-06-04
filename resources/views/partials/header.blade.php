@@ -103,6 +103,14 @@
                             <span> Membership</span>
                         </div>
                     </a>
+                </li> 
+                <li class="nav-item mobile-only">
+                    <a class="nav-link mobile-menu-item" href="{{ route('booking') }}">
+                        <div class="menu-item-content">
+                            <i class="bi bi-calendar-check"></i>
+                            <span> Book Now</span>
+                        </div>
+                    </a>
                 </li>
 
                 <!-- More Dropdown (Mobile Only) -->

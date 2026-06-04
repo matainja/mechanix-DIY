@@ -121,9 +121,10 @@
                 {{-- Mobile dropdown --}}
                 <div class="mx-lift-dropdown d-md-none mb-3">
                     <div class="dropdown">
-                        <button class="mx-liftbtn dropdown-toggle w-100 d-flex align-items-center justify-content-between"
-                            type="button" id="mxLiftDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                            Select Lift Type
+                        <button class="mx-liftbtn w-100 d-flex align-items-center justify-content-between" type="button"
+                            id="mxLiftDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span>Select Lift Type</span>
+                            <i class="bi bi-chevron-down"></i>
                         </button>
                         <ul class="dropdown-menu w-100" id="mxLiftDropdownMenu">
                             <li><a class="dropdown-item" data-lift="four" href="#">Four-Post Lift</a></li>
@@ -662,118 +663,94 @@
                     <div class="tab-content pt-3" id="authTabsContent">
 
                         {{-- LOGIN TAB --}}
-<div class="tab-pane fade" id="loginTabPane" role="tabpanel">
-    <div id="loginErrorMsg" class="alert alert-danger d-none"></div>
+                        <div class="tab-pane fade" id="loginTabPane" role="tabpanel">
+                            <div id="loginErrorMsg" class="alert alert-danger d-none"></div>
 
-    <form id="mxLoginForm">
-        @csrf
+                            <form id="mxLoginForm">
+                                @csrf
 
-        <div class="mb-3">
-            <label class="form-label small text-white">Email</label>
-            <input type="email"
-                   class="form-control border-0"
-                   name="email"
-                   maxlength="255"
-                   autocomplete="email"
-                   placeholder="Enter your email"
-                   style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                   required>
-        </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-white">Email</label>
+                                    <input type="email" class="form-control border-0" name="email" maxlength="255"
+                                        autocomplete="email" placeholder="Enter your email"
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                        required>
+                                </div>
 
-        <div class="mb-3">
-            <label class="form-label small text-white">Password</label>
-            <input type="password"
-                   class="form-control border-0"
-                   name="password"
-                   minlength="6"
-                   autocomplete="current-password"
-                   placeholder="Enter your password"
-                   style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                   required>
-        </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-white">Password</label>
+                                    <input type="password" class="form-control border-0" name="password" minlength="6"
+                                        autocomplete="current-password" placeholder="Enter your password"
+                                        style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                        required>
+                                </div>
 
-        <div class="text-end mt-2">
-            <a href="#" id="forgotPasswordBtn" class="small text-danger btn">
-                Forgot password?
-            </a>
-        </div>
+                                <div class="text-end mt-2">
+                                    <a href="#" id="forgotPasswordBtn" class="small text-danger btn">
+                                        Forgot password?
+                                    </a>
+                                </div>
 
-        <button type="submit"
-                class="btn w-100 text-white fw-semibold mt-3"
-                style="background:linear-gradient(180deg,rgba(221,43,49,1) 0%,rgb(119,17,23) 100%);border:2px solid #791218;height:46px;letter-spacing:1px;">
-            Login
-        </button>
-    </form>
-</div>
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3"
+                                    style="background:linear-gradient(180deg,rgba(221,43,49,1) 0%,rgb(119,17,23) 100%);border:2px solid #791218;height:46px;letter-spacing:1px;">
+                                    Login
+                                </button>
+                            </form>
+                        </div>
 
-{{-- REGISTER TAB --}}
-<div class="tab-pane fade" id="registerTabPane" role="tabpanel">
-    <div id="registerErrorMsg" class="alert alert-danger d-none"></div>
+                        {{-- REGISTER TAB --}}
+                        <div class="tab-pane fade" id="registerTabPane" role="tabpanel">
+                            <div id="registerErrorMsg" class="alert alert-danger d-none"></div>
 
-    <form id="mxRegisterForm">
-        @csrf
+                            <form id="mxRegisterForm">
+                                @csrf
 
-        <div class="row g-2">
+                                <div class="row g-2">
 
-            <div class="col-6">
-                <label class="form-label small text-white">Email</label>
-                <input type="email"
-                       class="form-control border-0 form-control-sm"
-                       name="email"
-                       maxlength="255"
-                       autocomplete="email"
-                       placeholder="Email"
-                       style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                       required>
-            </div>
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Email</label>
+                                        <input type="email" class="form-control border-0 form-control-sm"
+                                            name="email" maxlength="255" autocomplete="email" placeholder="Email"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
+                                    </div>
 
-            <div class="col-6">
-                <label class="form-label small text-white">Mobile</label>
-                <input type="text"
-                       class="form-control border-0 form-control-sm"
-                       name="mobile_no"
-                       maxlength="10"
-                       pattern="[0-9]{10}"
-                       inputmode="numeric"
-                       placeholder="10-digit number"
-                       oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                       style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                       required>
-            </div>
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Mobile</label>
+                                        <input type="text" class="form-control border-0 form-control-sm"
+                                            name="mobile_no" maxlength="10" pattern="[0-9]{10}" inputmode="numeric"
+                                            placeholder="10-digit number"
+                                            oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
+                                    </div>
 
-            <div class="col-6">
-                <label class="form-label small text-white">Password</label>
-                <input type="password"
-                       class="form-control border-0 form-control-sm"
-                       name="password"
-                       minlength="8"
-                       autocomplete="new-password"
-                       placeholder="Password"
-                       style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                       required>
-            </div>
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Password</label>
+                                        <input type="password" class="form-control border-0 form-control-sm"
+                                            name="password" minlength="8" autocomplete="new-password"
+                                            placeholder="Password"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
+                                    </div>
 
-            <div class="col-6">
-                <label class="form-label small text-white">Confirm</label>
-                <input type="password"
-                       class="form-control border-0 form-control-sm"
-                       name="password_confirmation"
-                       minlength="8"
-                       autocomplete="new-password"
-                       placeholder="Confirm Password"
-                       style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
-                       required>
-            </div>
+                                    <div class="col-6">
+                                        <label class="form-label small text-white">Confirm</label>
+                                        <input type="password" class="form-control border-0 form-control-sm"
+                                            name="password_confirmation" minlength="8" autocomplete="new-password"
+                                            placeholder="Confirm Password"
+                                            style="background:#2d2d2d;color:#fff;box-shadow:none;outline:none;border:none;"
+                                            required>
+                                    </div>
 
-        </div>
+                                </div>
 
-        <button type="submit"
-                class="btn w-100 text-white fw-semibold mt-3"
-                style="background:linear-gradient(180deg,rgba(221,43,49,1) 0%,rgb(119,17,23) 100%);border:2px solid #791218;height:46px;letter-spacing:1px;">
-            Create Account
-        </button>
-    </form>
-</div>
+                                <button type="submit" class="btn w-100 text-white fw-semibold mt-3"
+                                    style="background:linear-gradient(180deg,rgba(221,43,49,1) 0%,rgb(119,17,23) 100%);border:2px solid #791218;height:46px;letter-spacing:1px;">
+                                    Create Account
+                                </button>
+                            </form>
+                        </div>
 
                         {{-- GUEST BOOKING TAB --}}
                         <div class="tab-pane fade show active" id="guestTabPane" role="tabpanel">
