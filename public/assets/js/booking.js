@@ -131,7 +131,7 @@
 
 //         // Store booking ID for later use
 //         sessionStorage.setItem('mx_guest_booking_id', data.booking_id);
-        
+
 //         showGuestSuccessModal(data.booking_id, payload, data.expires_at);
 
 //     } catch (err) {
@@ -215,30 +215,30 @@
 // ================================================================ */
 // $(document).on('click', '#mxGuestSuccessModal #mxSummaryPay', function(e) {
 //     e.preventDefault();
-    
+
 //     // Get the stored booking payload
 //     var guestPayload = sessionStorage.getItem('mx_guest_booking_payload');
 //     if (!guestPayload) {
 //         alert('Booking data not found. Please try again.');
 //         return;
 //     }
-    
+
 //     // Close guest success modal
 //     closeModal('#mxGuestSuccessModal');
-    
+
 //     // Clear the guest timer
 //     if (guestTimerInterval) {
 //         clearInterval(guestTimerInterval);
 //         guestTimerInterval = null;
 //     }
-    
+
 //     // Prepare payment modal
 //     var payload = JSON.parse(guestPayload);
 //     var total = getPackageTotal(payload.hours);
-    
+
 //     $('#mxPayAmount').text(formatMoney(total));
 //     $('#mxPayBtnAmt').text(formatMoney(total));
-    
+
 //     // Reset payment form
 //     $('#mxCardNum, #mxCardExp, #mxCardCvv, #mxCardName').val('');
 //     $('#mxUpiId').val('');
@@ -247,12 +247,12 @@
 //     $('#mxPayNowBtn').prop('disabled', false);
 //     $('#mxPaySpinner').addClass('d-none');
 //     $('#mxPayBtnText').html('Pay <span id="mxPayBtnAmt">' + formatMoney(total) + '</span>');
-    
+
 //     // Set card tab as active
 //     $('.mxs-pay-tab').removeClass('active').filter('[data-tab="card"]').addClass('active');
 //     $('.mxs-pay-panel').removeClass('active');
 //     $('#mxPayPanel-card').addClass('active');
-    
+
 //     // Open payment modal
 //     openPayModal();
 // });
@@ -309,7 +309,7 @@
 
 //         // Store booking ID for later use
 //         sessionStorage.setItem('mx_guest_booking_id', data.booking_id);
-        
+
 //         showGuestSuccessModal(data.booking_id, payload, data.expires_at);
 
 //     } catch (err) {
@@ -323,7 +323,7 @@
 // // Modify the existing payment button click handler
 // $('#mxPayNowBtn').off('click').on('click', function() {
 //     var guestPayload = sessionStorage.getItem('mx_guest_booking_payload');
-    
+
 //     if (guestPayload) {
 //         // This is a guest booking payment
 //         simulateDemoPayment(function() {
@@ -344,12 +344,12 @@
 // async function confirmGuestBookingWithPayment() {
 //     var payload = JSON.parse(sessionStorage.getItem('mx_guest_booking_payload'));
 //     var bookingId = sessionStorage.getItem('mx_guest_booking_id');
-    
+
 //     if (!payload || !bookingId) {
 //         alert('Booking information not found.');
 //         return;
 //     }
-    
+
 //     try {
 //         var res = await fetch('/booking/guest/confirm-payment', {
 //             method: 'POST',
@@ -1424,6 +1424,14 @@
 
 $(function () {
 
+    // Add at the top of the $(function(){...}) block:
+$('<style>')
+    .text(
+        '.mx-liftbtn--unavailable{opacity:.4;cursor:not-allowed;position:relative;}' +
+        '.mx-lift-unavail-badge{position:absolute;top:4px;right:4px;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;letter-spacing:.5px;}'
+    )
+    .appendTo('head');
+
     /* ================================================================
        SCROLL HELPER
     ================================================================ */
@@ -1436,27 +1444,30 @@ $(function () {
     /* ================================================================
        DETECT MODE
     ================================================================ */
-    var $meta        = $('#mxProductMeta');
+    var $meta = $('#mxProductMeta');
     var PRODUCT_MODE = $meta.length > 0 && $meta.data('product-mode') == 1;
 
-    var AUTO_LIFT_KEY  = PRODUCT_MODE ? ($meta.data('lift-key')  || 'all') : null;
-    var AUTO_LIFT_NAME = PRODUCT_MODE ? ($meta.data('lift-name') || '')    : null;
+    var AUTO_LIFT_KEY = PRODUCT_MODE ? ($meta.data('lift-key') || 'all') : null;
+    var AUTO_LIFT_NAME = PRODUCT_MODE ? ($meta.data('lift-name') || '') : null;
 
     /* ================================================================
        STATE
     ================================================================ */
-    const TODAY     = new Date();
+    const TODAY = new Date();
     const MIN_MONTH = new Date();
-
-    var dayData     = {};
+    var liftStatuses = {}; // populated from DB
+    var addonSelected = false;
+    var addonPrice = 0;
+    var ADDON_LIFT_KEY = 'flat2'; // alignment rack
+    var dayData = {};
     var bookedSlots = {};
 
-    var selectedDate      = null;
+    var selectedDate = null;
     var selectedStartTime = null;
-    var selectedHours     = 1;
+    var selectedHours = 1;
     var selectedPackHours = 1;
-    var selectedLift      = PRODUCT_MODE ? AUTO_LIFT_KEY : null;
-    var fpInstance        = null;
+    var selectedLift = PRODUCT_MODE ? AUTO_LIFT_KEY : null;
+    var fpInstance = null;
 
     /* ================================================================
        HELPERS
@@ -1504,7 +1515,7 @@ $(function () {
     function isSlotBooked(dateStr, timeStr, liftKey) {
         liftKey = liftKey || selectedLift || 'all';
         var specific = bookedSlots[slotKey(dateStr, liftKey)] || [];
-        var generic  = bookedSlots[slotKey(dateStr, 'all')]   || [];
+        var generic = bookedSlots[slotKey(dateStr, 'all')] || [];
         return specific.indexOf(timeStr) !== -1 || generic.indexOf(timeStr) !== -1;
     }
 
@@ -1533,8 +1544,8 @@ $(function () {
     function isDateAvailableByPackage(dateStr, packHours, liftKey) {
         liftKey = liftKey || selectedLift || 'all';
         if (!getWorkingHours(dateStr)) return false;
-        if (packHours === 1)  return isDayHasAnyFreeHour(dateStr, liftKey);
-        if (packHours === 9)  return getWorkingSlots(dateStr).length >= 9 && isDayFullyFree(dateStr, liftKey);
+        if (packHours === 1) return isDayHasAnyFreeHour(dateStr, liftKey);
+        if (packHours === 9) return getWorkingSlots(dateStr).length >= 9 && isDayFullyFree(dateStr, liftKey);
         if (packHours === 18) {
             if (getWorkingSlots(dateStr).length < 9) return false;
             var nxt = nextDate(dateStr);
@@ -1549,7 +1560,7 @@ $(function () {
             var wh = getWorkingHours(cur);
             if (!wh) { cur = addDaysStr(cur, 1); h = 0; continue; }
             if (h < wh.start) h = wh.start;
-            if (h >= wh.end)  { cur = addDaysStr(cur, 1); h = 0; continue; }
+            if (h >= wh.end) { cur = addDaysStr(cur, 1); h = 0; continue; }
             var av = wh.end - h;
             if (rem <= av) { h += rem; rem = 0; }
             else { rem -= av; cur = addDaysStr(cur, 1); h = 0; }
@@ -1559,8 +1570,8 @@ $(function () {
 
     function buildEndLabel(dateStr, startTimeStr, hours) {
         var startH = parseInt(startTimeStr.slice(0, 2), 10);
-        var r      = addWorkingHours(dateStr, startH, hours);
-        var fmt    = function (d) {
+        var r = addWorkingHours(dateStr, startH, hours);
+        var fmt = function (d) {
             return new Date(d + 'T00:00:00').toLocaleDateString([], { month: 'short', day: '2-digit', year: 'numeric' });
         };
         return r.endDate !== dateStr
@@ -1569,7 +1580,7 @@ $(function () {
     }
 
     function prettyRange(dateStr, startHour, hoursNeeded) {
-        var r   = addWorkingHours(dateStr, startHour, hoursNeeded);
+        var r = addWorkingHours(dateStr, startHour, hoursNeeded);
         var fmt = function (d) {
             return new Date(d + 'T00:00:00').toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' });
         };
@@ -1581,9 +1592,9 @@ $(function () {
     }
 
     function validateConsecutiveCrossDay(startDateStr, startTimeStr, hoursNeeded, liftKey) {
-        liftKey    = liftKey || selectedLift || 'all';
+        liftKey = liftKey || selectedLift || 'all';
         var startH = parseInt(startTimeStr.slice(0, 2), 10);
-        var wh0    = getWorkingHours(startDateStr);
+        var wh0 = getWorkingHours(startDateStr);
         if (!wh0) return { ok: false, message: 'Closed on selected day.' };
         if (startH < wh0.start || startH >= wh0.end)
             return { ok: false, message: 'Start time outside working hours.' };
@@ -1593,7 +1604,7 @@ $(function () {
             var wh = getWorkingHours(cur);
             if (!wh) return { ok: false, message: 'Closed on ' + cur + '.' };
             if (h < wh.start) h = wh.start;
-            if (h >= wh.end)  { cur = addDaysStr(cur, 1); h = 0; continue; }
+            if (h >= wh.end) { cur = addDaysStr(cur, 1); h = 0; continue; }
             if (!isHourFree(cur, h, liftKey))
                 return { ok: false, message: pad2(h) + ':00 on ' + cur + ' is already booked.' };
             rem--; h++;
@@ -1605,19 +1616,25 @@ $(function () {
     /* ================================================================
        PRICING
     ================================================================ */
-    function getSelectedCard()      { return $('.mx-pricecard.mx-selected').first(); }
-    function getRatePerHour()       { return Number(getSelectedCard().data('price')) || 0; }
+    function getSelectedCard() { return $('.mx-pricecard.mx-selected').first(); }
+    function getRatePerHour() { return Number(getSelectedCard().data('price')) || 0; }
     function getPackageTotal(hours) { return getRatePerHour() * hours; }
 
+    // ADD HERE ↓
+function getEffectiveTotal(hours) {
+    var base  = getPackageTotal(hours);
+    var addon = addonSelected ? (addonPrice * hours) : 0;
+    return base + addon;
+}
     /* ================================================================
        LIFT LABELS
     ================================================================ */
     var LIFT_LABELS = {
-        four:    'Four-Post Style Lift',
-        two:     'Two-Post Lift',
+        four: 'Four-Post Style Lift',
+        two: 'Two-Post Lift',
         scissor: 'Scissor Lift',
-        flat:    'Motorcycle Lift',
-        flat2:   'Alignment Rack',
+        flat: 'Motorcycle Lift',
+        flat2: 'Alignment Rack',
     };
 
     function getActiveLiftLabel() {
@@ -1639,8 +1656,8 @@ $(function () {
         } else {
             ready = hasLift && hasDate;
             if (!hasLift && !hasDate) hint = 'Select a lift type and a date to continue.';
-            else if (!hasLift)        hint = 'Select a lift type above to enable booking.';
-            else if (!hasDate)        hint = 'Pick an available date on the calendar.';
+            else if (!hasLift) hint = 'Select a lift type above to enable booking.';
+            else if (!hasDate) hint = 'Pick an available date on the calendar.';
         }
 
         $('#openDayCalendar, #openDayCalendarMb')
@@ -1654,16 +1671,16 @@ $(function () {
     /* ================================================================
        MODALS
     ================================================================ */
-    function openModal(id)  { $(id).addClass('show').attr('aria-hidden', 'false'); }
+    function openModal(id) { $(id).addClass('show').attr('aria-hidden', 'false'); }
     function closeModal(id) { $(id).removeClass('show').attr('aria-hidden', 'true'); }
 
-    function openSlotModal()     { openModal('#mxSlotModal');    }
-    function closeSlotModal()    { closeModal('#mxSlotModal');   }
-    function openSummaryModal()  { openModal('#mxSummaryModal'); }
+    function openSlotModal() { openModal('#mxSlotModal'); }
+    function closeSlotModal() { closeModal('#mxSlotModal'); }
+    function openSummaryModal() { openModal('#mxSummaryModal'); }
     function closeSummaryModal() { closeModal('#mxSummaryModal'); }
     // function openPayModal()      { openModal('#mxPayModal');     }  // PAYMENT DISABLED FOR NOW
     // function closePayModal()     { closeModal('#mxPayModal');    }  // PAYMENT DISABLED FOR NOW
-    function openSuccessModal()  { openModal('#mxSuccessModal'); }
+    function openSuccessModal() { openModal('#mxSuccessModal'); }
 
     $(document).on('keydown', function (e) {
         if (e.key !== 'Escape') return;
@@ -1707,7 +1724,7 @@ $(function () {
             Math.min(val, maxHours)
         );
 
-        var startH = parseInt(selectedStartTime.slice(0,2),10);
+        var startH = parseInt(selectedStartTime.slice(0, 2), 10);
 
         var check = validateConsecutiveCrossDay(
             selectedDate,
@@ -1718,7 +1735,8 @@ $(function () {
         var endHour = startH + selectedHours;
 
         $('#mxSelectedHours').text(selectedHours);
-        $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
+        // $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
+        $('#mxTotalText').text(formatMoney(getEffectiveTotal(selectedHours)));
         $('#mxSlotText').text(
             prettyRange(selectedDate, startH, selectedHours)
         );
@@ -1757,12 +1775,12 @@ $(function () {
             nextHours
         );
 
-        if(!result.ok){
+        if (!result.ok) {
 
             $('#mxHintText')
-            .removeClass('text-success text-muted')
-            .addClass('text-danger fw-bold')
-            .html('⚠️ Cannot extend booking. Time slot already occupied.');
+                .removeClass('text-success text-muted')
+                .addClass('text-danger fw-bold')
+                .html('⚠️ Cannot extend booking. Time slot already occupied.');
 
             return;
         }
@@ -1777,9 +1795,11 @@ $(function () {
              (no payment modal). Re-enable payment later by uncommenting.
     ================================================================ */
     function populateAndOpenSummary() {
-        var rate    = getRatePerHour();
-        var total   = getPackageTotal(selectedHours);
-        var startH  = parseInt(selectedStartTime.slice(0, 2), 10);
+        var rate = getRatePerHour();
+        // var total = getPackageTotal(selectedHours);
+        var total = getEffectiveTotal(selectedHours);
+
+        var startH = parseInt(selectedStartTime.slice(0, 2), 10);
         var dateFmt = new Date(selectedDate + 'T00:00:00').toLocaleDateString([], {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
         });
@@ -1801,8 +1821,8 @@ $(function () {
        TIME-SLOT GRID (per-lift aware)
     ================================================================ */
     function renderTimeSlots(dateStr, timeArray) {
-        console.log("timearray",timeArray);
-        
+        console.log("timearray", timeArray);
+
         var $grid = $('#mxTimeGrid').empty();
 
         $('#mxSelectedDateText').text(
@@ -1815,8 +1835,8 @@ $(function () {
         $('#mxContinueBtn').prop('disabled', true);
 
         var wh = getWorkingHours(dateStr);
-        console.log("date check",wh);
-        
+        console.log("date check", wh);
+
         if (!wh) {
             $grid.html('<div class="mx-slot-closed">This day is closed. No slots available.</div>');
             return;
@@ -1849,8 +1869,8 @@ $(function () {
             var startVal = pad2(wh.start) + ':00';
 
             var blockedTimes = new Set(
-                timeArray.map(function(t){
-                    return t.slice(0,5);
+                timeArray.map(function (t) {
+                    return t.slice(0, 5);
                 })
             );
 
@@ -1868,8 +1888,8 @@ $(function () {
                 type: 'button',
                 class: 'mx-slot ' + (
                     blocked ? 'blocked' :
-                    !chk.ok ? 'booked' :
-                    'available'
+                        !chk.ok ? 'booked' :
+                            'available'
                 ),
                 disabled: isDisabled,
                 'data-value': startVal,
@@ -1879,12 +1899,12 @@ $(function () {
                     '</span>' +
                     '<span class="mx-slot-badge ' +
                     (blocked ? 'blocked-badge' :
-                    !chk.ok ? 'taken' :
-                    'free') +
+                        !chk.ok ? 'taken' :
+                            'free') +
                     '">' +
                     (blocked ? 'Blocked' :
-                    !chk.ok ? 'Unavailable' :
-                    'Full ' + selectedPackHours + 'h block') +
+                        !chk.ok ? 'Unavailable' :
+                            'Full ' + selectedPackHours + 'h block') +
                     '</span>'
             });
 
@@ -1936,8 +1956,8 @@ $(function () {
         // });
         // Create blocked time lookup
         var blockedTimes = new Set(
-            timeArray.map(function(t){
-                return t.slice(0,5);
+            timeArray.map(function (t) {
+                return t.slice(0, 5);
             })
         );
 
@@ -1945,9 +1965,9 @@ $(function () {
 
             console.log("slot:", value);
 
-            var h = parseInt(value.slice(0,2),10);
+            var h = parseInt(value.slice(0, 2), 10);
             // var label = formatTimePoint(h) + ' – ' + formatTimePoint(h + 1);
-var label = formatTimePoint(h);
+            var label = formatTimePoint(h);
 
             var booked = isSlotBooked(dateStr, value, selectedLift);
             var blocked = blockedTimes.has(value);
@@ -1960,8 +1980,8 @@ var label = formatTimePoint(h);
                 type: 'button',
                 class: 'mx-slot ' + (
                     booked ? 'booked' :
-                    blocked ? 'blocked' :
-                    'available'
+                        blocked ? 'blocked' :
+                            'available'
                 ),
                 disabled: isDisabled,
                 'data-value': value,
@@ -1969,11 +1989,11 @@ var label = formatTimePoint(h);
                     '<span class="mx-slot-time">' + label + '</span>' +
                     '<span class="mx-slot-badge ' +
                     (booked ? 'taken' :
-                    blocked ? 'blocked-badge' :
-                    'free') + '">' +
+                        blocked ? 'blocked-badge' :
+                            'free') + '">' +
                     (booked ? 'Booked' :
-                    blocked ? 'Blocked' :
-                    'Available') +
+                        blocked ? 'Blocked' :
+                            'Available') +
                     '</span>'
             });
 
@@ -2008,13 +2028,13 @@ var label = formatTimePoint(h);
        CALENDAR DATA
     ================================================================ */
     async function loadCalendarData(monthStr, workstation) {
-        monthStr    = monthStr    || null;
+        monthStr = monthStr || null;
         workstation = workstation || 1;
         try {
             var params = new URLSearchParams();
             if (monthStr) params.append('month', monthStr);
             params.append('workstation', workstation);
-            var res  = await fetch('/booking/calendar-data?' + params.toString(), {
+            var res = await fetch('/booking/calendar-data?' + params.toString(), {
                 method: 'GET', credentials: 'same-origin', headers: { Accept: 'application/json' },
             });
             var data = await res.json();
@@ -2038,11 +2058,11 @@ var label = formatTimePoint(h);
         if (!getWorkingHours(dateStr)) return 'day-unavailable';
         var info = dayData[dateStr];
         // if (info && info.status === 'booked')      return 'day-booked';
-        if (info && info.status === 'booked')      return 'day-available';
+        if (info && info.status === 'booked') return 'day-available';
         if (info && info.status === 'unavailable') return 'day-unavailable';
         if (!isDateAvailableByPackage(dateStr, selectedPackHours, selectedLift)) return 'day-unavailable';
         var r = dayFreeRatio(dateStr, selectedLift);
-        if (r === 0)   return 'day-unavailable';
+        if (r === 0) return 'day-unavailable';
         if (r >= 0.70) return 'day-available';
         if (r >= 0.30) return 'day-partial';
         return 'day-scarce';
@@ -2052,38 +2072,38 @@ var label = formatTimePoint(h);
        FLATPICKR
     ================================================================ */
     function updateMonthNav(fp) {
-        var cur     = new Date(fp.currentYear, fp.currentMonth, 1);
-        var min     = new Date(MIN_MONTH.getFullYear(), MIN_MONTH.getMonth(), 1);
+        var cur = new Date(fp.currentYear, fp.currentMonth, 1);
+        var min = new Date(MIN_MONTH.getFullYear(), MIN_MONTH.getMonth(), 1);
         var prevBtn = fp.calendarContainer.querySelector('.flatpickr-prev-month');
         if (!prevBtn) return;
         var atMin = cur <= min;
-        prevBtn.style.pointerEvents = atMin ? 'none'  : 'auto';
-        prevBtn.style.opacity       = atMin ? '0.3'   : '1';
+        prevBtn.style.pointerEvents = atMin ? 'none' : 'auto';
+        prevBtn.style.opacity = atMin ? '0.3' : '1';
     }
 
     fpInstance = flatpickr('#bookingDate', {
         inline: true, dateFormat: 'Y-m-d', disableMobile: true,
         defaultDate: TODAY,
         appendTo: document.getElementById('calendarWrap'),
-        minDate:  new Date(),
+        minDate: new Date(),
 
-        onReady:       function (s, d, fp) { fpInstance = fp; updateMonthNav(fp); },
+        onReady: function (s, d, fp) { fpInstance = fp; updateMonthNav(fp); },
         onMonthChange: function (s, d, fp) {
             updateMonthNav(fp); fp.redraw();
             loadCalendarData(fp.currentYear + '-' + pad2(fp.currentMonth + 1), 1);
         },
-        onYearChange:  function (s, d, fp) { updateMonthNav(fp); fp.redraw(); },
+        onYearChange: function (s, d, fp) { updateMonthNav(fp); fp.redraw(); },
 
         disable: [function (date) {
             if (date.getDay() === 6) return true;
             var info = dayData[flatpickr.formatDate(date, 'Y-m-d')];
             // return info && (info.status === 'unavailable' || info.status === 'booked');
-             return info && info.status === 'unavailable';
+            return info && info.status === 'unavailable';
         }],
 
         onDayCreate: function (dObj, dStr, fp, dayElem) {
-            dayElem.classList.remove('day-available','day-partial','day-scarce',
-                                     'day-booked','day-unavailable','day-nextmonth','day-prevmonth');
+            dayElem.classList.remove('day-available', 'day-partial', 'day-scarce',
+                'day-booked', 'day-unavailable', 'day-nextmonth', 'day-prevmonth');
             if (dayElem.classList.contains('nextMonthDay')) { dayElem.classList.add('day-nextmonth'); return; }
             if (dayElem.classList.contains('prevMonthDay')) { dayElem.classList.add('day-prevmonth'); return; }
 
@@ -2107,7 +2127,7 @@ var label = formatTimePoint(h);
             dayElem.classList.add(dayAvailClass(key));
 
             var slots = getWorkingSlots(key);
-            var free  = slots.filter(function (t) { return !isSlotBooked(key, t, selectedLift); }).length;
+            var free = slots.filter(function (t) { return !isSlotBooked(key, t, selectedLift); }).length;
             if (slots.length > 0 && free > 0 && free < slots.length) {
                 dayElem.setAttribute('title', free + ' of ' + slots.length + ' slots available');
                 var dot = document.createElement('span');
@@ -2129,14 +2149,14 @@ var label = formatTimePoint(h);
     ================================================================ */
     function selectPackage(hours) {
         selectedPackHours = hours;
-        selectedHours     = hours;
+        selectedHours = hours;
         $('.mx-pricecard').each(function () {
             var h = parseInt($(this).data('hours'), 10);
             $(this).toggleClass('mx-selected', h === hours).toggleClass('mx-dimmed', h !== hours);
         });
         toggleHourControls(hours === 9 || hours === 18);
         if (fpInstance) fpInstance.redraw();
-        if (selectedDate) getBlockedTimes(selectedLift, selectedDate, function(timeArray){
+        if (selectedDate) getBlockedTimes(selectedLift, selectedDate, function (timeArray) {
             renderTimeSlots(selectedDate, timeArray);
         });
     }
@@ -2157,11 +2177,11 @@ var label = formatTimePoint(h);
        LIFT BUTTONS (direct-booking mode only)
     ================================================================ */
     var LIFT_DATA = {
-        four:    { img: 'assets/images/rentals/Media (8).jpg',      points: ['Heavy-duty support', 'Perfect for long-hour jobs', 'Maximum stability & safety'] },
-        two:     { img: 'assets/images/rentals/Media (6).jpg',      points: ['Quick vehicle access', 'Ideal for mechanical repairs', 'Compact and space efficient'] },
-        scissor: { img: 'assets/images/rentals/scissor.jpg',        points: ['Low profile design', 'Fast lifting operation', 'Great for tire & brake work'] },
-        flat:    { img: 'assets/images/rentals/motocycle.jpg',       points: ['Designed for motorcycles', 'Easy loading & unloading', 'Stable flat platform'] },
-        flat2:   { img: 'assets/images/rentals/allignmentrack.jpg', points: ['Precision wheel alignment', 'Extended ramp length', 'Perfect for alignment jobs'] },
+        four: { img: 'assets/images/rentals/Media (8).jpg', points: ['Heavy-duty support', 'Perfect for long-hour jobs', 'Maximum stability & safety'] },
+        two: { img: 'assets/images/rentals/Media (6).jpg', points: ['Quick vehicle access', 'Ideal for mechanical repairs', 'Compact and space efficient'] },
+        scissor: { img: 'assets/images/rentals/scissor.jpg', points: ['Low profile design', 'Fast lifting operation', 'Great for tire & brake work'] },
+        flat: { img: 'assets/images/rentals/motocycle.jpg', points: ['Designed for motorcycles', 'Easy loading & unloading', 'Stable flat platform'] },
+        flat2: { img: 'assets/images/rentals/allignmentrack.jpg', points: ['Precision wheel alignment', 'Extended ramp length', 'Perfect for alignment jobs'] },
     };
 
     function renderLiftPriceCards(liftKey) {
@@ -2186,42 +2206,42 @@ var label = formatTimePoint(h);
             return;
         }
 
-       var html = liftData.prices.map(function (p, i) {
-    var label = liftKey === 'flat2'
-        ? ''
-        : (p.hours === 1
-            ? 'Hourly Rental'
-            : p.hours + ' Hour Package');
+        var html = liftData.prices.map(function (p, i) {
+            var label = liftKey === 'flat2'
+                ? ''
+                : (p.hours === 1
+                    ? 'Hourly Rental'
+                    : p.hours + ' Hour Package');
 
-    var priceStr = p.is_membership
-        ? 'Members Only'
-        : '$' + p.price;
+            var priceStr = p.is_membership
+                ? 'Members Only'
+                : '$' + p.price;
 
-    var card = '<div class="mx-pricecard ' + (i === 0 && !p.is_membership ? 'mx-selected' : '') + '"' +
-               ' data-hours="' + p.hours + '"' +
-               ' data-price="' + p.price + '"' +
-               ' data-total="' + (p.price * p.hours) + '">' +
-               (label ? '<span class="mx-hours">' + label + '</span>' : '') +
-               '<span class="mx-price">' + priceStr + '</span>' +
-               '</div>';
+            var card = '<div class="mx-pricecard ' + (i === 0 && !p.is_membership ? 'mx-selected' : '') + '"' +
+                ' data-hours="' + p.hours + '"' +
+                ' data-price="' + p.price + '"' +
+                ' data-total="' + (p.price * p.hours) + '">' +
+                (label ? '<span class="mx-hours">' + label + '</span>' : '') +
+                '<span class="mx-price">' + priceStr + '</span>' +
+                '</div>';
 
-    return p.is_membership
-        ? '<a href="/membership" class="mx-pricecard-link">' + card + '</a>'
-        : card;
-}).join('');
+            return p.is_membership
+                ? '<a href="/membership" class="mx-pricecard-link">' + card + '</a>'
+                : card;
+        }).join('');
 
         html += '<a href="/membership" class="mx-pricecard-link">' +
-        '<div class="mx-pricecard mx-membership">' +
-        '<span class="mx-hours">Membership Plan</span>' +
-        '<span class="mx-price"></span>' +
-        '</div></a>';
+            '<div class="mx-pricecard mx-membership">' +
+            '<span class="mx-hours">Membership Plan</span>' +
+            '<span class="mx-price"></span>' +
+            '</div></a>';
 
         wrap.innerHTML = html;
 
         var $first = $(wrap).find('.mx-pricecard.mx-selected').first();
         if ($first.length) {
             selectedPackHours = parseInt($first.data('hours'), 10) || 1;
-            selectedHours     = selectedPackHours;
+            selectedHours = selectedPackHours;
             toggleHourControls(selectedPackHours === 9 || selectedPackHours === 18);
             if (fpInstance) fpInstance.redraw();
         }
@@ -2230,15 +2250,106 @@ var label = formatTimePoint(h);
             selectPackage(parseInt($(this).data('hours'), 10) || 1);
             setTimeout(function () { scrollToEl($('#calendarSection')[0]); }, 200);
         });
+
+        // ADD THESE 6 LINES:
+    if (liftKey === 'four') {
+        renderAddonSection();
+    } else {
+        $('#mxAddonSection').hide();
+        addonSelected = false;
+        addonPrice    = 0;
+    }
     }
 
+
+function renderAddonSection() {
+    if (liftStatuses['flat2'] && liftStatuses['flat2'].status === 0) {
+        $('#mxAddonSection').hide();
+        return;
+    }
+
+    var raw = document.getElementById('mxAllLiftPrices');
+    if (!raw) {
+        console.warn('mxAllLiftPrices script tag not found');
+        return;
+    }
+
+    var allPrices = {};
+    try {
+        allPrices = JSON.parse(raw.textContent || raw.innerText);
+    } catch (e) {
+        console.error('Price JSON parse error', e);
+        return;
+    }
+
+    var flat2Data = allPrices['flat2'];
+    if (!flat2Data || !flat2Data.prices || !flat2Data.prices.length) {
+        console.warn('flat2 pricing not found in JSON:', allPrices);
+        return;
+    }
+
+    var hourlyPrice = flat2Data.prices.find(function (p) { return p.hours === 1; });
+    if (!hourlyPrice) hourlyPrice = flat2Data.prices[0];
+    addonPrice = hourlyPrice ? parseFloat(hourlyPrice.price) : 0;
+
+    // Use existing blade div — no need to create or inject
+    var $section = $('#mxAddonSection');
+
+    $section.html(
+        '<div style="margin-top:4px;padding:10px 12px;border:1px dashed #e74c3c;border-radius:8px;">' +
+        '<div style="font-size:11px;color:#94a3b8;font-weight:700;letter-spacing:.6px;margin-bottom:8px;">ADD-ON</div>' +
+        '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;">' +
+        '<input type="checkbox" id="mxAddonAlignmentRack" style="width:16px;height:16px;accent-color:#e74c3c;flex-shrink:0;">' +
+        '<div>' +
+        '<div style="font-size:13px;font-weight:600;color:#fff;">Alignment Rack</div>' +
+        '<div style="font-size:11px;color:#94a3b8;margin-top:2px;">Same slot alongside your lift &nbsp;|&nbsp;' +
+        '<span style="color:#e74c3c;font-weight:700;"> +$' + addonPrice + '/hr</span></div>' +
+        '</div>' +
+        '</label>' +
+        '</div>'
+    ).show();
+
+    $('#mxAddonAlignmentRack').off('change').on('change', function () {
+        addonSelected = $(this).is(':checked');
+        if ($('#mxSlotModal').hasClass('show')) {
+            $('#mxTotalText').text(formatMoney(getEffectiveTotal(selectedHours)));
+        }
+    });
+}
+    // Replace the entire "if (!PRODUCT_MODE)" block
     if (!PRODUCT_MODE) {
         $('.mx-liftbtn').removeClass('active');
 
+        // Load lift statuses from DB first
+        $.getJSON('/booking/lift-statuses', function (statuses) {
+            liftStatuses = statuses;
+
+            // Mark unavailable lift buttons
+            Object.keys(statuses).forEach(function (liftKey) {
+                if (statuses[liftKey].status === 0) {
+                    var $btn = $('.mx-liftbtn[data-lift="' + liftKey + '"]');
+                    $btn.addClass('mx-liftbtn--unavailable')
+                        .prop('disabled', true)
+                        .attr('title', 'Currently unavailable');
+                    // Add unavailable badge
+                    if (!$btn.find('.mx-lift-unavail-badge').length) {
+                        $btn.append('<span class="mx-lift-unavail-badge">Unavailable</span>');
+                    }
+                }
+            });
+        });
+
         $(document).on('click', '.mx-liftbtn', function () {
+            var liftKey = $(this).data('lift');
+
+            // Block if unavailable
+            if (liftStatuses[liftKey] && liftStatuses[liftKey].status === 0) {
+                return;
+            }
+
             $('.mx-liftbtn').removeClass('active');
             $(this).addClass('active');
-            selectedLift = $(this).data('lift');
+            selectedLift = liftKey;
 
             renderLiftPriceCards(selectedLift);
 
@@ -2246,15 +2357,25 @@ var label = formatTimePoint(h);
             if (lift) {
                 $('#mxLiftPlaceholder').hide();
                 $('#mxLiftPreviewImg').attr('src', lift.img).show();
-                // $('#mxLiftPoints').html(lift.points.map(function (p) { return '<li>' + p + '</li>'; }).join(''));
+            }
+
+            // Show/hide add-on section
+            if (selectedLift === 'four') {
+                renderAddonSection();
+            } else {
+                $('#mxAddonSection').hide();
+                addonSelected = false;
+                addonPrice = 0;
             }
 
             $('#mxLiftPrompt').addClass('hidden');
 
             if (fpInstance) fpInstance.redraw();
-            if (selectedDate && $('#mxTimeView').is(':visible'))  getBlockedTimes(selectedLift, selectedDate, function(timeArray){
-                renderTimeSlots(selectedDate, timeArray);
-            });
+            if (selectedDate && $('#mxTimeView').is(':visible')) {
+                getBlockedTimes(selectedLift, selectedDate, function (timeArray) {
+                    renderTimeSlots(selectedDate, timeArray);
+                });
+            }
 
             if (selectedDate && !isDateAvailableByPackage(selectedDate, selectedPackHours, selectedLift)) {
                 selectedDate = null;
@@ -2266,8 +2387,10 @@ var label = formatTimePoint(h);
 
         $(document).on('click', '#mxLiftDropdownMenu .dropdown-item', function (e) {
             e.preventDefault();
+            var liftKey = $(this).data('lift');
+            if (liftStatuses[liftKey] && liftStatuses[liftKey].status === 0) return;
             $('#mxLiftDropdownBtn').text($(this).text().trim());
-            $('.mx-liftbtn[data-lift="' + $(this).data('lift') + '"]').trigger('click');
+            $('.mx-liftbtn[data-lift="' + liftKey + '"]').trigger('click');
         });
     }
 
@@ -2280,7 +2403,7 @@ var label = formatTimePoint(h);
         $(this).prop('disabled', true).removeClass('enabled');
         $('.mx-gridWrap, .mx-legendMini').hide();
         showTimeView();
-        getBlockedTimes(selectedLift, selectedDate, function(timeArray){
+        getBlockedTimes(selectedLift, selectedDate, function (timeArray) {
             renderTimeSlots(selectedDate, timeArray);
         });
 
@@ -2293,11 +2416,11 @@ var label = formatTimePoint(h);
         $(this).hide();
         showTimeView();
 
-        getBlockedTimes(selectedLift, selectedDate, function(timeArray){
+        getBlockedTimes(selectedLift, selectedDate, function (timeArray) {
             renderTimeSlots(selectedDate, timeArray);
         });
         console.log(selectedLift);
-        
+
     });
 
     $('#mxBackToDate').on('click', function () {
@@ -2346,7 +2469,8 @@ var label = formatTimePoint(h);
         );
 
         $('#mxSelectedHours').text(selectedHours);
-        $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
+        // $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
+        $('#mxTotalText').text(formatMoney(getEffectiveTotal(selectedHours)));
 
         $('#mxHintText').text(
             check.ok
@@ -2390,18 +2514,20 @@ var label = formatTimePoint(h);
         return (v === 1 || v === '1' || v === true);
     }());
 
-    function mxGetBookingPayload() {
-        return {
-            date:        selectedDate,
-            start:       selectedStartTime,
-            hours:       selectedHours,
-            total:       getPackageTotal(selectedHours),
-            lift:        selectedLift,
-            package:     selectedPackHours,
-            workstation: 1,
-            product_id:  PRODUCT_MODE ? ($meta.data('product-id') || null) : null,
-        };
-    }
+   function mxGetBookingPayload() {
+    return {
+        date:        selectedDate,
+        start:       selectedStartTime,
+        hours:       selectedHours,
+        total:       getEffectiveTotal(selectedHours),   // changed
+        lift:        selectedLift,
+        package:     selectedPackHours,
+        workstation: 1,
+        product_id:  PRODUCT_MODE ? ($meta.data('product-id') || null) : null,
+        addon_lift:  addonSelected ? ADDON_LIFT_KEY : null,   // new
+        addon_price: addonSelected ? addonPrice : 0,          // new
+    };
+}
 
     /* ================================================================
        SLOT MODAL CONFIRM → auth gate
@@ -2436,11 +2562,11 @@ var label = formatTimePoint(h);
         var raw = sessionStorage.getItem('mx_booking_payload');
         if (!raw) return;
         var p = JSON.parse(raw);
-        selectedDate      = p.date;
+        selectedDate = p.date;
         selectedStartTime = p.start;
-        selectedHours     = p.hours;
+        selectedHours = p.hours;
         selectedPackHours = p.package;
-        selectedLift      = p.lift;
+        selectedLift = p.lift;
 
         if (!PRODUCT_MODE) {
             $('.mx-liftbtn').removeClass('active');
@@ -2533,8 +2659,8 @@ var label = formatTimePoint(h);
             return;
         }
 
-        var payload         = mxGetBookingPayload();
-        payload.guest_name  = $('#guestName').val().trim();
+        var payload = mxGetBookingPayload();
+        payload.guest_name = $('#guestName').val().trim();
         payload.guest_phone = '+1' + rawPhone;
 
         if (!payload.date || !payload.start) {
@@ -2546,13 +2672,13 @@ var label = formatTimePoint(h);
         var $btn = $(this).find('button[type=submit]').prop('disabled', true);
 
         try {
-            var res  = await fetch('/booking/guest', {
+            var res = await fetch('/booking/guest', {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept':       'application/json',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify(payload),
             });
@@ -2582,7 +2708,7 @@ var label = formatTimePoint(h);
        GUEST SUCCESS MODAL — "Call to Confirm"
     ================================================================ */
     function showGuestSuccessModal(bookingId, payload, expiresAt) {
-        var startH  = parseInt(payload.start.slice(0, 2), 10);
+        var startH = parseInt(payload.start.slice(0, 2), 10);
         var dateFmt = new Date(payload.date + 'T00:00:00').toLocaleDateString([], {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
         });
@@ -2595,7 +2721,8 @@ var label = formatTimePoint(h);
         $('#mxgTime').text(formatTimePoint(startH));
         $('#mxgDuration').text(payload.hours + ' hour' + (payload.hours > 1 ? 's' : ''));
         $('#mxgSlotTiming').text(prettyRange(payload.date, startH, payload.hours));
-        $('#mxgTotal').text(formatMoney(getPackageTotal(payload.hours)));
+        // $('#mxgTotal').text(formatMoney(getPackageTotal(payload.hours)));
+        $('#mxgTotal').text(formatMoney(getEffectiveTotal(payload.hours)));
 
         startGuestTimer(expiresAt);
         openModal('#mxGuestSuccessModal');
@@ -2654,12 +2781,12 @@ var label = formatTimePoint(h);
     ================================================================ */
     async function submitBooking(payload) {
         try {
-            var res  = await fetch('/booking/confirm', {
+            var res = await fetch('/booking/confirm', {
                 method: 'POST', credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept':       'application/json',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify(payload),
             });
@@ -2677,9 +2804,9 @@ var label = formatTimePoint(h);
        SUCCESS RECEIPT (logged-in users)
     ================================================================ */
     function openSuccessReceipt(bookingId, payload) {
-        var rate    = getRatePerHour();
-        var total   = getPackageTotal(payload.hours);
-        var startH  = parseInt(payload.start.slice(0, 2), 10);
+        var rate = getRatePerHour();
+        var total = getEffectiveTotal(payload.hours);
+        var startH = parseInt(payload.start.slice(0, 2), 10);
         var dateFmt = new Date(payload.date + 'T00:00:00').toLocaleDateString([], {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
         });
@@ -2710,39 +2837,39 @@ var label = formatTimePoint(h);
         var $err = $('#loginErrorMsg').addClass('d-none').text('');
         var loginUrl = $('#mx-routes').data('login-url') || '/popup-login';
         var email = $(this).find('[name=email]').val().trim();
-var password = $(this).find('[name=password]').val();
+        var password = $(this).find('[name=password]').val();
 
-if (!email) {
-    $err.text('Email is required.').removeClass('d-none');
-    return;
-}
+        if (!email) {
+            $err.text('Email is required.').removeClass('d-none');
+            return;
+        }
 
-var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-if (!emailRegex.test(email)) {
-    $err.text('Please enter a valid email address.').removeClass('d-none');
-    return;
-}
+        if (!emailRegex.test(email)) {
+            $err.text('Please enter a valid email address.').removeClass('d-none');
+            return;
+        }
 
-if (!password) {
-    $err.text('Password is required.').removeClass('d-none');
-    return;
-}
+        if (!password) {
+            $err.text('Password is required.').removeClass('d-none');
+            return;
+        }
 
-if (password.length < 6) {
-    $err.text('Password must be at least 6 characters.').removeClass('d-none');
-    return;
-}
+        if (password.length < 6) {
+            $err.text('Password must be at least 6 characters.').removeClass('d-none');
+            return;
+        }
         try {
             var res = await fetch(loginUrl, {
                 method: 'POST', credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept':       'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': window.MX_CSRF || $('meta[name="csrf-token"]').attr('content') || '',
                 },
                 body: JSON.stringify({
-                    email:    $(this).find('[name=email]').val().trim(),
+                    email: $(this).find('[name=email]').val().trim(),
                     password: $(this).find('[name=password]').val(),
                 }),
             });
@@ -2781,75 +2908,75 @@ if (password.length < 6) {
         e.preventDefault();
         var $err = $('#registerErrorMsg').addClass('d-none').text('');
         var registerUrl = $('#mx-routes').data('register-url') || '/popup-register';
- var email = $(this).find('[name=email]').val().trim();
-var mobile = $(this).find('[name=mobile_no]').val().trim();
-var password = $(this).find('[name=password]').val();
-var confirmPassword = $(this).find('[name=password_confirmation]').val();
+        var email = $(this).find('[name=email]').val().trim();
+        var mobile = $(this).find('[name=mobile_no]').val().trim();
+        var password = $(this).find('[name=password]').val();
+        var confirmPassword = $(this).find('[name=password_confirmation]').val();
 
-var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-var phoneRegex = /^[0-9]{10}$/;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var phoneRegex = /^[0-9]{10}$/;
 
-if (!email) {
-    $err.text('Email is required.').removeClass('d-none');
-    return;
-}
+        if (!email) {
+            $err.text('Email is required.').removeClass('d-none');
+            return;
+        }
 
-if (!emailRegex.test(email)) {
-    $err.text('Please enter a valid email address.').removeClass('d-none');
-    return;
-}
+        if (!emailRegex.test(email)) {
+            $err.text('Please enter a valid email address.').removeClass('d-none');
+            return;
+        }
 
-if (!mobile) {
-    $err.text('Mobile number is required.').removeClass('d-none');
-    return;
-}
+        if (!mobile) {
+            $err.text('Mobile number is required.').removeClass('d-none');
+            return;
+        }
 
-if (!phoneRegex.test(mobile)) {
-    $err.text('Mobile number must be exactly 10 digits.').removeClass('d-none');
-    return;
-}
+        if (!phoneRegex.test(mobile)) {
+            $err.text('Mobile number must be exactly 10 digits.').removeClass('d-none');
+            return;
+        }
 
-if (!password) {
-    $err.text('Password is required.').removeClass('d-none');
-    return;
-}
+        if (!password) {
+            $err.text('Password is required.').removeClass('d-none');
+            return;
+        }
 
-if (password.length < 8) {
-    $err.text('Password must be at least 8 characters long.').removeClass('d-none');
-    return;
-}
+        if (password.length < 8) {
+            $err.text('Password must be at least 8 characters long.').removeClass('d-none');
+            return;
+        }
 
-if (!/[A-Z]/.test(password)) {
-    $err.text('Password must contain at least one uppercase letter.').removeClass('d-none');
-    return;
-}
+        if (!/[A-Z]/.test(password)) {
+            $err.text('Password must contain at least one uppercase letter.').removeClass('d-none');
+            return;
+        }
 
-if (!/[a-z]/.test(password)) {
-    $err.text('Password must contain at least one lowercase letter.').removeClass('d-none');
-    return;
-}
+        if (!/[a-z]/.test(password)) {
+            $err.text('Password must contain at least one lowercase letter.').removeClass('d-none');
+            return;
+        }
 
-if (!/[0-9]/.test(password)) {
-    $err.text('Password must contain at least one number.').removeClass('d-none');
-    return;
-}
+        if (!/[0-9]/.test(password)) {
+            $err.text('Password must contain at least one number.').removeClass('d-none');
+            return;
+        }
 
-if (password !== confirmPassword) {
-    $err.text('Password confirmation does not match.').removeClass('d-none');
-    return;
-}
+        if (password !== confirmPassword) {
+            $err.text('Password confirmation does not match.').removeClass('d-none');
+            return;
+        }
         try {
             var res = await fetch(registerUrl, {
                 method: 'POST', credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept':       'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': window.MX_CSRF || $('meta[name="csrf-token"]').attr('content') || '',
                 },
                 body: JSON.stringify({
-                    email:                 $(this).find('[name=email]').val().trim(),
-                    mobile_no:             $(this).find('[name=mobile_no]').val().trim(),
-                    password:              $(this).find('[name=password]').val(),
+                    email: $(this).find('[name=email]').val().trim(),
+                    mobile_no: $(this).find('[name=mobile_no]').val().trim(),
+                    password: $(this).find('[name=password]').val(),
                     password_confirmation: $(this).find('[name=password_confirmation]').val(),
                 }),
             });
@@ -2876,10 +3003,10 @@ if (password !== confirmPassword) {
             // After register, continue the booking that was in progress
             setTimeout(function () { mxContinueAfterAuth(); }, 400);
 
-             // Reload page
+            // Reload page
             // window.location.reload();
-//redirect to admin dashboard after registration
-window.location.href = '/admin';
+            //redirect to admin dashboard after registration
+            window.location.href = '/admin';
         } catch (err) {
             $err.text('Network error. Please try again.').removeClass('d-none');
         }
@@ -2921,7 +3048,7 @@ window.location.href = '/admin';
 //     var modal = document.getElementById('mxGuestSuccessModal');
 //     console.log("age",modal);
 
-    
+
 //     if (!modal) return;
 //     console.log("pore",modal);
 
@@ -2930,21 +3057,21 @@ window.location.href = '/admin';
 //     modal.setAttribute('aria-hidden', 'true');
 // }
 document
-.getElementById('guestSuccessCloseBtn')
-.addEventListener('click', function () {
+    .getElementById('guestSuccessCloseBtn')
+    .addEventListener('click', function () {
 
-    const modal = document.getElementById('mxGuestSuccessModal');
+        const modal = document.getElementById('mxGuestSuccessModal');
 
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', 'true');
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
 
-    window.location.reload();
-});
+        window.location.reload();
+    });
 
 document.getElementById('mxSuccessCloseBtn')?.addEventListener('click', function () {
     document.getElementById('mxSuccessModal').classList.remove('show');
-     // Reload page
-            window.location.reload();
+    // Reload page
+    window.location.reload();
 });
 
 function getBlockedTimes(selectedLift, selectedDate, callback) {
@@ -2957,13 +3084,13 @@ function getBlockedTimes(selectedLift, selectedDate, callback) {
             date: selectedDate,
             _token: $('meta[name="csrf-token"]').attr('content')
         },
-        success: function(response) {
+        success: function (response) {
 
             // response.start_times = ["10:00:00","09:00:00",...]
             callback(response.start_times);
 
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error('Error fetching blocked times', xhr);
 
             // fallback empty array
@@ -2971,15 +3098,15 @@ function getBlockedTimes(selectedLift, selectedDate, callback) {
         }
     });
 }
-async function checkBookingAvailability(date, lift, startTime, hours){
+async function checkBookingAvailability(date, lift, startTime, hours) {
 
     return $.ajax({
 
-        url:'/check-booking-hours',
-        type:'POST',
+        url: '/check-booking-hours',
+        type: 'POST',
 
-        data:{
-            _token:$('meta[name="csrf-token"]').attr('content'),
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
             date: date,
             lift: lift,
             start_time: startTime,

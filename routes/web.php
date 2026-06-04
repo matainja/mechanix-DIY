@@ -31,7 +31,7 @@ Route::get('/rental/{item}', [RentalController::class, 'details'])->name('rental
 Route::get('/booking', [BookingController::class, 'index'])->name('booking');
 Route::post('/booking/confirm', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking/calendar-data', [BookingController::class, 'calendarData'])->name('booking.calendarData');
-
+Route::get('/booking/lift-statuses', [BookingController::class, 'getLiftStatuses'])->name('booking.liftStatuses');
 
 
 

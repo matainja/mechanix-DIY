@@ -263,6 +263,8 @@
                                 Select a lift type above to see pricing.
                             </div>
                         </div>
+                        {{-- ADD THIS LINE: --}}
+    <div id="mxAddonSection" style="display:none;"></div>
 
                         <div class="mx-liftpreview">
                             <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
