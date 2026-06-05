@@ -1514,48 +1514,54 @@
 .mx-addon-wrapper{
     margin-bottom: 12px;
 }
-
-.mx-addon-badge{
-    display: inline-block;
+.mx-addon-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
     background: #e8282b;
     color: #fff;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 4px 10px;
-    border-radius: 999px;
-    margin-bottom: 0px;
+    border-radius: 8px 0 8px 0;  /* top-left and bottom-right rounded = tag feel */
+    z-index: 2;
+    line-height: 1.4;
 }
-
-.mx-addon-card{
+.mx-addon-card {
     position: relative;
+    overflow: hidden;
+    padding: 0;          /* ADD THIS — removes the 14px 18px card padding */
 }
-
-.mx-addon-label{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    width:100%;
-    margin:0;
-    cursor:pointer;
+.mx-addon-label {
+    display: flex;
+    align-items: stretch;   /* key — makes image stretch full height */
+    gap: 0;
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+    overflow: hidden;
+    min-height: 70px;       /* ensures card has some height */
 }
-
-.mx-addon-image{
-    width:80px;
-    height:60px;
-    object-fit:cover;
-    border-radius:8px;
-    flex-shrink:0;
+.mx-addon-image {
+    width: 100px;
+    height: 100%;
+    min-height: 60px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px 0 0 8px;  /* only left corners rounded to match card */
+    flex-shrink: 0;
+    align-self: stretch;
+    display: block;
 }
-
-.mx-addon-info{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+.mx-addon-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;    /* restore card's original padding here */
 }
-
 .mx-addon-info .mx-hours{
     color:#fff;
     font-size:18px;
@@ -1568,4 +1574,59 @@
     font-size:26px;
     font-weight:900;
     white-space:nowrap;
+}
+
+
+
+/* ── Reset the pricecard.mx-selected styles specifically for addon ── */
+.mx-addon-card.mx-selected,
+.mx-addon-card.mx-selected:hover {
+    background: linear-gradient(135deg, #1e2130 0%, #0f1117 100%) !important;
+    border-color: #e8282b !important;
+    box-shadow:
+        0 0 0 2px rgba(232,40,43,.4),
+        0 12px 32px rgba(232,40,43,.2),
+        inset 0 1px 0 rgba(255,255,255,.06) !important;
+    transform: translateY(-1px) !important;
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Cancel the ::after tick from mx-pricecard.mx-selected,
+   then reapply it cleanly for addon */
+.mx-pricecard.mx-selected.mx-addon-card::after {
+    content: '✓' !important;
+    position: absolute !important;
+    top: 8px !important;
+    right: 12px !important;
+    font-size: 11px !important;
+    background: #e8282b !important;
+    color: #fff !important;
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 900 !important;
+    z-index: 3 !important;
+}
+
+.mx-addon-card.mx-selected .mx-price {
+    color: #fbbf24 !important;
+}
+
+.mx-addon-card.mx-selected .mx-hours {
+    color: #fff !important;
+}
+
+.mx-addon-card.mx-selected .mx-addon-image {
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+.mx-addon-card.mx-dimmed,
+.mx-addon-card.mx-pricecard.mx-dimmed {
+    opacity: 1 !important;
+    filter: none !important;
 }

@@ -328,11 +328,11 @@ body {
 
 
 .hero-section {
-  position: relative;
-  height: 750px;
+  /* position: relative; */
+  height: 410px;
   /* background-image: url(../images/mechanix-banner-5.jpg); */
   background-size: cover;
-  background-position: center;
+  /* background-position: center; */
   /* padding-left: 4rem; */
   padding: 0px 0px 0px 0%;
   display: flex;
@@ -340,7 +340,7 @@ body {
   align-items: flex-start;
   justify-content: flex-start;
   z-index: 0;
-  width: 100%;
+  /* width: 100%; */
   
 }
 

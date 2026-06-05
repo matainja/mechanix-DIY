@@ -2147,13 +2147,14 @@ $(function () {
     /* ================================================================
        PRICE CARDS
     ================================================================ */
-    function selectPackage(hours) {
-        selectedPackHours = hours;
-        selectedHours = hours;
-        $('.mx-pricecard').each(function () {
-            var h = parseInt($(this).data('hours'), 10);
-            $(this).toggleClass('mx-selected', h === hours).toggleClass('mx-dimmed', h !== hours);
-        });
+   function selectPackage(hours) {
+    selectedPackHours = hours;
+    selectedHours = hours;
+    $('.mx-pricecard').each(function () {
+        if ($(this).hasClass('mx-addon-card')) return;  // skip addon
+        var h = parseInt($(this).data('hours'), 10);
+        $(this).toggleClass('mx-selected', h === hours).toggleClass('mx-dimmed', h !== hours);
+    });
         toggleHourControls(hours === 9 || hours === 18);
         if (fpInstance) fpInstance.redraw();
         if (selectedDate) getBlockedTimes(selectedLift, selectedDate, function (timeArray) {
@@ -2263,6 +2264,7 @@ $(function () {
 
 
     function renderAddonSection() {
+        var wasSelected = addonSelected;
         if (liftStatuses['flat2'] && liftStatuses['flat2'].status === 0) {
             $('#mxAddonSection').hide();
             return;
@@ -2340,9 +2342,10 @@ $(function () {
       $section.html(
     '<div class="mx-addon-wrapper">' +
 
-        '<div class="mx-addon-badge">ADD-ON</div>' +
+        
 
         '<div class="mx-pricecard mx-addon-card">' +
+        '<div class="mx-addon-badge">ADD-ON</div>' +
 
             '<label class="mx-addon-label">' +
 
@@ -2354,7 +2357,7 @@ $(function () {
 
                 '<div class="mx-addon-info">' +
                     '<span class="mx-hours">' + productMeta.name + '</span>' +
-                    '<span class="mx-price">$' + addonPrice + '/hr</span>' +
+                    '<span class="mx-price">$' + addonPrice + '</span>' +
                 '</div>' +
 
             '</label>' +
@@ -2364,15 +2367,18 @@ $(function () {
     '</div>'
 ).show();
 
-        // Bind checkbox
-       $('#mxAddonAlignmentRack').off('change').on('change', function () {
+        // Restore addon selection state after HTML rebuild
+        if (wasSelected) {
+            $('#mxAddonAlignmentRack').prop('checked', true);
+            $('.mx-addon-card').addClass('mx-selected');
+        }
 
+        // Bind checkbox
+        $('#mxAddonAlignmentRack').off('change').on('change', function () {
     addonSelected = $(this).is(':checked');
 
-    $('.mx-addon-card').toggleClass(
-        'active',
-        addonSelected
-    );
+    $('.mx-addon-card').toggleClass('mx-selected', addonSelected);  // ADD THIS
+    // $('.mx-addon-card').toggleClass('active', addonSelected);
 
     if ($('#mxSlotModal').hasClass('show')) {
         $('#mxTotalText').text(
