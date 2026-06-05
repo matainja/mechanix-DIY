@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class UserProfileController extends Controller
+class UserDashboardController extends Controller
 {
     public function index()
     {
@@ -23,7 +23,7 @@ class UserProfileController extends Controller
         $cancelledBookings = $user->bookings()->where('status', 'cancelled')->latest()->paginate(10, ['*'], 'cancelled_page');
         $allBookings       = $user->bookings()->latest()->paginate(10, ['*'], 'all_page');
 
-        return view('admin.pages.profile', compact(
+        return view('admin.pages.user_dashboard', compact(
             'confirmedCount', 'pendingCount', 'cancelledCount', 'totalSpent',
             'confirmedBookings', 'pendingBookings', 'cancelledBookings', 'allBookings'
         ));
@@ -54,4 +54,15 @@ class UserProfileController extends Controller
 
         return back()->with('success', 'Profile updated successfully!');
     }
+    public function settings()
+{
+    $user = auth()->user();
+    $confirmedCount  = $user->bookings()->where('status', 'confirmed')->count();
+    $pendingCount    = $user->bookings()->where('status', 'pending')->count();
+    $cancelledCount  = $user->bookings()->where('status', 'cancelled')->count();
+
+    return view('admin.pages.profile_settings', compact(
+        'confirmedCount', 'pendingCount', 'cancelledCount'
+    ));
+}
 }

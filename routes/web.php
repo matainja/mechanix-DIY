@@ -10,7 +10,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\MembershipController;
-use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\UserDashboardController;
 
 
 //Page Controller
@@ -92,8 +92,9 @@ Route::middleware(['auth', 'admin'])
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [UserProfileController::class, 'index'])->name('user.profile');
-    Route::put('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+    Route::put('/profile_update', [UserDashboardController::class, 'update'])->name('user.profile.update');
+    Route::get('/profile/settings', [UserDashboardController::class, 'settings'])->name('user.profile.settings');
 });
 //Loin & Register Popup
 

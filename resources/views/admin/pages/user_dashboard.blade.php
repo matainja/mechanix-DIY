@@ -16,7 +16,7 @@
                         </div>
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-                            <li class="breadcrumb-item" aria-current="page">Profile</li>
+                            <li class="breadcrumb-item" aria-current="page">Dashboard</li>
                         </ul>
                     </div>
                 </div>
@@ -105,163 +105,11 @@
         {{-- ===== MAIN LAYOUT ===== --}}
         <div class="row g-4">
 
-            {{-- LEFT: Profile + Edit --}}
-            <div class="col-lg-4">
-
-                {{-- Profile Info Card --}}
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body text-center py-4">
-
-                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center
-                                    justify-content-center mx-auto mb-3"
-                             style="width:88px;height:88px;">
-                            <span class="fw-bold text-primary" style="font-size:2rem;">
-                                {{ strtoupper(substr(auth()->user()->email, 0, 1)) }}
-                            </span>
-                        </div>
-
-                        <h6 class="mb-1 fw-semibold">{{ auth()->user()->email }}</h6>
-                        <p class="text-muted small mb-3">
-                            {{ auth()->user()->mobile_no ?? 'No phone set' }}
-                        </p>
-
-                        <div class="d-flex justify-content-center gap-2 flex-wrap">
-                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2">
-                                <i class="ti ti-user me-1"></i> Registered User
-                            </span>
-                            <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2">
-                                <i class="ti ti-calendar me-1"></i>
-                                Since {{ auth()->user()->created_at->format('M Y') }}
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <div class="card-footer bg-transparent px-4 pb-4 border-top-0">
-                        <ul class="list-unstyled mb-0">
-                            <li class="d-flex align-items-center gap-2 py-2 border-bottom">
-                                <i class="ti ti-mail text-muted"></i>
-                                <span class="text-muted small">Email</span>
-                                <span class="ms-auto small fw-medium text-truncate" style="max-width:160px;">
-                                    {{ auth()->user()->email }}
-                                </span>
-                            </li>
-                            <li class="d-flex align-items-center gap-2 py-2 border-bottom">
-                                <i class="ti ti-phone text-muted"></i>
-                                <span class="text-muted small">Mobile</span>
-                                <span class="ms-auto small fw-medium">
-                                    {{ auth()->user()->mobile_no ?? '—' }}
-                                </span>
-                            </li>
-                            <li class="d-flex align-items-center gap-2 py-2">
-                                <i class="ti ti-calendar-check text-muted"></i>
-                                <span class="text-muted small">Total Bookings</span>
-                                <span class="ms-auto small fw-medium">
-                                    {{ number_format($confirmedCount + $pendingCount + $cancelledCount) }}
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                {{-- Edit Profile Card --}}
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent border-bottom py-3">
-                        <h6 class="mb-0 fw-semibold">
-                            <i class="ti ti-edit me-2 text-primary"></i>Edit Profile
-                        </h6>
-                    </div>
-                    <div class="card-body">
-
-                        <form method="POST" action="{{ route('user.profile.update') }}">
-                            @csrf
-                            @method('PUT')
-
-                            {{-- Email --}}
-                            <div class="mb-3">
-                                <label class="form-label small fw-medium">Email Address</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    class="form-control form-control-sm @error('email') is-invalid @enderror"
-                                    value="{{ old('email', auth()->user()->email) }}"
-                                    required
-                                >
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            {{-- Mobile --}}
-                            <div class="mb-3">
-                                <label class="form-label small fw-medium">Mobile Number</label>
-                                <input
-                                    type="text"
-                                    name="mobile_no"
-                                    class="form-control form-control-sm @error('mobile_no') is-invalid @enderror"
-                                    value="{{ old('mobile_no', auth()->user()->mobile_no) }}"
-                                    placeholder="+1 234 567 890"
-                                >
-                                @error('mobile_no')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <hr class="my-3">
-                            <p class="small fw-semibold text-muted mb-2">
-                                Change Password
-                                <span class="fw-normal">(leave blank to keep current)</span>
-                            </p>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-medium">Current Password</label>
-                                <input
-                                    type="password"
-                                    name="current_password"
-                                    class="form-control form-control-sm @error('current_password') is-invalid @enderror"
-                                    placeholder="••••••••"
-                                >
-                                @error('current_password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-medium">New Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    class="form-control form-control-sm @error('password') is-invalid @enderror"
-                                    placeholder="••••••••"
-                                >
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label small fw-medium">Confirm New Password</label>
-                                <input
-                                    type="password"
-                                    name="password_confirmation"
-                                    class="form-control form-control-sm"
-                                    placeholder="••••••••"
-                                >
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-sm w-100">
-                                <i class="ti ti-device-floppy me-1"></i> Save Changes
-                            </button>
-
-                        </form>
-
-                    </div>
-                </div>
-
-            </div>
+           
+           
 
             {{-- RIGHT: Booking Tabs --}}
-            <div class="col-lg-8">
+            <div class="card-body table-responsive">
 
                 <div class="card border-0 shadow-sm" style="overflow:visible;">
                     <div class="card-header bg-transparent border-bottom" style="padding: 0 0 0 0;">

@@ -226,42 +226,41 @@
                         @endguest
 
                         @auth
-                            <li>
-                                <span class="dropdown-item-text">
-                                    Hello {{ strtok(auth()->user()->email, '@') }}
-                                </span>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-
-                             <li>
-        <a href="{{ url('/profile') }}" class="dropdown-item">
-            <i class="bi bi-gear me-2"></i>
-            Profile Settings
-        </a>
+    <li>
+        <span class="dropdown-item-text">
+            Hello {{ strtok(auth()->user()->email, '@') }}
+        </span>
     </li>
-     <li>
+
+    <li>
         <hr class="dropdown-divider">
     </li>
-                            {{-- admin dashboard --}}
-                            {{-- <li>
+
+    @if(auth()->user()->role == 1)
+        {{-- Admin --}}
+        <li>
             <a href="{{ route('admin.home') }}" class="dropdown-item">
-              <i class="bi bi-speedometer2 me-2"></i> Admin Dashboard
+                <i class="bi bi-speedometer2 me-2"></i>
+                Admin Dashboard
             </a>
-          </li>  --}}
+        </li>
+         <li>
+        <hr class="dropdown-divider">
+    </li>
+    @else
+        {{-- Normal User --}}
+        <li>
+            <a href="{{ url('/dashboard') }}" class="dropdown-item">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Dashboard
+            </a>
+        </li>
+    
 
-          @if(auth()->user()->role == 1)
-<li>
-    <a href="{{ route('admin.home') }}" class="dropdown-item">
-        <i class="bi bi-speedometer2 me-2"></i>
-        Admin Dashboard
-    </a>
-</li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
 
-<li>
-    <hr class="dropdown-divider">
-</li>
 @endif
           
           

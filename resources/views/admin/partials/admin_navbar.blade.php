@@ -10,11 +10,13 @@
 
                 {{-- ✅ Visible to ALL roles --}}
                 <li class="pc-item">
-                    <a href="{{ route('admin.home') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
-                        <span class="pc-mtext">Dashboard</span>
-                    </a>
-                </li>
+    <a href="{{ auth()->user()->role == 1 ? route('admin.home') : route('user.dashboard') }}" class="pc-link">
+        <span class="pc-micon">
+            <i class="ti ti-dashboard"></i>
+        </span>
+        <span class="pc-mtext">Dashboard</span>
+    </a>
+</li>
 
                 {{-- ✅ Management section: Superadmin + Subadmin only (role == 1) --}}
                 @if(auth()->user()->role == 1)
@@ -64,9 +66,9 @@
                     <i class="ti ti-user fs-4"></i>
                 </li>
                 <li class="pc-item">
-                    <a href="{{ route('user.profile') }}" class="pc-link">
+                    <a href="{{ route('user.profile.settings') }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-user-circle"></i></span>
-                        <span class="pc-mtext">Profile</span>
+                        <span class="pc-mtext">Profile Settings</span>
                     </a>
                 </li>
                 {{-- <li class="pc-item">
