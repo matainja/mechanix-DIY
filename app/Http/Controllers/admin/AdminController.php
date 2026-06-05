@@ -123,8 +123,11 @@ public function home(Request $request)
     public function bookings()
     {
         $bookings = Booking::orderBy('id', 'desc')->paginate(10);
+        $bookings = Booking::latest()->paginate(10);
+$todayBookings = Booking::whereDate('date', today())->latest()->get();
+
         // dd( $bookings);
-        return view('admin.pages.bookings', compact('bookings'));
+        return view('admin.pages.bookings', compact('bookings', 'todayBookings'));
     }
 
     // Holidays

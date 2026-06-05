@@ -25,94 +25,76 @@
             <!-- [ breadcrumb ] end -->
 
             <!-- [ Main Content ] start -->
-            <div class="card ">
-                <div class="card-header d-flex justify-content-between align-items-center">
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="bookingTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="today-tab" data-bs-toggle="tab" href="#today" role="tab">
+                    Today's Bookings
+                    <span class="badge bg-primary ms-1">{{ $todayBookings->count() }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="all-tab" data-bs-toggle="tab" href="#all" role="tab">
+                    All Bookings
+                </a>
+            </li>
+        </ul>
+    </div>
 
-                    <div>
-                        <h5 class="mb-0">All Bookings</h5>
+    <div class="card-body">
+        <div class="tab-content" id="bookingTabsContent">
 
-                        <small class="text-muted">
-                            Approved bookings will be confirmed, cancelled bookings will be released, and deleted bookings
-                            will be permanently removed.
-                        </small>
-                    </div>
-
-                </div>
-                <div class="card-body table-responsive">
-                    <!-- Table for displaying bookings -->
+            <!-- TODAY'S BOOKINGS TAB -->
+            <div class="tab-pane fade show active" id="today" role="tabpanel">
+                <small class="text-muted d-block mb-3">
+                    Showing all bookings for today — {{ now()->format('d M Y') }}
+                </small>
+                <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <!-- <th>User</th> -->
-                                <th>Booking Date</th>
-                                {{-- <th>Workstation</th> --}}
                                 <th>Customer</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Duration (Hours)</th>
                                 <th>Equipment Type</th>
-
                                 <th>Rate per Hour</th>
                                 <th>Status</th>
                                 <th>Total</th>
                                 <th>Actions</th>
-
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($bookings as $booking)
+                            @forelse ($todayBookings as $index => $booking)
                                 <tr>
-                                    <td>
-                                        {{ $bookings->total() - ($bookings->firstItem() + $loop->index - 1) }}
-                                    </td>
-                                    <td>{{ \Carbon\Carbon::parse($booking->date)->format('d M Y') }}</td>
-                                    {{-- <td>{{ $booking->workstation }}</td> --}}
+                                    <td>{{ $index + 1 }}</td>
                                     <td>
                                         @if ($booking->booking_type === 'guest')
-                                            <strong>
-                                                {{ $booking->guest_name ?? 'Guest User' }}
-                                            </strong>
-
+                                            <strong>{{ $booking->guest_name ?? 'Guest User' }}</strong>
                                             <br>
-
-                                            <small class="text-muted">
-                                                {{ $booking->guest_phone ?? '—' }}
-                                            </small>
+                                            <small class="text-muted">{{ $booking->guest_phone ?? '—' }}</small>
                                         @else
-                                            <strong>
-                                                {{ ucfirst(strtok($booking->user?->email ?? 'User', '@')) }}
-                                            </strong>
-
+                                            <strong>{{ ucfirst(strtok($booking->user?->email ?? 'User', '@')) }}</strong>
                                             <br>
-
-                                            <small class="text-muted">
-                                                {{ $booking->user?->email ?? '—' }}
-                                            </small>
+                                            <small class="text-muted">{{ $booking->user?->email ?? '—' }}</small>
                                         @endif
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($booking->start_time)->addHours($booking->hours)->format('H:i') }}
-                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($booking->start_time)->addHours($booking->hours)->format('H:i') }}</td>
                                     <td>{{ $booking->hours }}</td>
                                     <td>{{ $booking->lift_type }}</td>
-
                                     <td>${{ number_format($booking->rate_per_hour, 2) }}</td>
                                     <td>
-                                        <span
-                                            class="badge 
-                                        @if ($booking->status == 'confirmed') bg-success
-                                        @elseif($booking->status == 'pending') 
-                                            bg-warning text-dark
-                                        @else 
-                                            bg-danger @endif">
-
+                                        <span class="badge 
+                                            @if ($booking->status == 'confirmed') bg-success
+                                            @elseif($booking->status == 'pending') bg-warning text-dark
+                                            @else bg-danger @endif">
                                             {{ ucfirst($booking->status) }}
                                         </span>
                                     </td>
                                     <td>${{ number_format($booking->total, 2) }}</td>
-
                                     <td>
                                         @if ($booking->status === 'pending')
                                             <button class="btn btn-success btn-sm me-1"
@@ -133,7 +115,93 @@
                                             onclick="bookingAction({{ $booking->id }}, 'delete')">
                                             <i class="ti ti-trash"></i>
                                         </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="10" class="text-center text-muted py-4">
+                                        <i class="ti ti-calendar-off fs-4 d-block mb-2"></i>
+                                        No bookings for today.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
+            <!-- ALL BOOKINGS TAB -->
+            <div class="tab-pane fade" id="all" role="tabpanel">
+                <small class="text-muted d-block mb-3">
+                    Approved bookings will be confirmed, cancelled bookings will be released, and deleted bookings will be permanently removed.
+                </small>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Booking Date</th>
+                                <th>Customer</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Duration (Hours)</th>
+                                <th>Equipment Type</th>
+                                <th>Rate per Hour</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($bookings as $booking)
+                                <tr>
+                                    <td>{{ $bookings->total() - ($bookings->firstItem() + $loop->index - 1) }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($booking->date)->format('d M Y') }}</td>
+                                    <td>
+                                        @if ($booking->booking_type === 'guest')
+                                            <strong>{{ $booking->guest_name ?? 'Guest User' }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ $booking->guest_phone ?? '—' }}</small>
+                                        @else
+                                            <strong>{{ ucfirst(strtok($booking->user?->email ?? 'User', '@')) }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ $booking->user?->email ?? '—' }}</small>
+                                        @endif
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($booking->start_time)->addHours($booking->hours)->format('H:i') }}</td>
+                                    <td>{{ $booking->hours }}</td>
+                                    <td>{{ $booking->lift_type }}</td>
+                                    <td>${{ number_format($booking->rate_per_hour, 2) }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            @if ($booking->status == 'confirmed') bg-success
+                                            @elseif($booking->status == 'pending') bg-warning text-dark
+                                            @else bg-danger @endif">
+                                            {{ ucfirst($booking->status) }}
+                                        </span>
+                                    </td>
+                                    <td>${{ number_format($booking->total, 2) }}</td>
+                                    <td>
+                                        @if ($booking->status === 'pending')
+                                            <button class="btn btn-success btn-sm me-1"
+                                                onclick="bookingAction({{ $booking->id }}, 'approve')">
+                                                <i class="ti ti-check"></i>
+                                            </button>
+                                            <button class="btn btn-warning btn-sm me-1"
+                                                onclick="bookingAction({{ $booking->id }}, 'cancel')">
+                                                <i class="ti ti-x"></i>
+                                            </button>
+                                        @elseif($booking->status === 'confirmed')
+                                            <button class="btn btn-warning btn-sm me-1"
+                                                onclick="bookingAction({{ $booking->id }}, 'cancel')">
+                                                <i class="ti ti-x"></i>
+                                            </button>
+                                        @endif
+                                        <button class="btn btn-danger btn-sm"
+                                            onclick="bookingAction({{ $booking->id }}, 'delete')">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -141,9 +209,12 @@
                     </table>
                     <div class="mt-3">{{ $bookings->links('pagination::bootstrap-5') }}</div>
                 </div>
-
             </div>
-            <!-- [ Main Content ] end -->
+
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
 
         </div>
     </div>

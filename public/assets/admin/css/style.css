@@ -16511,7 +16511,7 @@ pre[class*=language-] > code {
   align-items: center;
   justify-content: center;
   width: 34px;
-  height: 34px;
+  height: 55px;
   border-radius: 4px;
   color: var(--pc-header-color);
   overflow: hidden;
@@ -16560,7 +16560,7 @@ pre[class*=language-] > code {
 }
 .pc-header .pc-head-link.active::before, .pc-header .pc-head-link:active::before, .pc-header .pc-head-link:focus::before, .pc-header .pc-head-link:hover::before {
   border-radius: 0;
-  transform: scale(1);
+  /* transform: scale(1); */
 }
 .pc-header .pc-head-link.active .hamburger .hamburger-inner, .pc-header .pc-head-link:active .hamburger .hamburger-inner, .pc-header .pc-head-link:focus .hamburger .hamburger-inner, .pc-header .pc-head-link:hover .hamburger .hamburger-inner {
   background-color: #6c757d;

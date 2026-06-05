@@ -155,7 +155,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="javascript:void(0)">
                         <span class="hf-icon"></span>
                         <div>Discounted Parts Available</div>
                     </a>
@@ -186,7 +186,7 @@
         </a>
     </li>
     <li>
-        <a href="#">
+        <a href="javascript:void(0)">
             <span class="hf-icon"></span>
             <div>Mechanic On Site</div>
         </a>

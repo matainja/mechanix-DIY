@@ -6,7 +6,12 @@
 
     .dropdown-menu {
         z-index: 9999 !important;
+        left:80px
+
     }
+    /* .drp-search {
+    left: 80px !important;
+} */
 </style>
 <header class="pc-header">
     <div class="header-wrapper"> <!-- [Mobile Media Block] start -->
@@ -50,33 +55,59 @@
         <div class="ms-auto">
             <ul class="list-unstyled d-flex align-items-center mb-0">
 
-                <!-- MOBILE PROFILE (Only visible on small screens) -->
-                @auth
-                    <li class="d-md-none">
-                        <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.home') }}">
-                            <i class="bi bi-speedometer2 me-2"></i>
-                            <span>Admin Dashboard</span>
-                        </a>
-                    </li>
+                <!-- MOBILE PROFILE DROPDOWN (Only visible on small screens) -->
+@auth
+   <li class="dropdown pc-h-item d-md-none" style="position: relative;">
+        <a href="#" class="pc-head-link dropdown-toggle arrow-none m-0"
+    id="mobileProfileDropdown"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    style="padding: 0 8px; overflow: visible;">
+    <div style="width:36px; height:36px; border-radius:50%; background:#5b6ef5; 
+                display:flex; align-items:center; justify-content:center; 
+                font-weight:600; color:white; font-size:0.85rem; line-height:1;
+                border: 2px solid rgba(255,255,255,0.2);
+                flex-shrink: 0;">
+        {{ strtoupper(substr(auth()->user()->email, 0, 1)) }}
+    </div>
+</a>
 
-                    <li class="d-md-none">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item text-danger d-flex align-items-center">
-                                <i class="bi bi-box-arrow-right me-2"></i>
-                                <span>Logout</span>
-                            </button>
-                        </form>
-                    </li>
-                @endauth
-
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2"
+            aria-labelledby="mobileProfileDropdown">
+            <li>
+                <span class="dropdown-item-text fw-semibold">
+                    Hello {{ strtok(auth()->user()->email, '@') }}
+                </span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a href="{{ route('home') }}" class="dropdown-item">
+                    <i class="bi bi-speedometer2 me-2"></i> Front end
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
+@endauth
                 <!-- DESKTOP PROFILE DROPDOWN -->
                 <li class="dropdown pc-h-item d-none d-md-block">
                     <a href="#" class="pc-head-link dropdown-toggle arrow-none" id="profileDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-
-                        <i class="bi bi-person-circle fs-4"></i>
-                    </a>
+    data-bs-toggle="dropdown" aria-expanded="false">
+    <div style="width:36px; height:36px; border-radius:50%; background:#5b6ef5; 
+                display:flex; align-items:center; justify-content:center; 
+                font-weight:600; color:white; font-size:0.85rem; line-height:1;
+                border: 2px solid rgba(255,255,255,0.2);">
+        {{ strtoupper(substr(auth()->user()->email, 0, 1)) }}
+    </div>
+</a>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2">
 
