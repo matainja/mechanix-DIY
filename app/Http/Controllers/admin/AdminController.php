@@ -120,16 +120,38 @@ public function home(Request $request)
 }
 
     // Bookings
-    public function bookings()
-    {
-        $bookings = Booking::orderBy('id', 'desc')->paginate(10);
-        $bookings = Booking::latest()->paginate(10);
-$todayBookings = Booking::whereDate('date', today())->latest()->get();
+  public function bookings(Request $request)
+{
+    $bookings = Booking::latest()->paginate(10);
+    $todayBookings = Booking::whereDate('date', today())->latest()->get();
 
-        // dd( $bookings);
-        return view('admin.pages.bookings', compact('bookings', 'todayBookings'));
+    // Custom date
+    $dateBookings = collect();
+    if ($request->filled('filter_date')) {
+        $dateBookings = Booking::whereDate('date', $request->filter_date)->latest()->get();
     }
 
+    // Month filter
+    // Month filter
+$monthBookings = collect();
+if ($request->filled('filter_month') && $request->filled('filter_month_year')) {
+    $monthBookings = Booking::whereMonth('date', (int) $request->filter_month)
+        ->whereYear('date', (int) $request->filter_month_year)
+        ->latest()->get();
+}
+
+    // Year filter
+   // Year filter
+$yearBookings = collect();
+if ($request->filled('filter_year')) {
+    $yearBookings = Booking::whereYear('date', (int) $request->filter_year)->latest()->get();
+}
+
+    return view('admin.pages.bookings', compact(
+        'bookings', 'todayBookings',
+        'dateBookings', 'monthBookings', 'yearBookings'
+    ));
+}
     // Holidays
     public function holidays()
     {
