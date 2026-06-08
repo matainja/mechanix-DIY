@@ -14,16 +14,7 @@ body {
   display: block;
 }
 
-/* ==================================================
-   NO SCROLL ON DESKTOP / LAPTOP
-================================================== */
-@media (min-width: 992px) {
-  html,
-  body {
-    height: 100%;
-    overflow: hidden;
-  }
-}
+
 
 /* ==================================================
    NAVBAR
@@ -401,57 +392,36 @@ body {
 /* ==================================================
    HERO — 52 inch / 4K (2560px+)
 ================================================== */
+/* 52 inch / 4K (2560px+) */
 @media (min-width: 2560px) {
-  .hero-section {
-    height: calc(100dvh - 72px - 110px);
-    min-height: unset;
-  }
-
-  .hero-image img {
-    object-position: center 35%;
-  }
+    .hero-section {
+        height: calc(100dvh - 160px - 140px);
+        min-height: unset;
+    }
 }
 
-/* ==================================================
-   HERO — 32 inch (1921px - 2559px)
-================================================== */
+/* 32 inch (1921px - 2559px) */
 @media (min-width: 1921px) and (max-width: 2559px) {
-  .hero-section {
-    height: calc(100dvh - 66px - 110px);
-    min-height: unset;
-  }
-
-  .hero-image img {
-    object-position: center 35%;
-  }
+    .hero-section {
+        height: calc(100dvh - 160px - 140px);
+        min-height: unset;
+    }
 }
 
-/* ==================================================
-   HERO — Standard 1080p (1200px - 1920px)
-================================================== */
+/* Standard 1080p (1200px - 1920px) */
 @media (min-width: 1200px) and (max-width: 1920px) {
-  .hero-section {
-    height: calc(100dvh - 56px - 110px);
-    min-height: unset;
-  }
-
-  .hero-image img {
-    object-position: center 35%;
-  }
+    .hero-section {
+        height: calc(100dvh - 160px - 140px);
+        min-height: unset;
+    }
 }
 
-/* ==================================================
-   HERO — Laptops (992px - 1199px)
-================================================== */
+/* Laptops (992px - 1199px) */
 @media (min-width: 992px) and (max-width: 1199px) {
-  .hero-section {
-    height: calc(100dvh - 56px - 110px);
-    min-height: unset;
-  }
-
-  .hero-image img {
-    object-position: center 35%;
-  }
+    .hero-section {
+        height: calc(100dvh - 160px - 140px);
+        min-height: unset;
+    }
 }
 
 /* ==================================================
@@ -745,47 +715,51 @@ body {
    MEMBERSHIP SECTION — DESKTOP (no-scroll lock)
 ================================================== */
 @media (min-width: 992px) {
-  .membership-section {
-    height: 110px;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
+   .membership-section {
+        height: 140px;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
 
-  .membership-section .container {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
+    .membership-section .container {
+        padding-top: 0;
+        padding-bottom: 0;
+        width: 100%;
+    }
 
-  .membership-row {
-    padding: 0;
-    gap: 20px;
-  }
+    .membership-row {
+        padding: 0;
+        gap: 20px;
+        width: 100%;
+    }
 
-  .membership-title {
-    font-size: 1.5rem;
-    margin-bottom: 2px;
-  }
+    .membership-title {
+        font-size: 1.4rem;
+        margin-bottom: 2px;
+        line-height: 1.1;
+    }
 
-  .membership-subtitle {
-    font-size: 0.95rem;
-    margin-bottom: 6px;
-  }
+    .membership-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
 
-  .hf-side {
-    gap: 8px;
-  }
 
-  .hf-side li a {
-    font-size: 13px;
-  }
+   .hf-side {
+        gap: 8px;
+    }
 
-  .btn-member {
-    padding: 4px 40px;
-    height: 36px;
-    font-size: 15px;
-  }
+    .hf-side li a {
+        font-size: 13px;
+    }
+
+    .btn-member {
+        padding: 4px 30px;
+        height: 36px;
+        font-size: 14px;
+    }
 }
 
 /* ==================================================
