@@ -130,7 +130,7 @@
     <li>Fan Clutch Wrench Set</li>
     <li>Fuel Pressure Tester</li>
     <li>Oxy-Acetylene Torch</li>
-   <li class="full-width">And Much More..</li>
+    <li>And Much More..</li>
     
 </ul>
 </ul>
