@@ -290,13 +290,35 @@
                         <div class="mx-liftpreview">
                             <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
                                 <div class="mx-liftimg-placeholder" id="mxLiftPlaceholder">
-                                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none"
-                                        stroke="#cbd5e1" stroke-width="1.5">
-                                        <rect x="3" y="3" width="18" height="18" rx="3" />
-                                        <path d="M3 9h18M9 21V9" />
-                                    </svg>
-                                    <p>Select a lift type to preview</p>
-                                </div>
+    <svg width="90" height="90" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Lift Posts -->
+        <rect x="12" y="10" width="4" height="40" rx="2" fill="#94A3B8"/>
+        <rect x="48" y="10" width="4" height="40" rx="2" fill="#94A3B8"/>
+
+        <!-- Lift Arms -->
+        <path d="M16 36H24" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
+        <path d="M40 36H48" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Car -->
+        <path d="M22 28L26 22H38L42 28V36H22V28Z"
+              fill="#CBD5E1"/>
+
+        <circle cx="27" cy="39" r="3" fill="#94A3B8"/>
+        <circle cx="37" cy="39" r="3" fill="#94A3B8"/>
+
+        <!-- Question Mark -->
+        <circle cx="50" cy="16" r="10" fill="#DC2626"/>
+        <text x="50" y="20"
+              text-anchor="middle"
+              font-size="12"
+              font-weight="700"
+              fill="white">?</text>
+    </svg>
+
+    <p style="margin-top:10px;color:#94A3B8;font-weight:600;">
+        Oops! No Lift Selected
+    </p>
+</div>
                                 <img id="mxLiftPreviewImg" src="{{ asset('assets/images/icons/lift-red.png') }}"
                                     alt="Lift preview" style="display:none;">
                             </div>

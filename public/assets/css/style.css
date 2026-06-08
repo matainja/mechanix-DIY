@@ -1008,6 +1008,9 @@ body {
   overflow: hidden;
   padding: 1.2rem 0;
   border-top: 1px solid #333;
+   width: 100%;           /* ✅ Stretch full width */
+  flex-shrink: 0;        /* ✅ Prevent shrinking in flex layouts */
+  margin-top: auto; 
 }
 
 .footer::before {

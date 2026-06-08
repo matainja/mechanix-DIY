@@ -182,9 +182,9 @@
         z-index: 0;
     }
 
-    .footer .container, .footer .footer-content {
- 
-    z-index: 0;
+  /* Inside @media (max-width: 768px) */
+.footer .container, .footer .footer-content {
+    z-index: 2;  /* ✅ Keep consistent with desktop */
 }
 .navbar-nav .dropdown-menu {
    
