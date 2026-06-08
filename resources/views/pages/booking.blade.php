@@ -259,16 +259,17 @@
                         </script>
 
                         {{-- ADD THIS: alignment rack product details for addon section --}}
-@php
-    $alignmentProduct = $allLiftProducts->first(function($p) {
-        return str_contains(strtolower($p->name), 'alignment');
-    });
-    $alignmentImage = $alignmentProduct
-        ? ($alignmentProduct->images->firstWhere('is_default', 1) ?? $alignmentProduct->images->first())
-        : null;
-@endphp
+                        @php
+                            $alignmentProduct = $allLiftProducts->first(function ($p) {
+                                return str_contains(strtolower($p->name), 'alignment');
+                            });
+                            $alignmentImage = $alignmentProduct
+                                ? $alignmentProduct->images->firstWhere('is_default', 1) ??
+                                    $alignmentProduct->images->first()
+                                : null;
+                        @endphp
 
-<script id="mxAddonProductData" type="application/json">
+                        <script id="mxAddonProductData" type="application/json">
     {!! json_encode([
         'name'        => $alignmentProduct->name ?? 'Alignment Rack',
         'description' => $alignmentProduct->description ?? '',
@@ -284,7 +285,7 @@
                             </div>
                         </div>
                         {{-- ADD THIS LINE: --}}
-    {{-- <div id="mxAddonSection" style="display:none;"></div> --}}
+                        {{-- <div id="mxAddonSection" style="display:none;"></div> --}}
 
                         <div class="mx-liftpreview">
                             <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
@@ -304,8 +305,8 @@
                             </ul>
                         </div>
                     @endif
-{{-- ADD THIS LINE: --}}
-    <div id="mxAddonSection" style="display:none;"></div>
+                    {{-- ADD THIS LINE: --}}
+                    <div id="mxAddonSection" style="display:none;"></div>
                     <div class="mx-leftbottom" id="leftupButton">
                         <button class="mx-bookbig" id="openDayCalendar" disabled>Book Now</button>
                         <p class="mx-book-hint" id="mxBookHintTop">
@@ -435,6 +436,8 @@
                                 class="mx-receipt-value" id="mxsWorkstation">—</span></div>
                         <div class="mx-receipt-row"><span class="mx-receipt-label">Lift Type</span><span
                                 class="mx-receipt-value" id="mxsLift">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Add-On</span><span
+                                class="mx-receipt-value" id="mxsAddon">—</span></div>
                         <div class="mx-receipt-divider"></div>
                         <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span
                                 class="mx-receipt-value" id="mxsDate">—</span></div>
@@ -639,6 +642,8 @@
                     <div class="mx-receipt-divider"></div>
                     <div class="mx-receipt-row"><span class="mx-receipt-label">Rate</span><span class="mx-receipt-value"
                             id="mxrRate">—</span></div>
+                    <div class="mx-receipt-row"><span class="mx-receipt-label">Add-On</span><span
+                            class="mx-receipt-value" id="mxrAddon">—</span></div>
                     <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total Paid</span><span
                             class="mx-receipt-value" id="mxrTotal">—</span></div>
                 </div>
@@ -945,7 +950,6 @@
     ">
                     Mon–Fri 9AM–6PM
                 </span>
-
             </div>
             <div class="mx-receipt mx-success-receipt">
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Name</span><span class="mx-receipt-value"
@@ -955,6 +959,7 @@
                 <div class="mx-receipt-divider"></div>
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Lift</span><span class="mx-receipt-value"
                         id="mxgLift">—</span></div>
+
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Date</span><span class="mx-receipt-value"
                         id="mxgDate">—</span></div>
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Booking Time</span><span
@@ -966,7 +971,10 @@
                 <div class="mx-receipt-row"><span class="mx-receipt-label">Duration</span><span class="mx-receipt-value"
                         id="mxgDuration">—</span></div>
 
-
+                <div class="mx-receipt-row">
+                    <span class="mx-receipt-label">Add-On</span>
+                    <span class="mx-receipt-value" id="mxgAddon">—</span>
+                </div>
                 <div class="mx-receipt-row">
                     <span class="mx-receipt-label">Total Amount</span>
                     <span class="mx-receipt-value" id="mxgTotal">$0</span>

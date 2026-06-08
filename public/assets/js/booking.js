@@ -1469,6 +1469,9 @@ $(function () {
     var selectedLift = PRODUCT_MODE ? AUTO_LIFT_KEY : null;
     var fpInstance = null;
 
+    // Add this here
+var selectedAddon = null;
+
     /* ================================================================
        HELPERS
     ================================================================ */
@@ -1805,6 +1808,12 @@ $(function () {
         });
         $('#mxsWorkstation').text('Workstation 1');
         $('#mxsLift').text(getActiveLiftLabel());
+         // Add-On
+ $('#mxsAddon').text(
+    addonSelected
+        ? 'Alignment Rack ($' + addonPrice + '/hr)'
+        : 'None'
+);
         $('#mxsDate').text(dateFmt);
         $('#mxsStart').text(formatTimePoint(startH));
         $('#mxsDuration').text(selectedHours + ' hour' + (selectedHours > 1 ? 's' : ''));
@@ -2788,6 +2797,11 @@ $(function () {
         $('#mxgName').text(payload.guest_name);
         $('#mxgPhone').text(payload.guest_phone);
         $('#mxgLift').text(LIFT_LABELS[payload.lift] || getActiveLiftLabel());
+        $('#mxgAddon').text(
+    addonSelected
+        ? 'Alignment Rack ($' + addonPrice + '/hr)'
+        : 'None'
+);
         $('#mxgDate').text(dateFmt);
         $('#mxgTime').text(formatTimePoint(startH));
         $('#mxgDuration').text(payload.hours + ' hour' + (payload.hours > 1 ? 's' : ''));
@@ -2884,6 +2898,11 @@ $(function () {
         $('#mxSuccessBookingId').text(bookingId);
         $('#mxrWorkstation').text('100 Midstreams Rd, Brick, NJ');
         $('#mxrLift').text(LIFT_LABELS[payload.lift] || getActiveLiftLabel());
+   $('#mxrAddon').text(
+    addonSelected
+        ? 'Alignment Rack ($' + addonPrice + '/hr)'
+        : 'None'
+);
         $('#mxrDate').text(dateFmt);
         $('#mxrStart').text(formatTimePoint(startH));
         $('#mxrDuration').text(payload.hours + ' hour' + (payload.hours > 1 ? 's' : ''));

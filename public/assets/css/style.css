@@ -408,58 +408,49 @@ body {
 /* ==================================================
    4K & LARGE DESKTOPS
 ================================================== */
-
 @media (min-width: 1921px) {
-
     .hero-section {
-        min-height: 100vh;
+        height: calc(100vh - 280px);
+        min-height: unset;
     }
-
     .hero-image img {
-        object-position: center center;
+        object-position: center top; /* changed */
     }
 }
 
 /* ==================================================
    STANDARD DESKTOPS
 ================================================== */
-
 @media (min-width: 1200px) and (max-width: 1920px) {
-
     .hero-section {
-        min-height: 100vh;
+        height: calc(100vh - 260px);
+        min-height: unset;
     }
-
     .hero-image img {
-        object-position: center center;
+        object-position: center top; /* changed */
     }
 }
 
 /* ==================================================
    LAPTOPS
 ================================================== */
-
 @media (min-width: 992px) and (max-width: 1199px) {
-
     .hero-section {
-        min-height: 90vh;
+        height: calc(100vh - 240px);
+        min-height: unset;
     }
-
     .hero-image img {
-        object-position: center center;
+        object-position: center top; /* changed */
     }
 }
 
 /* ==================================================
    TABLETS
 ================================================== */
-
 @media (min-width: 768px) and (max-width: 991px) {
-
     .hero-section {
         min-height: 75vh;
     }
-
     .hero-image img {
         object-position: center center;
     }
@@ -468,13 +459,10 @@ body {
 /* ==================================================
    MOBILE DEVICES
 ================================================== */
-
 @media (max-width: 767px) {
-
     .hero-section {
         min-height: 70vh;
     }
-
     .hero-image img {
         object-fit: cover;
         object-position: center center;
@@ -484,13 +472,10 @@ body {
 /* ==================================================
    SMALL MOBILE DEVICES
 ================================================== */
-
 @media (max-width: 480px) {
-
     .hero-section {
         min-height: 65vh;
     }
-
     .hero-image img {
         object-fit: cover;
         object-position: center center;
@@ -500,13 +485,10 @@ body {
 /* ==================================================
    EXTRA SMALL DEVICES
 ================================================== */
-
 @media (max-width: 360px) {
-
     .hero-section {
         min-height: 60vh;
     }
-
     .hero-image img {
         object-fit: cover;
         object-position: center center;
