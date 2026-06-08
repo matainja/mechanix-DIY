@@ -6,6 +6,8 @@
   box-sizing: border-box;
 }
 
+
+
 body {
   font-family: "Montserrat", sans-serif;
   background-color: #1a1a1a;
@@ -405,93 +407,33 @@ body {
     object-position: center center;
 }
 
-/* ==================================================
-   4K & LARGE DESKTOPS
-================================================== */
 @media (min-width: 1921px) {
     .hero-section {
-        height: calc(100vh - 280px);
+        height: calc(100dvh - 56px - 160px);
         min-height: unset;
     }
     .hero-image img {
-        object-position: center top; /* changed */
+        object-position: center 35%;
     }
 }
 
-/* ==================================================
-   STANDARD DESKTOPS
-================================================== */
 @media (min-width: 1200px) and (max-width: 1920px) {
     .hero-section {
-        height: calc(100vh - 260px);
+        height: calc(100dvh - 56px - 160px);
         min-height: unset;
     }
     .hero-image img {
-        object-position: center top; /* changed */
+        object-position: center 35%;
     }
 }
 
-/* ==================================================
-   LAPTOPS
-================================================== */
 @media (min-width: 992px) and (max-width: 1199px) {
     .hero-section {
-        height: calc(100vh - 240px);
+        height: calc(100dvh - 56px - 160px);
         min-height: unset;
     }
     .hero-image img {
-        object-position: center top; /* changed */
-    }
-}
-
-/* ==================================================
-   TABLETS
-================================================== */
-@media (min-width: 768px) and (max-width: 991px) {
-    .hero-section {
-        min-height: 75vh;
-    }
-    .hero-image img {
-        object-position: center center;
-    }
-}
-
-/* ==================================================
-   MOBILE DEVICES
-================================================== */
-@media (max-width: 767px) {
-    .hero-section {
-        min-height: 70vh;
-    }
-    .hero-image img {
-        object-fit: cover;
-        object-position: center center;
-    }
-}
-
-/* ==================================================
-   SMALL MOBILE DEVICES
-================================================== */
-@media (max-width: 480px) {
-    .hero-section {
-        min-height: 65vh;
-    }
-    .hero-image img {
-        object-fit: cover;
-        object-position: center center;
-    }
-}
-
-/* ==================================================
-   EXTRA SMALL DEVICES
-================================================== */
-@media (max-width: 360px) {
-    .hero-section {
-        min-height: 60vh;
-    }
-    .hero-image img {
-        object-fit: cover;
-        object-position: center center;
+        object-position: center 35%;
     }
 }
 
