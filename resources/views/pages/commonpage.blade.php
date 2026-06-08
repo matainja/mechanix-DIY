@@ -126,10 +126,11 @@
     <li>Compression Tester</li>
     <li>Radiator Pressure Test Kit</li>
     <li>Disconnect Tool Set</li>
-    <li>MAP Gas Torch</li><li>And Much More..</li>
+    <li>MAP Gas Torch</li>
     <li>Fan Clutch Wrench Set</li>
     <li>Fuel Pressure Tester</li>
     <li>Oxy-Acetylene Torch</li>
+   <li class="full-width">And Much More..</li>
     
 </ul>
 </ul>
