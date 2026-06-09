@@ -449,7 +449,7 @@ body {
 ================================================== */
 @media (max-width: 767px) {
     .hero-section {
-        min-height: 6vh;
+        min-height: 65vh;
     }
 
     .hero-image img {
@@ -494,6 +494,7 @@ body {
   .hero-title {
     font-size: 2.4rem;
     text-align: center;
+        /* line-height: 4.15; */
   }
 }
 
