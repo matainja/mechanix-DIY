@@ -448,14 +448,14 @@ body {
    HERO — Mobile (max 767px)
 ================================================== */
 @media (max-width: 767px) {
-  .hero-section {
-    min-height: 70vh;
-  }
+    .hero-section {
+        min-height: 100vh;
+    }
 
-  .hero-image img {
-    object-fit: cover;
-    object-position: center 30%;
-  }
+    .hero-image img {
+        object-fit: cover;
+        object-position: center center;
+    }
 }
 
 @media (max-width: 480px) {
