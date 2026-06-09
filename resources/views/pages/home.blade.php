@@ -24,7 +24,7 @@
             <picture>
                 <!-- Mobile image -->
                 {{-- <source media="(max-width: 768px)" srcset="{{ asset('assets/images/shared image (3).jpg') }}"> --}}
-                <source media="(max-width: 768px)" srcset="{{ asset('assets/images/ChatGPT Image Jun 9, 2026, 11_57_04 AM.png') }}">
+                <source media="(max-width: 768px)" srcset="{{ asset('assets/images/g.png') }}">
 
 
                 <!-- Desktop image -->
