@@ -2,8 +2,14 @@
     <div class="container">
         <div class="footer-content d-flex justify-content-center align-items-center">
             <div class="footer-left">
-                <span>© {{ date('Y') }} Mechanix D.I.Y.</span>
-            </div>
+    <div class="gear-group">
+        <i class="fas fa-cog gear gear-large"></i>
+        <i class="fas fa-cog gear gear-medium"></i>
+        <i class="fas fa-cog gear gear-small"></i>
+    </div>
+
+    <span>© {{ date('Y') }} Mechanix D.I.Y.</span>
+</div>
 
             <div class="footer-center mx-4">
                 <span class="footer-separator">|</span>

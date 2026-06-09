@@ -54,7 +54,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('/', [AdminController::class, 'home'])->name('home');
 
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
-
+        Route::get('/bookings/filter', [AdminController::class, 'bookingsFilter'])->name('bookings.filter');
         // Products - using resource route (creates index, create, store, show, edit, update, destroy)
         Route::middleware('superadmin')->group(function () {
 
@@ -88,6 +88,7 @@ Route::middleware(['auth', 'admin'])
         Route::post('/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('bookings.approve');
         Route::post('/bookings/{id}/cancel',  [AdminController::class, 'cancelBooking'])->name('bookings.cancel');
         Route::delete('/bookings/{id}',       [AdminController::class, 'deleteBooking'])->name('bookings.delete');
+        
     });
 
 

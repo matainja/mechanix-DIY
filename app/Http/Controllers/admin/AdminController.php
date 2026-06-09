@@ -152,6 +152,36 @@ if ($request->filled('filter_year')) {
         'dateBookings', 'monthBookings', 'yearBookings'
     ));
 }
+
+public function bookingsFilter(Request $request)
+{
+    $list = collect();
+    $label = '';
+
+    if ($request->filled('filter_date')) {
+        $list = Booking::whereDate('date', $request->filter_date)->latest()->get();
+        $label = \Carbon\Carbon::parse($request->filter_date)->format('d M Y');
+
+    } elseif ($request->filled('filter_month') && $request->filled('filter_month_year')) {
+        $list = Booking::whereMonth('date', (int) $request->filter_month)
+            ->whereYear('date', (int) $request->filter_month_year)
+            ->latest()->get();
+        $label = \Carbon\Carbon::create()->month((int) $request->filter_month)->format('F') 
+                 . ' ' . $request->filter_month_year;
+
+    } elseif ($request->filled('filter_year')) {
+        $list = Booking::whereYear('date', (int) $request->filter_year)->latest()->get();
+        $label = $request->filter_year;
+    }
+
+    $tableHtml = view('admin.pages.booking_details', ['list' => $list])->render();
+
+    return response()->json([
+        'html'  => $tableHtml,
+        'count' => $list->count(),
+        'label' => $label,
+    ]);
+}
     // Holidays
     public function holidays()
     {

@@ -234,127 +234,74 @@
                                 <div class="mt-3">{{ $bookings->links('pagination::bootstrap-5') }}</div>
                             </div>
                         </div>
-                        <!-- BY DATE TAB -->
-                        <div class="tab-pane fade" id="bydate" role="tabpanel">
-                            <form method="GET" action="" class="row g-2 align-items-end mb-3">
-                                <input type="hidden" name="tab" value="bydate">
-                                <div class="col-auto">
-                                    <label class="form-label mb-1">Select Date</label>
-                                    <input type="date" name="filter_date" class="form-control"
-                                        value="{{ request('filter_date') }}">
-                                </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="ti ti-search me-1"></i> Search
-                                    </button>
-                                </div>
-                            </form>
+                    <!-- BY DATE TAB -->
+<div class="tab-pane fade" id="bydate" role="tabpanel">
+    <div class="row g-2 align-items-end mb-3">
+        <div class="col-auto">
+            <label class="form-label mb-1">Select Date</label>
+            <input type="date" id="filter_date" class="form-control">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary ajax-filter-btn" data-tab="bydate">
+                <i class="ti ti-search me-1"></i> Search
+            </button>
+        </div>
+    </div>
+    <div class="filter-meta text-muted small mb-3 d-none"></div>
+    <div class="filter-result"></div>
+</div>
 
-                            @if (request()->filled('filter_date'))
-                                <small class="text-muted d-block mb-3">
-                                    Showing bookings for
-                                    {{ \Carbon\Carbon::parse(request('filter_date'))->format('d M Y') }}
-                                    — <strong>{{ $dateBookings->count() }} booking(s)</strong>
-                                </small>
-                                <div class="table-responsive">
-                                    @include('admin.pages.booking_details', ['list' => $dateBookings])
-                                </div>
-                            @else
-                                <div class="text-center text-muted py-4">
-                                    <i class="ti ti-calendar-search fs-4 d-block mb-2"></i>
-                                    Select a date to view bookings.
-                                </div>
-                            @endif
-                        </div>
+<!-- BY MONTH TAB -->
+<div class="tab-pane fade" id="bymonth" role="tabpanel">
+    <div class="row g-2 align-items-end mb-3">
+        <div class="col-auto">
+            <label class="form-label mb-1">Month</label>
+            <select id="filter_month" class="form-select">
+                @foreach (range(1, 12) as $m)
+                    <option value="{{ $m }}">
+                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto">
+            <label class="form-label mb-1">Year</label>
+            <select id="filter_month_year" class="form-select">
+                @foreach (range(now()->year, now()->year - 4) as $y)
+                    <option value="{{ $y }}">{{ $y }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary ajax-filter-btn" data-tab="bymonth">
+                <i class="ti ti-search me-1"></i> Search
+            </button>
+        </div>
+    </div>
+    <div class="filter-meta text-muted small mb-3 d-none"></div>
+    <div class="filter-result"></div>
+</div>
 
-                        <!-- BY MONTH TAB -->
-                        <div class="tab-pane fade" id="bymonth" role="tabpanel">
-                            <form method="GET" action="" class="row g-2 align-items-end mb-3">
-                                <input type="hidden" name="tab" value="bymonth">
-                                <div class="col-auto">
-                                    <label class="form-label mb-1">Month</label>
-                                    <select name="filter_month" class="form-select">
-                                        @foreach (range(1, 12) as $m)
-                                            <option value="{{ $m }}"
-                                                {{ request('filter_month') == $m ? 'selected' : '' }}>
-                                                {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-auto">
-                                    <label class="form-label mb-1">Year</label>
-                                    <select name="filter_month_year" class="form-select">
-                                        @foreach (range(now()->year, now()->year - 4) as $y)
-                                            <option value="{{ $y }}"
-                                                {{ request('filter_month_year') == $y ? 'selected' : '' }}>
-                                                {{ $y }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="ti ti-search me-1"></i> Search
-                                    </button>
-                                </div>
-                            </form>
-
-                            @if (request()->filled('filter_month'))
-                                <small class="text-muted d-block mb-3">
-                                    Showing bookings for
-                                    {{ \Carbon\Carbon::create()->month((int) request('filter_month'))->format('F') }}
-                                    {{ request('filter_month_year') }}
-                                    — <strong>{{ $monthBookings->count() }} booking(s)</strong>
-                                </small>
-                                <div class="table-responsive">
-                                    @include('admin.pages.booking_details', ['list' => $monthBookings])
-                                </div>
-                            @else
-                                <div class="text-center text-muted py-4">
-                                    <i class="ti ti-calendar-search fs-4 d-block mb-2"></i>
-                                    Select a month and year to view bookings.
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- BY YEAR TAB -->
-                        <div class="tab-pane fade" id="byyear" role="tabpanel">
-                            <form method="GET" action="" class="row g-2 align-items-end mb-3">
-                                <input type="hidden" name="tab" value="byyear">
-                                <div class="col-auto">
-                                    <label class="form-label mb-1">Year</label>
-                                    <select name="filter_year" class="form-select">
-                                        @foreach (range(now()->year, now()->year - 4) as $y)
-                                            <option value="{{ $y }}"
-                                                {{ request('filter_year') == $y ? 'selected' : '' }}>
-                                                {{ $y }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="ti ti-search me-1"></i> Search
-                                    </button>
-                                </div>
-                            </form>
-
-                            @if (request()->filled('filter_year'))
-                                <small class="text-muted d-block mb-3">
-                                    Showing bookings for {{ request('filter_year') }}
-                                    — <strong>{{ $yearBookings->count() }} booking(s)</strong>
-                                </small>
-                                <div class="table-responsive">
-                                    @include('admin.pages.booking_details', ['list' => $yearBookings])
-                                </div>
-                            @else
-                                <div class="text-center text-muted py-4">
-                                    <i class="ti ti-calendar-search fs-4 d-block mb-2"></i>
-                                    Select a year to view bookings.
-                                </div>
-                            @endif
-                        </div>
+<!-- BY YEAR TAB -->
+<div class="tab-pane fade" id="byyear" role="tabpanel">
+    <div class="row g-2 align-items-end mb-3">
+        <div class="col-auto">
+            <label class="form-label mb-1">Year</label>
+            <select id="filter_year" class="form-select">
+                @foreach (range(now()->year, now()->year - 4) as $y)
+                    <option value="{{ $y }}">{{ $y }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary ajax-filter-btn" data-tab="byyear">
+                <i class="ti ti-search me-1"></i> Search
+            </button>
+        </div>
+    </div>
+    <div class="filter-meta text-muted small mb-3 d-none"></div>
+    <div class="filter-result"></div>
+</div>
 
                     </div>
                 </div>
@@ -443,5 +390,64 @@
                 };
             })();
         </script>
+
+       <script>
+(function () {
+    const filterUrl = "{{ route('admin.bookings.filter') }}";
+
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.ajax-filter-btn');
+        if (!btn) return;
+
+        const tab    = btn.dataset.tab;
+        const pane   = document.getElementById(tab);
+        const meta   = pane.querySelector('.filter-meta');
+        const result = pane.querySelector('.filter-result');
+
+        let params = new URLSearchParams();
+
+        if (tab === 'bydate') {
+            const val = document.getElementById('filter_date').value;
+            if (!val) { alert('Please select a date.'); return; }
+            params.set('filter_date', val);
+
+        } else if (tab === 'bymonth') {
+            params.set('filter_month',      document.getElementById('filter_month').value);
+            params.set('filter_month_year', document.getElementById('filter_month_year').value);
+
+        } else if (tab === 'byyear') {
+            params.set('filter_year', document.getElementById('filter_year').value);
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Loading...';
+        result.innerHTML = '';
+        meta.classList.add('d-none');
+
+        fetch(filterUrl + '?' + params.toString(), {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function (res) {
+            if (!res.ok) throw new Error('Server error');
+            return res.json();
+        })
+        .then(function (res) {
+            meta.classList.remove('d-none');
+            meta.innerHTML = 'Showing bookings for <strong>' + res.label + '</strong> — <strong>' + res.count + ' booking(s)</strong>';
+
+            result.innerHTML = res.count > 0
+                ? '<div class="table-responsive">' + res.html + '</div>'
+                : '<div class="text-center text-muted py-4"><i class="ti ti-inbox fs-4 d-block mb-2"></i>No bookings found.</div>';
+        })
+        .catch(function () {
+            result.innerHTML = '<div class="text-danger">Something went wrong. Please try again.</div>';
+        })
+        .finally(function () {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ti ti-search me-1"></i> Search';
+        });
+    });
+})();
+</script>
     @endpush
 @endsection
