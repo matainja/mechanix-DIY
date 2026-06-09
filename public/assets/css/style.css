@@ -492,10 +492,10 @@ body {
 
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     text-align: center;
     margin-top: 26px;
-    margin-left: -35px;
+    margin-left: -25px;
   }
 }
 
