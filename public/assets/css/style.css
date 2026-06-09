@@ -449,7 +449,7 @@ body {
 ================================================== */
 @media (max-width: 767px) {
     .hero-section {
-        min-height: 65vh;
+        min-height: 6vh;
     }
 
     .hero-image img {
