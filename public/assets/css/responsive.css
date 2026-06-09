@@ -15,10 +15,10 @@
         padding-left: 0;
     }
 
-    .hero-title {
-        font-size: 19px;
+    /* .hero-title { */
+        /* font-size: 19px; */
         /* margin-bottom: 253px; */
-    }
+    /* } */
 
     .hero-buttons {
         flex-direction: column;
