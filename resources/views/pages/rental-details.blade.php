@@ -112,10 +112,10 @@
 </main>
 
 
-<div class="mx-demo-ribbon" aria-label="Demo Mode">
+{{-- <div class="mx-demo-ribbon" aria-label="Demo Mode">
     DEMO
     <small>Work in progress</small>
-</div>
+</div> --}}
 <!-- Routes for JS -->
     <div id="mx-routes" data-login-url="{{ route('popup.login') }}" data-register-url="{{ route('popup.register') }}"></div>
 
