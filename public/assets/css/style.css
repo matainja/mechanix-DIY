@@ -449,7 +449,7 @@ body {
 ================================================== */
 @media (max-width: 767px) {
     .hero-section {
-        min-height: 60vh;
+        min-height: 50vh;
     }
 
     .hero-image img {
@@ -460,13 +460,13 @@ body {
 
 @media (max-width: 480px) {
   .hero-section {
-    min-height: 55vh;
+    min-height: 50vh;
   }
 }
 
 @media (max-width: 360px) {
   .hero-section {
-    min-height: 55vh;
+    min-height: 50vh;
   }
 }
 
