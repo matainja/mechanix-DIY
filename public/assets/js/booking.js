@@ -1626,7 +1626,8 @@ var selectedAddon = null;
     // ADD HERE ↓
     function getEffectiveTotal(hours) {
         var base = getPackageTotal(hours);
-        var addon = addonSelected ? (addonPrice * hours) : 0;
+        // var addon = addonSelected ? (addonPrice * hours) : 0;
+        var addon = addonSelected ? addonPrice : 0;
         return base + addon;
     }
     /* ================================================================
