@@ -1741,9 +1741,16 @@ var selectedAddon = null;
         $('#mxSelectedHours').text(selectedHours);
         // $('#mxTotalText').text(formatMoney(getPackageTotal(selectedHours)));
         $('#mxTotalText').text(formatMoney(getEffectiveTotal(selectedHours)));
+$('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
+        $('#mxsAddon').text(
+    addonSelected
+        ? 'Alignment Rack ($' + addonPrice + ')'
+        : 'None'
+);
         $('#mxSlotText').text(
             prettyRange(selectedDate, startH, selectedHours)
         );
+        
 
         $('#mxHintText').text(
             check.ok
@@ -1791,6 +1798,8 @@ var selectedAddon = null;
 
         setHours(nextHours);
 
+        
+
     });
 
     /* ================================================================
@@ -1812,7 +1821,7 @@ var selectedAddon = null;
          // Add-On
  $('#mxsAddon').text(
     addonSelected
-        ? 'Alignment Rack ($' + addonPrice + '/hr)'
+        ? 'Alignment Rack ($' + addonPrice + ')'
         : 'None'
 );
         $('#mxsDate').text(dateFmt);
@@ -2563,6 +2572,14 @@ var selectedAddon = null;
         $('#mxModalConfirm')
             .prop('disabled', !check.ok)
             .css('opacity', check.ok ? '1' : '.5');
+
+            //   $('#mxsLift').text(getActiveLiftLabel());
+            $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
+    $('#mxsAddon').text(
+        addonSelected
+            ? 'Alignment Rack ($' + addonPrice + ')'
+            : 'None'
+    );
 
         /* ---------- IMPORTANT ---------- */
 

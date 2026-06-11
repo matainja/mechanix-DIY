@@ -403,6 +403,10 @@
                                     <div class="mx-info-label">Selected</div>
                                     <div class="mx-info-value" id="mxSlotText">—</div>
                                 </div>
+                                 <div class="mx-receipt-row"><span class="mx-receipt-label">Lift Type</span><span
+                                class="mx-receipt-value" id="mxsLift">—</span></div>
+                        <div class="mx-receipt-row"><span class="mx-receipt-label">Add-On</span><span
+                                class="mx-receipt-value" id="mxsAddon">—</span></div>
                                 <div class="mx-info-row">
                                     <div class="mx-info-label">Hours</div>
                                     <div class="mx-info-value">
