@@ -676,7 +676,7 @@
                 <div class="mx-modal-actions mx-success-actions">
                     <button type="button" class="mx-btn-outline" id="mxPrintBtn"><i class="fa-solid fa-print"></i>
                         Print Receipt</button>
-                    <button type="button" class="mx-btn-solid" onclick="location.reload()">Done</button>
+                    <button type="button" class="mx-btn-solid" onclick="location.reload()">Close</button>
                 </div>
             </div>
         </div>

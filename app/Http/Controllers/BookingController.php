@@ -97,7 +97,7 @@ class BookingController extends Controller
                 'package_hours' => $request->package,
                 'rate_per_hour' => $request->total / $hours,
                 'total'         => $request->total,
-                'status'        => 'confirmed',
+                'status'        => 'pending',
                 'expires_at'    => $expiresAt,
             ]);
 
@@ -116,7 +116,7 @@ class BookingController extends Controller
                     ],
                     [
                         'booking_id' => $booking->id,
-                        'status'     => 'booked',
+                        'status'     => 'pending',
                     ]
                 );
             }
@@ -134,7 +134,7 @@ class BookingController extends Controller
                     'package_hours' => $hours,
                     'rate_per_hour' => (float) $request->addon_price,
                     'total'         => (float) $request->addon_price * $hours,
-                    'status'        => 'confirmed',
+                    'status'        => 'pending',
                 ]);
 
                 foreach ($times as $time) {
@@ -147,7 +147,7 @@ class BookingController extends Controller
                         ],
                         [
                             'booking_id' => $addonBooking->id,
-                            'status'     => 'booked',
+                            'status'     => 'pending',
                         ]
                     );
                 }
