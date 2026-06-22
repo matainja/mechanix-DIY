@@ -676,7 +676,9 @@
                 <div class="mx-modal-actions mx-success-actions">
                     <button type="button" class="mx-btn-outline" id="mxPrintBtn"><i class="fa-solid fa-print"></i>
                         Print Receipt</button>
-                    <button type="button" class="mx-btn-solid" onclick="location.reload()">Close</button>
+                   <a href="tel:+7327307712" class="mx-btn-solid" style="text-decoration:none;">
+    <i class="fa-solid fa-phone"></i> Call To Confirm
+</a>
                 </div>
             </div>
         </div>

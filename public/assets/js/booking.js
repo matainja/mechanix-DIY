@@ -3097,7 +3097,7 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
         openSuccessModal();
     }
 
-   /* ================================================================
+ /* ================================================================
    PRINT / PDF RECEIPT
 ================================================================ */
 $('#mxPrintBtn').on('click', function () {
@@ -3109,7 +3109,7 @@ function printBookingReceipt() {
     var rows = [
         ['Workstation', $('#mxrWorkstation').text()],
         ['Lift Type', $('#mxrLift').text()],
-        ['Date', $('#mxrDate').text()],
+        ['Booking Date', $('#mxrDate').text()],
         ['Start Time', $('#mxrStart').text()],
         ['Duration', $('#mxrDuration').text()],
         ['End Time', $('#mxrEnd').text()],
@@ -3117,153 +3117,195 @@ function printBookingReceipt() {
         ['Add-On', $('#mxrAddon').text()]
     ];
 
-    var total = $('#mxrTotal').text();
+    var total   = $('#mxrTotal').text();
+    var today   = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    var refNo   = 'MX-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' +
+                  Math.floor(100 + Math.random() * 900);
 
     var rowsHtml = rows.map(function (r) {
         return `
-            <tr>
-                <td>${r[0]}</td>
-                <td>${r[1]}</td>
-            </tr>
+            <div class="detail-row">
+                <span class="detail-label">${r[0]}</span>
+                <span class="detail-value">${r[1]}</span>
+            </div>
         `;
     }).join('');
 
     var html = `
     <html>
     <head>
-        <title></title>
-
+        <title>Booking Receipt — ${refNo}</title>
         <style>
 
-            @page{
-                size:A4;
-                margin:0;
-            }
+            @page { size: A4; margin: 14mm; }
+
+            * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
             body{
-                font-family:Arial, Helvetica, sans-serif;
-                margin:0;
-                padding:0;
+                font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+                margin:0; padding:0;
                 background:#fff;
-                color:#222;
+                color:#1f2937;
+            }
+
+            .accent-bar{
+                height:6px;
+                background:linear-gradient(90deg,#dc2626,#7f1d1d);
             }
 
             .receipt{
-                position:relative;
-                max-width:800px;
-                margin:auto;
-                padding:40px;
-                border:1px solid #ddd;
+                max-width:760px;
+                margin:0 auto;
+                padding:36px 40px 40px;
+            }
+
+            /* ── HEADER ── */
+            .header{
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+                padding-bottom:22px;
+                border-bottom:1px solid #e5e7eb;
+            }
+
+            .brand img{ height:42px; margin-bottom:10px; display:block; }
+            .brand-meta{
+                font-size:11.5px;
+                line-height:1.6;
+                color:#6b7280;
+            }
+            .brand-meta b{ color:#374151; }
+
+            .header-right{ text-align:right; }
+            .receipt-title{
+                font-size:22px;
+                font-weight:800;
+                letter-spacing:.5px;
+                color:#111827;
+                margin-bottom:6px;
+            }
+            .receipt-meta{
+                font-size:11.5px;
+                color:#6b7280;
+                line-height:1.6;
+            }
+            .receipt-meta b{ color:#374151; }
+
+            .status-pill{
+                display:inline-block;
+                margin-top:8px;
+                padding:4px 12px;
+                border-radius:20px;
+                background:#fef3c7;
+                color:#92400e;
+                font-size:10.5px;
+                font-weight:700;
+                letter-spacing:.6px;
+                text-transform:uppercase;
+            }
+
+            /* ── DETAILS ── */
+            .section-label{
+                font-size:11px;
+                font-weight:700;
+                letter-spacing:.8px;
+                text-transform:uppercase;
+                color:#9ca3af;
+                margin:28px 0 10px;
+            }
+
+            .details-card{
+                border:1px solid #e5e7eb;
+                border-radius:10px;
                 overflow:hidden;
             }
 
-            .watermark{
-                position:absolute;
-                top:50%;
-                left:50%;
-                transform:translate(-50%,-50%);
-                opacity:.05;
-                width:500px;
-                z-index:0;
+            .detail-row{
+                display:flex;
+                justify-content:space-between;
+                padding:11px 18px;
+                border-bottom:1px solid #f1f1f2;
+                font-size:13.5px;
             }
+            .detail-row:nth-child(even){ background:#fafafa; }
+            .detail-row:last-child{ border-bottom:none; }
 
-            .content{
-                position:relative;
-                z-index:1;
-            }
+            .detail-label{ color:#6b7280; }
+            .detail-value{ font-weight:600; color:#111827; }
 
-            .header{
-                text-align:center;
-                border-bottom:2px solid #111;
-                padding-bottom:20px;
-                margin-bottom:25px;
-            }
-
-            .logo{
-                max-width:180px;
-                margin-bottom:10px;
-            }
-
-            .company-name{
-                font-size:26px;
-                font-weight:bold;
-                letter-spacing:1px;
-            }
-
-            .status{
-                margin-top:15px;
-                background:#fff3cd;
-                border:1px solid #ffe69c;
-                color:#856404;
-                padding:12px;
-                border-radius:6px;
-                font-weight:700;
-                text-align:center;
-            }
-
-            .status small{
-                display:block;
-                margin-top:5px;
-                font-weight:400;
-            }
-
-            table{
-                width:100%;
-                border-collapse:collapse;
-                margin-top:20px;
-            }
-
-            table td{
-                padding:12px;
-                border-bottom:1px solid #e5e5e5;
-            }
-
-            table td:first-child{
-                color:#666;
-                width:45%;
-            }
-
-            table td:last-child{
-                text-align:right;
-                font-weight:600;
-            }
-
-            .total-row td{
-                font-size:18px;
-                font-weight:800;
-                border-top:2px solid #111;
-                border-bottom:none;
-                padding-top:15px;
-            }
-
-            .contact{
-                margin-top:30px;
-                text-align:center;
-                background:#f8f9fa;
+            /* ── TOTAL ── */
+            .total-box{
+                margin-top:22px;
+                background:linear-gradient(135deg,#111827,#1f2937);
                 border-radius:10px;
-                padding:18px;
+                padding:18px 22px;
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+            }
+            .total-box .label{
+                color:#9ca3af;
+                font-size:11px;
+                letter-spacing:.6px;
+                text-transform:uppercase;
+                margin-bottom:4px;
+            }
+            .total-box .amount{
+                color:#fff;
+                font-size:26px;
+                font-weight:800;
             }
 
-            .contact-title{
-                font-size:15px;
+            /* ── NOTICE ── */
+            .notice-box{
+                margin-top:26px;
+                padding:14px 18px;
+                background:#fffbeb;
+                border-left:4px solid #f59e0b;
+                border-radius:6px;
+                font-size:13px;
+                color:#78350f;
+            }
+            .notice-box h3{
+                margin:0 0 4px;
+                font-size:13.5px;
                 font-weight:700;
-                margin-bottom:8px;
+                color:#92400e;
             }
 
-            .phone{
-                font-size:20px;
-                font-weight:bold;
-                color:#198754;
-                text-decoration:none;
+            /* ── CONTACT ── */
+            .contact-box{
+                margin-top:20px;
+                padding:16px 18px;
+                background:#fef2f2;
+                border-radius:8px;
+                font-size:13px;
+                color:#374151;
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+            }
+            .contact-box .phone{
+                color:#dc2626;
+                font-weight:800;
+                font-size:16px;
+            }
+            .contact-box .hours{
+                text-align:right;
+                font-size:11.5px;
+                color:#6b7280;
+                line-height:1.5;
             }
 
+            /* ── FOOTER ── */
             .footer{
-                margin-top:40px;
+                margin-top:36px;
+                padding-top:16px;
+                border-top:1px solid #e5e7eb;
                 text-align:center;
-                color:#777;
-                font-size:12px;
-                border-top:1px solid #ddd;
-                padding-top:15px;
+                font-size:11px;
+                color:#9ca3af;
+                line-height:1.6;
             }
 
         </style>
@@ -3271,67 +3313,61 @@ function printBookingReceipt() {
 
     <body>
 
+        <div class="accent-bar"></div>
+
         <div class="receipt">
 
-            <!-- WATERMARK -->
-            <img class="watermark" src="/assets/images/logo.png">
-
-            <div class="content">
-
-                <div class="header">
-
-                    <!-- COMPANY LOGO -->
-                    <img class="logo" src="/assets/images/logomain.png">
-
-                    <div class="company-name">
-                        Mechanix DIY
+            <div class="header">
+                <div class="brand">
+                    <img src="/assets/images/logomain.png" onerror="this.style.display='none'">
+                    <div class="brand-meta">
+                        <b>Mechanix D.I.Y.</b><br>
+                        100 Midstreams Rd, Brick, NJ <br>
+                        732-730-7712 Ext. 3 &nbsp;•&nbsp; www.mechanixdiy.com
                     </div>
-
-                    <div class="status">
-                        Booking Request Submitted Successfully
-                        <small>
-                            Your booking is currently pending review and confirmation by our team.
-                        </small>
-                    </div>
-
                 </div>
 
-                <table>
-
-                    ${rowsHtml}
-
-                    <tr class="total-row">
-                        <td>Total Amount To Be Paid</td>
-                        <td>${total}</td>
-                    </tr>
-
-                </table>
-
-                <div class="contact">
-
-                    <div class="contact-title">
-                        CALL TO CONFIRM YOUR BOOKING
+                <div class="header-right">
+                    <div class="receipt-title">BOOKING RECEIPT</div>
+                    <div class="receipt-meta">
+                        <b>Reference:</b> ${refNo}<br>
+                        <b>Date Issued:</b> ${today}
                     </div>
-
-                    <a class="phone" href="tel:+17327307712">
-                        732-730-7712 EXT. 3
-                    </a>
-
-                    <br><br>
-
-                    <small>
-                        Monday – Friday : 9:00 AM – 6:00 PM
-                        <br>
-                        Saturday : 9:00 AM – 12:00 PM
-                    </small>
-
+                    <div class="status-pill">Pending Confirmation</div>
                 </div>
+            </div>
 
-                <div class="footer">
-                    Thank you for choosing Mechanix DIY.<br>
-                    Please save this receipt for your records.
+            <div class="section-label">Booking Details</div>
+            <div class="details-card">
+                ${rowsHtml}
+            </div>
+
+            <div class="total-box">
+                <div>
+                    <div class="label">Total Amount To Be Paid</div>
                 </div>
+                <div class="amount">${total}</div>
+            </div>
 
+            <div class="notice-box">
+                <h3>Booking Request Submitted</h3>
+                This slot is reserved pending confirmation. Please call us to finalize your booking — it is not guaranteed until confirmed by our team.
+            </div>
+
+            <div class="contact-box">
+                <div>
+                    Call to confirm:<br>
+                    <span class="phone">732-730-7712 Ext. 3</span>
+                </div>
+                <div class="hours">
+                    Mon–Fri: 9:00 AM – 6:00 PM<br>
+                    Saturday: 9:00 AM – 12:00 PM
+                </div>
+            </div>
+
+            <div class="footer">
+                Thank you for choosing Mechanix D.I.Y.<br>
+                Please retain this receipt for your records.
             </div>
 
         </div>
@@ -3347,15 +3383,10 @@ function printBookingReceipt() {
     w.document.close();
 
     setTimeout(function () {
-
         w.focus();
-
-        // User can Print OR Save as PDF
         w.print();
-
     }, 500);
 }
-
     /* ================================================================
        AUTH FORMS
     ================================================================ */
