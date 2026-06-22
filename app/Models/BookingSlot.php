@@ -11,6 +11,7 @@ class BookingSlot extends Model
         'date',
         'time',
         'workstation',
+        'lift_type',
         'status',
     ];
 

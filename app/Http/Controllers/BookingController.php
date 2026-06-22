@@ -48,6 +48,13 @@ class BookingController extends Controller
                 $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
             }
 
+            // FIX: filter by booking_slots.lift_type directly instead of relying on
+            // the join to `bookings.lift_type`. Previously, two different lifts booked
+            // at the same date/time/workstation collided into the SAME booking_slots
+            // row (no lift_type column existed), so this exists-check and the slot
+            // writes below were effectively shared across lifts. With lift_type now
+            // a first-class column on booking_slots, each lift's availability check
+            // is fully isolated.
             $exists = BookingSlot::join(
                 'bookings',
                 'booking_slots.booking_id',
@@ -56,7 +63,7 @@ class BookingController extends Controller
             )
             ->where('booking_slots.date', $date)
             ->where('booking_slots.workstation', $workstation)
-            ->where('bookings.lift_type', $lift)
+            ->where('booking_slots.lift_type', $lift)
             ->whereIn('booking_slots.time', $times)
             ->where(function ($query) {
                 $query->where('booking_slots.status', 'booked')
@@ -95,11 +102,17 @@ class BookingController extends Controller
             ]);
 
             foreach ($times as $time) {
+                // FIX: lift_type is now part of the lookup key, not just the value.
+                // Before: ['date'=>$date,'time'=>$time,'workstation'=>$workstation]
+                // was the *entire* key, so booking Lift B at the same date/time/
+                // workstation as an already-booked Lift A would match Lift A's row
+                // and overwrite its booking_id — silently stealing the slot.
                 BookingSlot::updateOrCreate(
                     [
                         'date'        => $date,
                         'time'        => $time,
                         'workstation' => $workstation,
+                        'lift_type'   => $lift,
                     ],
                     [
                         'booking_id' => $booking->id,
@@ -130,6 +143,7 @@ class BookingController extends Controller
                             'date'        => $date,
                             'time'        => $time,
                             'workstation' => $workstation,
+                            'lift_type'   => 'flat2',
                         ],
                         [
                             'booking_id' => $addonBooking->id,
@@ -157,16 +171,56 @@ class BookingController extends Controller
 
         $end = (clone $start)->endOfMonth();
 
-        $slots = BookingSlot::query()
-            ->select('date', 'time')
+        // FIX: compute slot occupancy directly from `bookings` instead of
+        // `booking_slots`. On this install, booking_slots had drifted out of
+        // sync with the real bookings (rows created/overwritten under the
+        // old (date,time,workstation)-only key before lift_type existed, or
+        // bookings inserted by other means that never touched booking_slots
+        // at all). `bookings` is the table getBlockedTimes() already reads
+        // and is verified correct, so the month calendar now derives its
+        // per-lift slot map from the SAME source of truth — these two views
+        // can no longer disagree.
+        $bookings = Booking::select('date', 'start_time', 'hours', 'lift_type', 'status', 'expires_at')
             ->where('workstation', $workstation)
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
-            ->whereIn('status', ['booked', 'pending'])
+            ->where(function ($q) {
+                $q->where('status', 'confirmed')
+                    ->orWhere(function ($q2) {
+                        $q2->where('status', 'pending')
+                            ->where(function ($q3) {
+                                $q3->whereNull('expires_at')
+                                    ->orWhere('expires_at', '>', now());
+                            });
+                    });
+            })
             ->get();
 
+        // Per-lift list — this is what the frontend uses for per-lift calendar
+        // coloring, disabling, and tooltips. Built by expanding each booking's
+        // (start_time, hours) into individual hour slots, exactly like
+        // getBlockedTimes() does, so the two endpoints can never disagree.
         $bookedSlots = [];
-        foreach ($slots as $s) {
-            $bookedSlots[$s->date][] = $s->time;
+
+        // Per-lift counts, used to build the per-lift "fully booked" status
+        // map below.
+        $countsByDateLift = [];
+
+        foreach ($bookings as $b) {
+            $liftKey   = $b->lift_type ?: 'all';
+            $dateKey   = $b->date instanceof \Carbon\Carbon ? $b->date->toDateString() : (string) $b->date;
+            $startHour = (int) substr($b->start_time, 0, 2);
+
+            for ($i = 0; $i < $b->hours; $i++) {
+                $time = str_pad($startHour + $i, 2, '0', STR_PAD_LEFT) . ':00:00';
+
+                $bookedSlots[$dateKey . '__' . $liftKey][] = $time;
+                $countsByDateLift[$dateKey][$liftKey] = ($countsByDateLift[$dateKey][$liftKey] ?? 0) + 1;
+            }
+        }
+
+        // De-dupe in case of overlapping records.
+        foreach ($bookedSlots as $key => $times) {
+            $bookedSlots[$key] = array_values(array_unique($times));
         }
 
         $holidays = Holiday::whereBetween('holiday_date', [$start->toDateString(), $end->toDateString()])
@@ -175,8 +229,21 @@ class BookingController extends Controller
 
         $holidayMap = array_flip($holidays);
 
+        // FIX: dayData is now keyed per (date, lift) instead of just per date.
+        // Previously a single global "booked" flag was computed by summing slot
+        // counts across ALL lifts combined, which meant a date could show as
+        // "fully booked" overall even though the specific lift you cared about
+        // still had openings (or vice versa: a lift could be completely full
+        // while the date itself didn't trip the combined threshold). The
+        // frontend's dayAvailClass()/disable() already expect per-lift data —
+        // this makes the backend actually provide it instead of relying on
+        // dayFreeRatio() to silently paper over the mismatch.
         $dayData = [];
         $period  = CarbonPeriod::create($start, $end);
+
+        // Known lift keys this workstation tracks. Keep in sync with
+        // getLiftStatuses()'s $liftKeyMap below.
+        $liftKeys = ['four', 'two', 'scissor', 'flat', 'flat2'];
 
         foreach ($period as $day) {
             $dateStr = $day->toDateString();
@@ -194,11 +261,16 @@ class BookingController extends Controller
                 continue;
             }
 
-            $countBooked = isset($bookedSlots[$dateStr]) ? count($bookedSlots[$dateStr]) : 0;
-
-            if ($countBooked >= $requiredSlots) {
-                $dayData[$dateStr] = ['status' => 'booked'];
+            $perLift = [];
+            foreach ($liftKeys as $lk) {
+                $count = $countsByDateLift[$dateStr][$lk] ?? 0;
+                $perLift[$lk] = $count >= $requiredSlots ? 'booked' : 'available';
             }
+
+            $dayData[$dateStr] = [
+                'status'   => 'available', // no global status anymore — see per_lift
+                'per_lift' => $perLift,
+            ];
         }
 
         return response()->json([
@@ -241,6 +313,7 @@ class BookingController extends Controller
                 $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
             }
 
+            // FIX: same per-lift filter as store() above.
             $exists = BookingSlot::join(
                 'bookings',
                 'booking_slots.booking_id',
@@ -249,7 +322,7 @@ class BookingController extends Controller
             )
             ->where('booking_slots.date', $date)
             ->where('booking_slots.workstation', $workstation)
-            ->where('bookings.lift_type', $lift)
+            ->where('booking_slots.lift_type', $lift)
             ->whereIn('booking_slots.time', $times)
             ->where(function ($query) {
                 $query->where('booking_slots.status', 'booked')
@@ -291,11 +364,13 @@ class BookingController extends Controller
             ]);
 
             foreach ($times as $time) {
+                // FIX: lift_type in the key — see store() comment above for why.
                 BookingSlot::updateOrCreate(
                     [
                         'date'        => $date,
                         'time'        => $time,
                         'workstation' => $workstation,
+                        'lift_type'   => $lift,
                     ],
                     [
                         'booking_id' => $booking->id,
@@ -330,6 +405,7 @@ class BookingController extends Controller
                             'date'        => $date,
                             'time'        => $time,
                             'workstation' => $workstation,
+                            'lift_type'   => 'flat2',
                         ],
                         [
                             'booking_id' => $addonBooking->id,
@@ -403,8 +479,28 @@ class BookingController extends Controller
 
     public function getBlockedTimes(Request $request)
     {
+        // NOTE: this already correctly filters by lift_type on the `bookings`
+        // table (was never the broken part), kept as-is aside from minor
+        // hardening: validate input and only look at active (non-expired,
+        // non-cancelled) bookings so stale/expired pending guest bookings
+        // don't keep blocking slots forever.
+        $request->validate([
+            'lift_type' => 'required|string',
+            'date'      => 'required|date',
+        ]);
+
         $bookings = Booking::where('lift_type', $request->lift_type)
             ->whereDate('date', $request->date)
+            ->where(function ($q) {
+                $q->where('status', 'confirmed')
+                    ->orWhere(function ($q2) {
+                        $q2->where('status', 'pending')
+                            ->where(function ($q3) {
+                                $q3->whereNull('expires_at')
+                                    ->orWhere('expires_at', '>', now());
+                            });
+                    });
+            })
             ->get(['start_time', 'hours']);
 
         $times = [];

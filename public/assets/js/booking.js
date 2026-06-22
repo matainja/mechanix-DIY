@@ -1425,12 +1425,45 @@
 $(function () {
 
     // Add at the top of the $(function(){...}) block:
+    // $('<style>')
+    //     .text(
+    //         '.mx-liftbtn--unavailable{opacity:.4;cursor:not-allowed;position:relative;}' +
+    //         '.mx-lift-unavail-badge{position:absolute;top:4px;right:4px;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;letter-spacing:.5px;}'
+    //     )
+    //     .appendTo('head');
+
     $('<style>')
         .text(
             '.mx-liftbtn--unavailable{opacity:.4;cursor:not-allowed;position:relative;}' +
-            '.mx-lift-unavail-badge{position:absolute;top:4px;right:4px;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;letter-spacing:.5px;}'
+            '.mx-lift-unavail-badge{position:absolute;top:4px;right:4px;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;letter-spacing:.5px;}' +
+            '.flatpickr-day.day-available{background:#16a34a !important;color:#fff !important;border-color:#16a34a !important;}' +
+            '.flatpickr-day.day-partial{background:#eab308 !important;color:#111 !important;border-color:#eab308 !important;}' +
+            '.flatpickr-day.day-scarce{background:#f97316 !important;color:#fff !important;border-color:#f97316 !important;}' +
+            '.flatpickr-day.day-booked{background:#ef4444 !important;color:#fff !important;border-color:#ef4444 !important;}' +
+            '.flatpickr-day.day-unavailable{background:#cbd5e1 !important;color:#64748b !important;border-color:#cbd5e1 !important;cursor:not-allowed !important;}' +
+            '.mx-day-tooltip{position:fixed;z-index:99999;background:#0f172a;color:#f1f5f9;border:1px solid #334155;' +
+            'padding:6px 10px;border-radius:6px;font-size:12px;font-weight:600;pointer-events:none;white-space:nowrap;' +
+            'box-shadow:0 4px 14px rgba(0,0,0,.4);display:none;}'
         )
         .appendTo('head');
+
+    if (!$('#mxDayTooltip').length) {
+        $('<div id="mxDayTooltip" class="mx-day-tooltip"></div>').appendTo('body');
+    }
+
+    $(document)
+        .off('mouseenter.mxDayTip mousemove.mxDayTip mouseleave.mxDayTip')
+        .on('mouseenter.mxDayTip', '.flatpickr-day', function () {
+            var txt = this.getAttribute('data-tooltip');
+            if (!txt) return;
+            $('#mxDayTooltip').text(txt).css('display', 'block');
+        })
+        .on('mousemove.mxDayTip', '.flatpickr-day', function (e) {
+            $('#mxDayTooltip').css({ left: e.clientX + 14 + 'px', top: e.clientY + 14 + 'px' });
+        })
+        .on('mouseleave.mxDayTip', '.flatpickr-day', function () {
+            $('#mxDayTooltip').css('display', 'none');
+        });
 
     /* ================================================================
        SCROLL HELPER
@@ -2116,10 +2149,18 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
             var data = await res.json();
             dayData = data.dayData || {};
 
+            // var raw = data.bookedSlots || {};
+            // bookedSlots = {};
+            // Object.keys(raw).forEach(function (k) {
+            //     bookedSlots[k.indexOf('__') !== -1 ? k : k + '__all'] = raw[k];
+            // });
+
             var raw = data.bookedSlots || {};
             bookedSlots = {};
             Object.keys(raw).forEach(function (k) {
-                bookedSlots[k.indexOf('__') !== -1 ? k : k + '__all'] = raw[k];
+                var key = k.indexOf('__') !== -1 ? k : k + '__all';
+                // backend sends "09:00:00"; slot keys are "09:00" — strip seconds so they actually match
+                bookedSlots[key] = (raw[k] || []).map(function (t) { return t.slice(0, 5); });
             });
         } catch (_) { /* offline / demo */ }
         if (fpInstance) fpInstance.redraw();
@@ -2130,18 +2171,33 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
     /* ================================================================
        CALENDAR COLOUR SCALE
     ================================================================ */
+    // function dayAvailClass(dateStr) {
+    //     if (!getWorkingHours(dateStr)) return 'day-unavailable';
+    //     var info = dayData[dateStr];
+    //     // if (info && info.status === 'booked')      return 'day-booked';
+    //     if (info && info.status === 'booked') return 'day-available';
+    //     if (info && info.status === 'unavailable') return 'day-unavailable';
+    //     if (!isDateAvailableByPackage(dateStr, selectedPackHours, selectedLift)) return 'day-unavailable';
+    //     var r = dayFreeRatio(dateStr, selectedLift);
+    //     if (r === 0) return 'day-unavailable';
+    //     if (r >= 0.70) return 'day-available';
+    //     if (r >= 0.30) return 'day-partial';
+    //     return 'day-scarce';
+    // }
+
     function dayAvailClass(dateStr) {
-        if (!getWorkingHours(dateStr)) return 'day-unavailable';
+        if (!getWorkingHours(dateStr)) return 'day-unavailable'; // Saturday / closed
+
         var info = dayData[dateStr];
-        // if (info && info.status === 'booked')      return 'day-booked';
-        if (info && info.status === 'booked') return 'day-available';
-        if (info && info.status === 'unavailable') return 'day-unavailable';
-        if (!isDateAvailableByPackage(dateStr, selectedPackHours, selectedLift)) return 'day-unavailable';
+        if (info && info.status === 'unavailable') return 'day-unavailable'; // holiday
+
+        // Color reflects real per-lift occupancy, not the workstation-wide flag —
+        // a "booked" workstation status doesn't mean THIS lift is full.
         var r = dayFreeRatio(dateStr, selectedLift);
-        if (r === 0) return 'day-unavailable';
-        if (r >= 0.70) return 'day-available';
-        if (r >= 0.30) return 'day-partial';
-        return 'day-scarce';
+        if (r === 0)   return 'day-booked';    // red  — fully booked
+        if (r >= 0.70) return 'day-available'; // green
+        if (r >= 0.30) return 'day-partial';   // yellow — filling fast
+        return 'day-scarce';                   // orange — almost full
     }
 
     /* ================================================================
@@ -2170,12 +2226,57 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
         },
         onYearChange: function (s, d, fp) { updateMonthNav(fp); fp.redraw(); },
 
+        // disable: [function (date) {
+        //     if (date.getDay() === 6) return true;
+        //     var info = dayData[flatpickr.formatDate(date, 'Y-m-d')];
+        //     // return info && (info.status === 'unavailable' || info.status === 'booked');
+        //     return info && info.status === 'unavailable';
+        // }],
+
         disable: [function (date) {
             if (date.getDay() === 6) return true;
-            var info = dayData[flatpickr.formatDate(date, 'Y-m-d')];
-            // return info && (info.status === 'unavailable' || info.status === 'booked');
-            return info && info.status === 'unavailable';
+            var key  = flatpickr.formatDate(date, 'Y-m-d');
+            var info = dayData[key];
+            if (info && info.status === 'unavailable') return true; // holiday
+            return !isDateAvailableByPackage(key, selectedPackHours, selectedLift); // fully booked for this lift/package
         }],
+
+        // onDayCreate: function (dObj, dStr, fp, dayElem) {
+        //     dayElem.classList.remove('day-available', 'day-partial', 'day-scarce',
+        //         'day-booked', 'day-unavailable', 'day-nextmonth', 'day-prevmonth');
+        //     if (dayElem.classList.contains('nextMonthDay')) { dayElem.classList.add('day-nextmonth'); return; }
+        //     if (dayElem.classList.contains('prevMonthDay')) { dayElem.classList.add('day-prevmonth'); return; }
+
+        //     var key = fp.formatDate(dayElem.dateObj, 'Y-m-d');
+        //     // if (dayElem.classList.contains('flatpickr-disabled')) {
+        //     //     var info = dayData[key];
+        //     //     dayElem.classList.add((info && info.status === 'booked') ? 'day-booked' : 'day-unavailable');
+        //     //     return;
+        //     // }
+        //     if (dayElem.classList.contains('flatpickr-disabled')) {
+        //         var info = dayData[key];
+
+        //         if (info && info.status === 'booked') {
+        //             dayElem.classList.add('day-unavailable'); // booked looks available
+        //         } else {
+        //             dayElem.classList.add('day-unavailable');
+        //         }
+
+        //         return;
+        //     }
+        //     dayElem.classList.add(dayAvailClass(key));
+
+        //     var slots = getWorkingSlots(key);
+        //     var free = slots.filter(function (t) { return !isSlotBooked(key, t, selectedLift); }).length;
+        //     if (slots.length > 0 && free > 0 && free < slots.length) {
+        //         dayElem.setAttribute('title', free + ' of ' + slots.length + ' slots available');
+        //         var dot = document.createElement('span');
+        //         dot.className = 'mx-day-dot';
+        //         dayElem.appendChild(dot);
+        //     }
+
+        // },
+
 
         onDayCreate: function (dObj, dStr, fp, dayElem) {
             dayElem.classList.remove('day-available', 'day-partial', 'day-scarce',
@@ -2184,33 +2285,42 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
             if (dayElem.classList.contains('prevMonthDay')) { dayElem.classList.add('day-prevmonth'); return; }
 
             var key = fp.formatDate(dayElem.dateObj, 'Y-m-d');
-            // if (dayElem.classList.contains('flatpickr-disabled')) {
-            //     var info = dayData[key];
-            //     dayElem.classList.add((info && info.status === 'booked') ? 'day-booked' : 'day-unavailable');
-            //     return;
-            // }
+            var nj  = getNJNow();
+
             if (dayElem.classList.contains('flatpickr-disabled')) {
                 var info = dayData[key];
 
-                if (info && info.status === 'booked') {
-                    dayElem.classList.add('day-unavailable'); // booked looks available
-                } else {
+                if (key < nj.dateStr) {
                     dayElem.classList.add('day-unavailable');
+                    dayElem.setAttribute('data-tooltip', 'Past date');
+                } else if (info && info.status === 'unavailable') {
+                    dayElem.classList.add('day-unavailable');
+                    dayElem.setAttribute('data-tooltip', 'Holiday — Closed');
+                } else if (!getWorkingHours(key)) {
+                    dayElem.classList.add('day-unavailable');
+                    dayElem.setAttribute('data-tooltip', 'Closed');
+                } else {
+                    dayElem.classList.add('day-booked');
+                    var s0 = getWorkingSlots(key);
+                    var b0 = s0.filter(function (t) { return isSlotReserved(key, t, selectedLift); }).length;
+                    dayElem.setAttribute('data-tooltip', b0 + ' of ' + s0.length + ' slots booked');
                 }
-
                 return;
             }
+
             dayElem.classList.add(dayAvailClass(key));
 
-            var slots = getWorkingSlots(key);
-            var free = slots.filter(function (t) { return !isSlotBooked(key, t, selectedLift); }).length;
+            var slots  = getWorkingSlots(key);
+            var booked = slots.filter(function (t) { return isSlotReserved(key, t, selectedLift); }).length;
+            var free   = slots.filter(function (t) { return !isSlotBooked(key, t, selectedLift); }).length;
+
+            dayElem.setAttribute('data-tooltip', booked + ' of ' + slots.length + ' slots booked');
+
             if (slots.length > 0 && free > 0 && free < slots.length) {
-                dayElem.setAttribute('title', free + ' of ' + slots.length + ' slots available');
                 var dot = document.createElement('span');
                 dot.className = 'mx-day-dot';
                 dayElem.appendChild(dot);
             }
-
         },
 
         onChange: function (selectedDates, dateStr) {
