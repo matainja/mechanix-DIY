@@ -1525,13 +1525,42 @@ var selectedAddon = null;
     function nextDate(dateStr, days) {
         return addDaysStr(dateStr, days === undefined ? 1 : days);
     }
+function getNJDateString() {
+    return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/New_York'
+    }).format(new Date());
+}
 
-    function getWorkingHours(dateStr) {
-        var day = new Date(dateStr + 'T00:00:00').getDay();
-        if (day === 6) return null;
-        if (day === 5) return { start: 9, end: 12 };
-        return { start: 9, end: 18 };
+function getWorkingHours(dateStr) {
+
+    const nowNJ = new Date(
+        new Date().toLocaleString('en-US', {
+            timeZone: 'America/New_York'
+        })
+    );
+
+    const selectedDate = new Date(dateStr + 'T00:00:00');
+    const day = selectedDate.getDay();
+
+    if (day === 6) return null; // Sunday closed
+
+    let startHour = 9;
+
+    if (dateStr === getNJDateString()) {
+        startHour = Math.max(9, nowNJ.getHours() + 1);
     }
+
+    return {
+        start: startHour,
+        end: day === 5 ? 12 : 18
+    };
+}
+    // function getWorkingHours(dateStr) {
+    //     var day = new Date(dateStr + 'T00:00:00').getDay();
+    //     if (day === 6) return null;
+    //     if (day === 5) return { start: 9, end: 12 };
+    //     return { start: 9, end: 18 };
+    // }
 
     function getWorkingSlots(dateStr) {
         var wh = getWorkingHours(dateStr);
