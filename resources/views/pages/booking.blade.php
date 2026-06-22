@@ -670,7 +670,7 @@
                             id="mxrRate">—</span></div>
                     <div class="mx-receipt-row"><span class="mx-receipt-label">Add-On</span><span
                             class="mx-receipt-value" id="mxrAddon">—</span></div>
-                    <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total Paid</span><span
+                    <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total Amount To Be Paid</span><span
                             class="mx-receipt-value" id="mxrTotal">—</span></div>
                 </div>
                 <div class="mx-modal-actions mx-success-actions">

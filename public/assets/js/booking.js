@@ -1515,11 +1515,47 @@ var selectedAddon = null;
         return dateStr + '__' + (liftKey || selectedLift || 'all');
     }
 
-    function isSlotBooked(dateStr, timeStr, liftKey) {
+    // function isSlotBooked(dateStr, timeStr, liftKey) {
+    //     liftKey = liftKey || selectedLift || 'all';
+    //     var specific = bookedSlots[slotKey(dateStr, liftKey)] || [];
+    //     var generic = bookedSlots[slotKey(dateStr, 'all')] || [];
+    //     return specific.indexOf(timeStr) !== -1 || generic.indexOf(timeStr) !== -1;
+    // }
+
+
+    function getNJNow() {
+        var parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York',
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', hour12: false,
+        }).formatToParts(new Date());
+
+        var map = {};
+        parts.forEach(function (p) { map[p.type] = p.value; });
+
+        var hour = parseInt(map.hour, 10);
+        if (hour === 24) hour = 0;
+
+        return { dateStr: map.year + '-' + map.month + '-' + map.day, hour: hour };
+    }
+
+    function isPastSlot(dateStr, hour) {
+        var nj = getNJNow();
+        if (dateStr !== nj.dateStr) return false; // only matters for "today" in NJ
+        return hour <= nj.hour;
+    }
+
+    function isSlotReserved(dateStr, timeStr, liftKey) {
         liftKey = liftKey || selectedLift || 'all';
         var specific = bookedSlots[slotKey(dateStr, liftKey)] || [];
         var generic = bookedSlots[slotKey(dateStr, 'all')] || [];
         return specific.indexOf(timeStr) !== -1 || generic.indexOf(timeStr) !== -1;
+    }
+
+    function isSlotBooked(dateStr, timeStr, liftKey) {
+        var hour = parseInt(timeStr.slice(0, 2), 10);
+        if (isPastSlot(dateStr, hour)) return true;
+        return isSlotReserved(dateStr, timeStr, liftKey);
     }
 
     function isHourFree(dateStr, hour, liftKey) {
@@ -1988,32 +2024,53 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
             // var label = formatTimePoint(h) + ' – ' + formatTimePoint(h + 1);
             var label = formatTimePoint(h);
 
-            var booked = isSlotBooked(dateStr, value, selectedLift);
-            var blocked = blockedTimes.has(value);
+            // var booked = isSlotBooked(dateStr, value, selectedLift);
+            // var blocked = blockedTimes.has(value);
 
-            console.log(value, "blocked?", blocked);
+            // console.log(value, "blocked?", blocked);
 
-            var isDisabled = booked || blocked;
+            // var isDisabled = booked || blocked;
+
+            // var $btn = $('<button>', {
+            //     type: 'button',
+            //     class: 'mx-slot ' + (
+            //         booked ? 'booked' :
+            //             blocked ? 'blocked' :
+            //                 'available'
+            //     ),
+            //     disabled: isDisabled,
+            //     'data-value': value,
+            //     html:
+            //         '<span class="mx-slot-time">' + label + '</span>' +
+            //         '<span class="mx-slot-badge ' +
+            //         (booked ? 'taken' :
+            //             blocked ? 'blocked-badge' :
+            //                 'free') + '">' +
+            //         (booked ? 'Booked' :
+            //             blocked ? 'Blocked' :
+            //                 'Available') +
+            //         '</span>'
+            // });
+
+
+            var past     = isPastSlot(dateStr, h);
+            var reserved = !past && isSlotReserved(dateStr, value, selectedLift);
+            var blocked  = !past && !reserved && blockedTimes.has(value);
+
+            var isDisabled = past || reserved || blocked;
+
+            var stateClass = past ? 'blocked' : reserved ? 'booked' : blocked ? 'blocked' : 'available';
+            var badgeClass = past ? 'blocked-badge' : reserved ? 'taken' : blocked ? 'blocked-badge' : 'free';
+            var badgeText  = past ? 'Past' : reserved ? 'Booked' : blocked ? 'Blocked' : 'Available';
 
             var $btn = $('<button>', {
                 type: 'button',
-                class: 'mx-slot ' + (
-                    booked ? 'booked' :
-                        blocked ? 'blocked' :
-                            'available'
-                ),
+                class: 'mx-slot ' + stateClass,
                 disabled: isDisabled,
                 'data-value': value,
                 html:
                     '<span class="mx-slot-time">' + label + '</span>' +
-                    '<span class="mx-slot-badge ' +
-                    (booked ? 'taken' :
-                        blocked ? 'blocked-badge' :
-                            'free') + '">' +
-                    (booked ? 'Booked' :
-                        blocked ? 'Blocked' :
-                            'Available') +
-                    '</span>'
+                    '<span class="mx-slot-badge ' + badgeClass + '">' + badgeText + '</span>'
             });
 
             if (!isDisabled) {
@@ -2933,7 +2990,53 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
     /* ================================================================
        PRINT
     ================================================================ */
-    $('#mxPrintBtn').on('click', function () { window.print(); });
+    // $('#mxPrintBtn').on('click', function () { window.print(); });
+    $('#mxPrintBtn').on('click', function () { printBookingReceipt(); });
+
+    function printBookingReceipt() {
+        var rows = [
+            ['Workstation', $('#mxrWorkstation').text()],
+            ['Lift', $('#mxrLift').text()],
+            ['Date', $('#mxrDate').text()],
+            ['Start', $('#mxrStart').text()],
+            ['Duration', $('#mxrDuration').text()],
+            ['End', $('#mxrEnd').text()],
+            ['Rate', $('#mxrRate').text()],
+            ['Add-On', $('#mxrAddon').text()],
+        ];
+        var total = $('#mxrTotal').text();
+
+        var rowsHtml = rows.map(function (r) {
+            return '<tr><td style="padding:6px 10px;color:#555;">' + r[0] + '</td>' +
+                   '<td style="padding:6px 10px;text-align:right;font-weight:600;">' + r[1] + '</td></tr>';
+        }).join('');
+
+        var html =
+            '<html><head><title>Booking Receipt</title><style>' +
+            'body{font-family:Arial,sans-serif;color:#111;padding:30px;max-width:480px;margin:0 auto;}' +
+            'h1{font-size:18px;margin-bottom:14px;}' +
+            'table{width:100%;border-collapse:collapse;}' +
+            'tr:nth-child(even){background:#f7f7f7;}' +
+            '.total-row td{font-size:16px;font-weight:800;border-top:2px solid #111;padding-top:10px;}' +
+            '.contact{margin-top:20px;padding:12px;background:#f1f1f1;border-radius:8px;text-align:center;}' +
+            '.contact a{color:#16a34a;font-weight:700;text-decoration:none;}' +
+            '</style></head><body>' +
+            '<h1>Booking Confirmed!</h1>' +
+            '<table>' + rowsHtml +
+            '<tr class="total-row"><td>Total Amount To Be Paid</td><td style="text-align:right;">' + total + '</td></tr>' +
+            '</table>' +
+            '<div class="contact">CALL TO CONFIRM<br>' +
+            '<a href="tel:+17327307712">732-730-7712 EXT. 3</a><br>' +
+            '<small>Mon–Fri 9AM–6PM • Sat 9AM–12PM</small></div>' +
+            '</body></html>';
+
+        var w = window.open('', '_blank', 'width=600,height=800');
+        w.document.open();
+        w.document.write(html);
+        w.document.close();
+        w.focus();
+        setTimeout(function () { w.print(); }, 300);
+    }
 
     /* ================================================================
        AUTH FORMS
