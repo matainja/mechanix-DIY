@@ -3097,56 +3097,264 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
         openSuccessModal();
     }
 
-    /* ================================================================
-       PRINT
-    ================================================================ */
-    // $('#mxPrintBtn').on('click', function () { window.print(); });
-    $('#mxPrintBtn').on('click', function () { printBookingReceipt(); });
+   /* ================================================================
+   PRINT / PDF RECEIPT
+================================================================ */
+$('#mxPrintBtn').on('click', function () {
+    printBookingReceipt();
+});
 
-    function printBookingReceipt() {
-        var rows = [
-            ['Workstation', $('#mxrWorkstation').text()],
-            ['Lift', $('#mxrLift').text()],
-            ['Date', $('#mxrDate').text()],
-            ['Start', $('#mxrStart').text()],
-            ['Duration', $('#mxrDuration').text()],
-            ['End', $('#mxrEnd').text()],
-            ['Rate', $('#mxrRate').text()],
-            ['Add-On', $('#mxrAddon').text()],
-        ];
-        var total = $('#mxrTotal').text();
+function printBookingReceipt() {
 
-        var rowsHtml = rows.map(function (r) {
-            return '<tr><td style="padding:6px 10px;color:#555;">' + r[0] + '</td>' +
-                   '<td style="padding:6px 10px;text-align:right;font-weight:600;">' + r[1] + '</td></tr>';
-        }).join('');
+    var rows = [
+        ['Workstation', $('#mxrWorkstation').text()],
+        ['Lift Type', $('#mxrLift').text()],
+        ['Date', $('#mxrDate').text()],
+        ['Start Time', $('#mxrStart').text()],
+        ['Duration', $('#mxrDuration').text()],
+        ['End Time', $('#mxrEnd').text()],
+        ['Rate', $('#mxrRate').text()],
+        ['Add-On', $('#mxrAddon').text()]
+    ];
 
-        var html =
-            '<html><head><title>Booking Receipt</title><style>' +
-            'body{font-family:Arial,sans-serif;color:#111;padding:30px;max-width:480px;margin:0 auto;}' +
-            'h1{font-size:18px;margin-bottom:14px;}' +
-            'table{width:100%;border-collapse:collapse;}' +
-            'tr:nth-child(even){background:#f7f7f7;}' +
-            '.total-row td{font-size:16px;font-weight:800;border-top:2px solid #111;padding-top:10px;}' +
-            '.contact{margin-top:20px;padding:12px;background:#f1f1f1;border-radius:8px;text-align:center;}' +
-            '.contact a{color:#16a34a;font-weight:700;text-decoration:none;}' +
-            '</style></head><body>' +
-            '<h1>Booking Confirmed!</h1>' +
-            '<table>' + rowsHtml +
-            '<tr class="total-row"><td>Total Amount To Be Paid</td><td style="text-align:right;">' + total + '</td></tr>' +
-            '</table>' +
-            '<div class="contact">CALL TO CONFIRM<br>' +
-            '<a href="tel:+17327307712">732-730-7712 EXT. 3</a><br>' +
-            '<small>Mon–Fri 9AM–6PM • Sat 9AM–12PM</small></div>' +
-            '</body></html>';
+    var total = $('#mxrTotal').text();
 
-        var w = window.open('', '_blank', 'width=600,height=800');
-        w.document.open();
-        w.document.write(html);
-        w.document.close();
+    var rowsHtml = rows.map(function (r) {
+        return `
+            <tr>
+                <td>${r[0]}</td>
+                <td>${r[1]}</td>
+            </tr>
+        `;
+    }).join('');
+
+    var html = `
+    <html>
+    <head>
+        <title></title>
+
+        <style>
+
+            @page{
+                size:A4;
+                margin:0;
+            }
+
+            body{
+                font-family:Arial, Helvetica, sans-serif;
+                margin:0;
+                padding:0;
+                background:#fff;
+                color:#222;
+            }
+
+            .receipt{
+                position:relative;
+                max-width:800px;
+                margin:auto;
+                padding:40px;
+                border:1px solid #ddd;
+                overflow:hidden;
+            }
+
+            .watermark{
+                position:absolute;
+                top:50%;
+                left:50%;
+                transform:translate(-50%,-50%);
+                opacity:.05;
+                width:500px;
+                z-index:0;
+            }
+
+            .content{
+                position:relative;
+                z-index:1;
+            }
+
+            .header{
+                text-align:center;
+                border-bottom:2px solid #111;
+                padding-bottom:20px;
+                margin-bottom:25px;
+            }
+
+            .logo{
+                max-width:180px;
+                margin-bottom:10px;
+            }
+
+            .company-name{
+                font-size:26px;
+                font-weight:bold;
+                letter-spacing:1px;
+            }
+
+            .status{
+                margin-top:15px;
+                background:#fff3cd;
+                border:1px solid #ffe69c;
+                color:#856404;
+                padding:12px;
+                border-radius:6px;
+                font-weight:700;
+                text-align:center;
+            }
+
+            .status small{
+                display:block;
+                margin-top:5px;
+                font-weight:400;
+            }
+
+            table{
+                width:100%;
+                border-collapse:collapse;
+                margin-top:20px;
+            }
+
+            table td{
+                padding:12px;
+                border-bottom:1px solid #e5e5e5;
+            }
+
+            table td:first-child{
+                color:#666;
+                width:45%;
+            }
+
+            table td:last-child{
+                text-align:right;
+                font-weight:600;
+            }
+
+            .total-row td{
+                font-size:18px;
+                font-weight:800;
+                border-top:2px solid #111;
+                border-bottom:none;
+                padding-top:15px;
+            }
+
+            .contact{
+                margin-top:30px;
+                text-align:center;
+                background:#f8f9fa;
+                border-radius:10px;
+                padding:18px;
+            }
+
+            .contact-title{
+                font-size:15px;
+                font-weight:700;
+                margin-bottom:8px;
+            }
+
+            .phone{
+                font-size:20px;
+                font-weight:bold;
+                color:#198754;
+                text-decoration:none;
+            }
+
+            .footer{
+                margin-top:40px;
+                text-align:center;
+                color:#777;
+                font-size:12px;
+                border-top:1px solid #ddd;
+                padding-top:15px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <div class="receipt">
+
+            <!-- WATERMARK -->
+            <img class="watermark" src="/assets/images/logo.png">
+
+            <div class="content">
+
+                <div class="header">
+
+                    <!-- COMPANY LOGO -->
+                    <img class="logo" src="/assets/images/logomain.png">
+
+                    <div class="company-name">
+                        Mechanix DIY
+                    </div>
+
+                    <div class="status">
+                        Booking Request Submitted Successfully
+                        <small>
+                            Your booking is currently pending review and confirmation by our team.
+                        </small>
+                    </div>
+
+                </div>
+
+                <table>
+
+                    ${rowsHtml}
+
+                    <tr class="total-row">
+                        <td>Total Amount To Be Paid</td>
+                        <td>${total}</td>
+                    </tr>
+
+                </table>
+
+                <div class="contact">
+
+                    <div class="contact-title">
+                        CALL TO CONFIRM YOUR BOOKING
+                    </div>
+
+                    <a class="phone" href="tel:+17327307712">
+                        732-730-7712 EXT. 3
+                    </a>
+
+                    <br><br>
+
+                    <small>
+                        Monday – Friday : 9:00 AM – 6:00 PM
+                        <br>
+                        Saturday : 9:00 AM – 12:00 PM
+                    </small>
+
+                </div>
+
+                <div class="footer">
+                    Thank you for choosing Mechanix DIY.<br>
+                    Please save this receipt for your records.
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
+    </html>
+    `;
+
+    var w = window.open('', '_blank');
+
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+
+    setTimeout(function () {
+
         w.focus();
-        setTimeout(function () { w.print(); }, 300);
-    }
+
+        // User can Print OR Save as PDF
+        w.print();
+
+    }, 500);
+}
 
     /* ================================================================
        AUTH FORMS

@@ -602,7 +602,7 @@
                     </svg>
 
                 </div>
-                <div id="mxSuccessTitle" class="mx-success-title">Booking Confirmed!</div>
+                <div id="mxSuccessTitle" class="mx-success-title">Booking Request Sent!</div>
                 <div class="mx-garage-contact"
                     style="
         background:#1e293b;
