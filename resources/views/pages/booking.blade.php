@@ -1008,11 +1008,13 @@
                     <span class="mx-receipt-value" id="mxgTotal">$0</span>
                 </div>
             </div>
-            <div class="mx-modal-actions mx-success-actions">
-                <a href="tel:+732-730-7712" class="mx-btn-solid" style="text-decoration:none;">
-                    <i class="fa-solid fa-phone"></i> Call Now to Confirm
-                </a>
-            </div>
+           <div class="mx-modal-actions mx-success-actions">
+                    <button type="button" class="mx-btn-outline" id="mxPrintBtn"><i class="fa-solid fa-print"></i>
+                        Print Receipt</button>
+                   <a href="tel:+7327307712" class="mx-btn-solid" style="text-decoration:none;">
+    <i class="fa-solid fa-phone"></i> Call To Confirm
+</a>
+                </div>
             {{-- <div class="mx-modal-actions">
                    
                     <button type="button" class="mx-btn-solid" id="mxSummaryPay">Pay Now &nbsp;<i
