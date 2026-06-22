@@ -3387,6 +3387,305 @@ function printBookingReceipt() {
         w.print();
     }, 500);
 }
+
+
+/* ================================================================
+   PRINT guest  / PDF RECEIPT guest
+================================================================ */
+$(document).on('click', '#mxGuestPrintBtn', function () {
+    printGuestReceipt();
+});
+
+function printGuestReceipt() {
+
+    var rows = [
+        ['Guest Name', $('#mxgName').text()],
+        ['Phone Number', $('#mxgPhone').text()],
+        ['Lift Type', $('#mxgLift').text()],
+        ['Booking Date', $('#mxgDate').text()],
+        ['Time', $('#mxgTime').text()],
+        ['Duration', $('#mxgDuration').text()],
+        ['Slot Timing', $('#mxgSlotTiming').text()],
+        ['Add-On', $('#mxgAddon').text()]
+    ];
+
+    var total = $('#mxgTotal').text();
+
+    var today = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    var refNo =
+        'MXG-' +
+        new Date().toISOString().slice(0, 10).replace(/-/g, '') +
+        '-' +
+        Math.floor(100 + Math.random() * 900);
+
+    var rowsHtml = rows.map(function (r) {
+        return `
+            <div class="detail-row">
+                <span class="detail-label">${r[0]}</span>
+                <span class="detail-value">${r[1]}</span>
+            </div>
+        `;
+    }).join('');
+
+    var html = `
+    <html>
+    <head>
+        <title>Guest Booking Receipt</title>
+
+        <style>
+
+            @page { size:A4; margin:14mm; }
+
+            *{
+                box-sizing:border-box;
+                -webkit-print-color-adjust:exact;
+                print-color-adjust:exact;
+            }
+
+            body{
+                font-family:'Segoe UI',Arial,sans-serif;
+                margin:0;
+                color:#222;
+            }
+
+            .receipt{
+                max-width:800px;
+                margin:auto;
+                padding:30px;
+            }
+
+            .header{
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+                border-bottom:2px solid #ddd;
+                padding-bottom:20px;
+                margin-bottom:25px;
+            }
+
+            .logo{
+                max-width:180px;
+            }
+
+            .company-info{
+                font-size:12px;
+                color:#666;
+                margin-top:10px;
+                line-height:1.6;
+            }
+
+            .right{
+                text-align:right;
+            }
+
+            .receipt-title{
+                font-size:24px;
+                font-weight:700;
+            }
+
+            .status{
+                margin-top:10px;
+                display:inline-block;
+                background:#fff3cd;
+                color:#856404;
+                padding:6px 12px;
+                border-radius:20px;
+                font-size:12px;
+                font-weight:700;
+            }
+
+            .details-card{
+                border:1px solid #ddd;
+                border-radius:8px;
+                overflow:hidden;
+            }
+
+            .detail-row{
+                display:flex;
+                justify-content:space-between;
+                padding:12px 16px;
+                border-bottom:1px solid #eee;
+            }
+
+            .detail-row:last-child{
+                border-bottom:none;
+            }
+
+            .detail-label{
+                color:#666;
+            }
+
+            .detail-value{
+                font-weight:600;
+            }
+
+            .total-box{
+                margin-top:20px;
+                background:#111827;
+                color:#fff;
+                border-radius:8px;
+                padding:18px;
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+            }
+
+            .total-box .amount{
+                font-size:24px;
+                font-weight:800;
+            }
+
+            .notice{
+                margin-top:20px;
+                padding:15px;
+                background:#fffbeb;
+                border-left:4px solid #f59e0b;
+                border-radius:6px;
+            }
+
+            .contact{
+                margin-top:20px;
+                background:#f8f9fa;
+                padding:18px;
+                border-radius:8px;
+                text-align:center;
+            }
+
+            .phone{
+                font-size:20px;
+                font-weight:bold;
+                color:#198754;
+            }
+
+            .signatures{
+                margin-top:60px;
+                display:flex;
+                justify-content:space-between;
+            }
+
+            .sign-box{
+                width:250px;
+                text-align:center;
+            }
+
+            .sign-line{
+                border-top:1px solid #000;
+                margin-top:60px;
+                padding-top:8px;
+                font-size:13px;
+            }
+
+            .footer{
+                margin-top:40px;
+                text-align:center;
+                font-size:11px;
+                color:#777;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="receipt">
+
+            <div class="header">
+
+                <div>
+
+                    <img class="logo"
+                         src="/assets/images/logomain.png"
+                         onerror="this.style.display='none'">
+
+                    <div class="company-info">
+                        YOUR CAR. YOUR RULES. YOUR SKILLS.<br>
+                        100 Midstreams Rd, Brick, NJ<br>
+                        732-730-7712 Ext. 3
+                    </div>
+
+                </div>
+
+                <div class="right">
+
+                    <div class="receipt-title">
+                        GUEST BOOKING RECEIPT
+                    </div>
+
+                    <div>
+                        Ref: ${refNo}<br>
+                        Date: ${today}
+                    </div>
+
+                    <div class="status">
+                        Pending Confirmation
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="details-card">
+                ${rowsHtml}
+            </div>
+
+            <div class="total-box">
+                <div>Total Amount To Be Paid</div>
+                <div class="amount">${total}</div>
+            </div>
+
+            <div class="notice">
+                <strong>Booking Request Submitted Successfully</strong><br>
+                Your booking request has been received and is awaiting confirmation from our team.
+            </div>
+
+            <div class="contact">
+                Call To Confirm<br>
+                <div class="phone">732-730-7712 EXT. 3</div>
+            </div>
+
+            <div class="signatures">
+
+                <div class="sign-box">
+                    <div class="sign-line">
+                        Customer Signature
+                    </div>
+                </div>
+
+                <div class="sign-box">
+                    <div class="sign-line">
+                        Authorized Signature
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer">
+                Thank you for choosing Mechanix D.I.Y.
+            </div>
+
+        </div>
+
+    </body>
+    </html>
+    `;
+
+    var w = window.open('', '_blank');
+
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+
+    setTimeout(function () {
+        w.focus();
+        w.print();
+    }, 500);
+}
     /* ================================================================
        AUTH FORMS
     ================================================================ */
