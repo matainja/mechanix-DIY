@@ -44,6 +44,7 @@
                             {{-- <th>Role</th> --}}
                             {{-- <th>Verified</th> --}}
                             <th>Joined</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
 
@@ -75,6 +76,17 @@
                             </td> --}}
 
                             <td>{{ $user->created_at->format('d M Y') }}</td>
+                            <td>
+        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+              onsubmit="return confirm('Delete this user?')">
+            @csrf
+            @method('DELETE')
+
+            <button class="btn btn-sm btn-danger">
+                <i class="ti ti-trash"></i> Delete
+            </button>
+        </form>
+    </td>
                         </tr>
                         @endforeach
                     </tbody>

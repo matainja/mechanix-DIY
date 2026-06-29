@@ -69,6 +69,8 @@ Route::middleware(['auth', 'admin'])
 
         // Users
         Route::get('/users', [UserController::class, 'index'])->name('users');
+        Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])
+    ->name('users.destroy');
 
         // Holidays
         Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
