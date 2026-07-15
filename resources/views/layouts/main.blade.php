@@ -57,5 +57,25 @@
     @stack('scripts')
     <script src="{{ asset('assets/js/script.js') }}"></script> 
 
+    <div class="floating-contact">
+    <!-- WhatsApp -->
+   <a href="https://wa.me/17327307712"
+   class="float-btn whatsapp"
+   target="_blank"
+   aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+    <!-- Call -->
+    <a href="tel:+17327307712"
+   class="float-btn call"
+   aria-label="Call">
+    <i class="fas fa-phone-alt"></i>
+</a>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </body>
 </html>
