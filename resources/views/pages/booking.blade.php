@@ -1051,9 +1051,9 @@
                     <i class="fa-solid fa-print"></i>
                     Print Receipt
                 </button>
-                <a href="tel:+732-730-7712" class="mx-btn-solid" style="text-decoration:none;">
-                    <i class="fa-solid fa-phone"></i> Call to Confirm
-                </a>
+               <button type="button" class="mx-btn-solid" id="mxGuestOpenContactBtn">
+    <i class="fa-solid fa-phone"></i> Call to Confirm
+</button>
             </div>
             {{-- <div class="mx-modal-actions">
                    
@@ -1062,6 +1062,35 @@
                 </div> --}}
         </div>
     </div>
+
+    {{-- ── CONTACT / CONFIRM MODAL ── --}}
+<div id="mxContactModal" class="mx-modal-overlay" aria-hidden="true">
+    <div class="mx-modal-card mx-contact-card" role="dialog" aria-modal="true" aria-labelledby="mxContactTitle">
+        <div class="mx-modal-head">
+            <div>
+                <div id="mxContactTitle" class="mx-modal-title">Confirm Your Booking</div>
+                <div class="mx-modal-sub">Call us or confirm instantly on WhatsApp.</div>
+            </div>
+            <button type="button" class="mx-modal-x" id="mxContactClose" aria-label="Close">×</button>
+        </div>
+        <div class="mx-modal-body text-center">
+            <a href="tel:+17327307712" class="mx-btn-outline"
+               style="text-decoration:none;display:block;margin-bottom:10px;padding:14px 10px;">
+                <div style="font-size:12px;letter-spacing:1px;opacity:0.7;margin-bottom:4px;">
+                    <i class="fa-solid fa-phone"></i> TAP TO CALL
+                </div>
+                <div style="font-size:28px;font-weight:800;letter-spacing:0.5px;">
+                    732-730-7712
+                </div>
+                <div style="font-size:12px;opacity:0.7;">Ext. 3</div>
+            </a>
+            <a href="#" id="mxWhatsappConfirmBtn" target="_blank" rel="noopener"
+               class="mx-btn-solid" style="text-decoration:none;display:block;background:#25D366;border-color:#25D366;">
+                <i class="fab fa-whatsapp"></i> Confirm via WhatsApp
+            </a>
+        </div>
+    </div>
+</div>
 
     {{-- ── FORGOT PASSWORD MODAL ── --}}
     <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
