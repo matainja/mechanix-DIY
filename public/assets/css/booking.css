@@ -1633,3 +1633,17 @@
     opacity: 1 !important;
     filter: none !important;
 }
+
+.contact-panel{
+    max-height:0;
+    overflow:hidden;
+    transition:.35s ease;
+    opacity:0;
+    margin-top:0;
+}
+
+.contact-panel.show{
+    max-height:300px;
+    opacity:1;
+    margin-top:20px;
+}

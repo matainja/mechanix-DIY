@@ -3418,6 +3418,51 @@ function printBookingReceipt() {
 }
 
 
+
+/* ================================================================
+   CONTACT / CONFIRM MODAL (Call + WhatsApp)
+================================================================ */
+function buildWhatsappMessage(source) {
+    var lines = ['Hi! I want to confirm my booking:'];
+
+    if (source === 'guest') {
+        lines.push('Name: '     + $('#mxgName').text());
+        lines.push('Phone: '    + $('#mxgPhone').text());
+        lines.push('Lift: '     + $('#mxgLift').text());
+        lines.push('Date: '     + $('#mxgDate').text());
+        lines.push('Time: '     + $('#mxgTime').text());
+        lines.push('Duration: ' + $('#mxgDuration').text());
+        lines.push('Slot: '     + $('#mxgSlotTiming').text());
+        lines.push('Add-On: '   + $('#mxgAddon').text());
+        lines.push('Total: '    + $('#mxgTotal').text());
+    } else {
+        lines.push('Workstation: ' + $('#mxrWorkstation').text());
+        lines.push('Lift: '        + $('#mxrLift').text());
+        lines.push('Date: '        + $('#mxrDate').text());
+        lines.push('Start: '       + $('#mxrStart').text());
+        lines.push('Duration: '    + $('#mxrDuration').text());
+        lines.push('End: '         + $('#mxrEnd').text());
+        lines.push('Rate: '        + $('#mxrRate').text());
+        lines.push('Add-On: '      + $('#mxrAddon').text());
+        lines.push('Total: '       + $('#mxrTotal').text());
+    }
+    return lines.join('\n');
+}
+
+function openContactModal(source) {
+    var msg = buildWhatsappMessage(source);
+    var url = 'https://wa.me/17327307712?text=' + encodeURIComponent(msg);
+    $('#mxWhatsappConfirmBtn').attr('href', url);
+    openModal('#mxContactModal');
+}
+
+$('#mxOpenContactBtn').on('click', function () { openContactModal('member'); });
+$('#mxGuestOpenContactBtn').on('click', function () { openContactModal('guest'); });
+
+$('#mxContactClose').on('click', function () { closeModal('#mxContactModal'); });
+$('#mxContactModal').on('click', function (e) {
+    if ($(e.target).is('#mxContactModal')) closeModal('#mxContactModal');
+});
 /* ================================================================
    PRINT guest  / PDF RECEIPT guest
 ================================================================ */

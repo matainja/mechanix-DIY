@@ -290,35 +290,34 @@
                         <div class="mx-liftpreview">
                             <div class="mx-liftimg mx-liftimg--placeholder" id="mxLiftImgWrap">
                                 <div class="mx-liftimg-placeholder" id="mxLiftPlaceholder">
-    <svg width="90" height="90" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Lift Posts -->
-        <rect x="12" y="10" width="4" height="40" rx="2" fill="#94A3B8"/>
-        <rect x="48" y="10" width="4" height="40" rx="2" fill="#94A3B8"/>
+                                    <svg width="90" height="90" viewBox="0 0 64 64" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <!-- Lift Posts -->
+                                        <rect x="12" y="10" width="4" height="40" rx="2"
+                                            fill="#94A3B8" />
+                                        <rect x="48" y="10" width="4" height="40" rx="2"
+                                            fill="#94A3B8" />
 
-        <!-- Lift Arms -->
-        <path d="M16 36H24" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
-        <path d="M40 36H48" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
+                                        <!-- Lift Arms -->
+                                        <path d="M16 36H24" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M40 36H48" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round" />
 
-        <!-- Car -->
-        <path d="M22 28L26 22H38L42 28V36H22V28Z"
-              fill="#CBD5E1"/>
+                                        <!-- Car -->
+                                        <path d="M22 28L26 22H38L42 28V36H22V28Z" fill="#CBD5E1" />
 
-        <circle cx="27" cy="39" r="3" fill="#94A3B8"/>
-        <circle cx="37" cy="39" r="3" fill="#94A3B8"/>
+                                        <circle cx="27" cy="39" r="3" fill="#94A3B8" />
+                                        <circle cx="37" cy="39" r="3" fill="#94A3B8" />
 
-        <!-- Question Mark -->
-        <circle cx="50" cy="16" r="10" fill="#DC2626"/>
-        <text x="50" y="20"
-              text-anchor="middle"
-              font-size="12"
-              font-weight="700"
-              fill="white">?</text>
-    </svg>
+                                        <!-- Question Mark -->
+                                        <circle cx="50" cy="16" r="10" fill="#DC2626" />
+                                        <text x="50" y="20" text-anchor="middle" font-size="12" font-weight="700"
+                                            fill="white">?</text>
+                                    </svg>
 
-    <p style="margin-top:10px;color:#94A3B8;font-weight:600;">
-        Oops! No Lift Selected
-    </p>
-</div>
+                                    <p style="margin-top:10px;color:#94A3B8;font-weight:600;">
+                                        Oops! No Lift Selected
+                                    </p>
+                                </div>
                                 <img id="mxLiftPreviewImg" src="{{ asset('assets/images/icons/lift-red.png') }}"
                                     alt="Lift preview" style="display:none;">
                             </div>
@@ -403,10 +402,10 @@
                                     <div class="mx-info-label">Selected</div>
                                     <div class="mx-info-value" id="mxSlotText">—</div>
                                 </div>
-                                 <div class="mx-receipt-row"><span class="mx-receipt-label">Lift Type</span><span
-                                class="mx-receipt-value" id="mxsLift">—</span></div>
-                        <div class="mx-receipt-row"><span class="mx-receipt-label">Add-On</span><span
-                                class="mx-receipt-value" id="mxsAddon">—</span></div>
+                                <div class="mx-receipt-row"><span class="mx-receipt-label">Lift Type</span><span
+                                        class="mx-receipt-value" id="mxsLift">—</span></div>
+                                <div class="mx-receipt-row"><span class="mx-receipt-label">Add-On</span><span
+                                        class="mx-receipt-value" id="mxsAddon">—</span></div>
                                 <div class="mx-info-row">
                                     <div class="mx-info-label">Hours</div>
                                     <div class="mx-info-value">
@@ -670,18 +669,56 @@
                             id="mxrRate">—</span></div>
                     <div class="mx-receipt-row"><span class="mx-receipt-label">Add-On</span><span
                             class="mx-receipt-value" id="mxrAddon">—</span></div>
-                    <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total Amount To Be Paid</span><span
-                            class="mx-receipt-value" id="mxrTotal">—</span></div>
+                    <div class="mx-receipt-row mx-receipt-total"><span class="mx-receipt-label">Total Amount To Be
+                            Paid</span><span class="mx-receipt-value" id="mxrTotal">—</span></div>
                 </div>
-                <div class="mx-modal-actions mx-success-actions">
+                {{-- <div class="mx-modal-actions mx-success-actions">
                     <button type="button" class="mx-btn-outline" id="mxPrintBtn"><i class="fa-solid fa-print"></i>
                         Print Receipt</button>
                    <a href="tel:+7327307712" class="mx-btn-solid" style="text-decoration:none;">
     <i class="fa-solid fa-phone"></i> Call To Confirm
 </a>
+                </div> --}}
+
+                <div class="mx-modal-actions mx-success-actions">
+                    <button type="button" class="mx-btn-outline" id="mxPrintBtn">
+                        <i class="fa-solid fa-print"></i> Print Receipt
+                    </button>
+
+                    <button type="button" class="mx-btn-solid" id="mxOpenContactBtn">
+                        <i class="fa-solid fa-phone"></i> Call to Confirm
+                    </button>
                 </div>
             </div>
         </div>
+
+
+
+       {{-- ── CONTACT / CONFIRM MODAL ── --}}
+<div id="mxContactModal" class="mx-modal-overlay" aria-hidden="true">
+    <div class="mx-modal-card mx-contact-card" role="dialog" aria-modal="true" aria-labelledby="mxContactTitle">
+        <div class="mx-modal-head">
+            <div>
+                <div id="mxContactTitle" class="mx-modal-title">Confirm Your Booking</div>
+                <div class="mx-modal-sub">Call us or confirm instantly on WhatsApp.</div>
+            </div>
+            <button type="button" class="mx-modal-x" id="mxContactClose" aria-label="Close">×</button>
+        </div>
+        <div class="mx-modal-body text-center">
+          <a href="tel:+17327307712" class="mx-btn-outline"
+   style="text-decoration:none;display:block;margin-bottom:10px;
+          font-size:22px;font-weight:700;letter-spacing:0.5px;padding:14px 10px;">
+    <i class="fa-solid fa-phone"></i> 732-730-7712 Ext. 3
+</a>
+            <a href="#" id="mxWhatsappConfirmBtn" target="_blank" rel="noopener"
+               class="mx-btn-solid" style="text-decoration:none;display:block;background:#25D366;border-color:#25D366;">
+                <i class="fab fa-whatsapp"></i> Confirm via WhatsApp
+            </a>
+        </div>
+    </div>
+</div>
+
+
 
     </section>
 
@@ -1009,11 +1046,11 @@
                 </div>
             </div>
             <div class="mx-modal-actions mx-success-actions">
-               
+
                 <button type="button" class="mx-btn-outline" id="mxGuestPrintBtn">
-        <i class="fa-solid fa-print"></i>
-        Print Receipt
-    </button>
+                    <i class="fa-solid fa-print"></i>
+                    Print Receipt
+                </button>
                 <a href="tel:+732-730-7712" class="mx-btn-solid" style="text-decoration:none;">
                     <i class="fa-solid fa-phone"></i> Call to Confirm
                 </a>
@@ -1063,6 +1100,10 @@
             </div>
         </div>
     </div>
+
+
+
+    //call to confirm modal
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
