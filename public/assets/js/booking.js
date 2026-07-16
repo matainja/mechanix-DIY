@@ -3456,8 +3456,15 @@ function openContactModal(source) {
     openModal('#mxContactModal');
 }
 
-$('#mxOpenContactBtn').on('click', function () { openContactModal('member'); });
-$('#mxGuestOpenContactBtn').on('click', function () { openContactModal('guest'); });
+$('#mxOpenContactBtn').on('click', function () {
+    closeModal('#mxSuccessModal');
+    openContactModal('member');
+});
+
+$('#mxGuestOpenContactBtn').on('click', function () {
+    closeModal('#mxGuestSuccessModal');
+    openContactModal('guest');
+});
 
 $('#mxContactClose').on('click', function () { closeModal('#mxContactModal'); });
 $('#mxContactModal').on('click', function (e) {
