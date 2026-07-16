@@ -28,15 +28,16 @@
             <div class="card">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="bookingTabs" role="tablist">
+                        
                         <li class="nav-item">
-                            <a class="nav-link active" id="today-tab" data-bs-toggle="tab" href="#today" role="tab">
-                                Today's Bookings
-                                <span class="badge bg-primary ms-1">{{ $todayBookings->count() }}</span>
+                            <a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#all" role="tab">
+                                All Bookings
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="all-tab" data-bs-toggle="tab" href="#all" role="tab">
-                                All Bookings
+                            <a class="nav-link " id="today-tab" data-bs-toggle="tab" href="#today" role="tab">
+                                Today's Bookings
+                                <span class="badge bg-primary ms-1">{{ $todayBookings->count() }}</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -61,7 +62,7 @@
                     <div class="tab-content" id="bookingTabsContent">
 
                         <!-- TODAY'S BOOKINGS TAB -->
-                        <div class="tab-pane fade show active" id="today" role="tabpanel">
+                        <div class="tab-pane fade " id="today" role="tabpanel">
                             <small class="text-muted d-block mb-3">
                                 Showing all bookings for today — {{ now()->format('d M Y') }}
                             </small>
@@ -149,7 +150,7 @@
                         </div>
 
                         <!-- ALL BOOKINGS TAB -->
-                        <div class="tab-pane fade" id="all" role="tabpanel">
+                        <div class="tab-pane fade show active" id="all" role="tabpanel">
                             <small class="text-muted d-block mb-3">
                                 Approved bookings will be confirmed, cancelled bookings will be released, and deleted
                                 bookings will be permanently removed.
