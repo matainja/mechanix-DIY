@@ -13,7 +13,8 @@ use App\Models\Holiday;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use Illuminate\Support\Facades\Log;
-
+use App\Mail\NewBookingNotification;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -152,7 +153,9 @@ class BookingController extends Controller
                     );
                 }
             }
-
+            // Notify owner of new booking
+Mail::to(config('services.booking_notify_email'))
+    ->send(new NewBookingNotification($booking));
             return response()->json([
                 'status'     => true,
                 'booking_id' => $booking->id,
@@ -414,6 +417,9 @@ class BookingController extends Controller
                     );
                 }
             }
+            // Notify owner of new booking
+Mail::to(config('services.booking_notify_email'))
+    ->send(new NewBookingNotification($booking));
 
             return response()->json([
                 'status'     => true,
