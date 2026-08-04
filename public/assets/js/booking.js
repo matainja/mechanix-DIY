@@ -2267,7 +2267,11 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
         // }],
 
         disable: [function (date) {
-            if (date.getDay() === 6) return true;
+            // if (date.getDay() === 6) return true;
+            if (date.getDay() === 0 || date.getDay() === 6) {
+        return true;
+    }
+
             var key  = flatpickr.formatDate(date, 'Y-m-d');
             var info = dayData[key];
             if (info && info.status === 'unavailable') return true; // holiday
