@@ -1542,17 +1542,21 @@ function getWorkingHours(dateStr) {
     const selectedDate = new Date(dateStr + 'T00:00:00');
     const day = selectedDate.getDay();
 
-    if (day === 6) return null; // Sunday closed
+    // Saturday & Sunday closed
+    if (day === 0 || day === 6) {
+        return null;
+    }
 
     let startHour = 9;
 
+    // If booking for today, don't allow past hours
     if (dateStr === getNJDateString()) {
         startHour = Math.max(9, nowNJ.getHours() + 1);
     }
 
     return {
         start: startHour,
-        end: day === 5 ? 12 : 18
+        end: day === 5 ? 13 : 18 // Friday: 9-1, Mon-Thu: 9-6
     };
 }
     // function getWorkingHours(dateStr) {
