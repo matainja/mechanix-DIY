@@ -1465,26 +1465,6 @@ $(function () {
             $('#mxDayTooltip').css('display', 'none');
         });
 
-
-        fetch(url, options)
-    .then(async (response) => {
-
-        if (response.status === 419) {
-            window.location.reload();
-            return null;
-        }
-
-        return response.json();
-    })
-    .then(data => {
-        if (data === null) return;
-
-        // your normal code
-        console.log(data);
-    })
-    .catch(error => {
-        console.error(error);
-    });
     /* ================================================================
        SCROLL HELPER
     ================================================================ */
@@ -3165,26 +3145,96 @@ $('#mxContactModal').on('click', function (e) {
     /* ================================================================
        SUBMIT BOOKING (logged-in users)
     ================================================================ */
-    async function submitBooking(payload) {
-        try {
-            var res = await fetch('/booking/confirm', {
-                method: 'POST', credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': window.MX_CSRF,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(payload),
+    // async function submitBooking(payload) {
+    //     try {
+    //         var res = await fetch('/booking/confirm', {
+    //             method: 'POST', credentials: 'same-origin',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'X-CSRF-TOKEN': window.MX_CSRF,
+    //                 'Accept': 'application/json',
+    //             },
+    //             body: JSON.stringify(payload),
+    //         });
+    //         var data = await res.json().catch(function () { return {}; });
+    //         sessionStorage.removeItem('mx_booking_payload');
+    //         if (!res.ok || !data.status) { alert(data.message || 'Booking failed. Please try again.'); return; }
+    //         openSuccessReceipt(data.booking_id || ('MX-' + Date.now()), payload);
+    //     } catch (_) {
+    //         sessionStorage.removeItem('mx_booking_payload');
+    //         openSuccessReceipt('MX-DEMO-' + Date.now(), payload);
+    //     }
+    // }
+
+async function submitBooking(payload) {
+
+    try {
+
+        var res = await fetch('/booking/confirm', {
+            method: 'POST',
+            credentials: 'same-origin',
+
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.MX_CSRF,
+                'Accept': 'application/json',
+            },
+
+            body: JSON.stringify(payload),
+        });
+
+        // Handle CSRF / Session Expired
+        if (res.status === 419) {
+
+            var errorData = await res.json().catch(function () {
+                return {};
             });
-            var data = await res.json().catch(function () { return {}; });
-            sessionStorage.removeItem('mx_booking_payload');
-            if (!res.ok || !data.status) { alert(data.message || 'Booking failed. Please try again.'); return; }
-            openSuccessReceipt(data.booking_id || ('MX-' + Date.now()), payload);
-        } catch (_) {
-            sessionStorage.removeItem('mx_booking_payload');
-            openSuccessReceipt('MX-DEMO-' + Date.now(), payload);
+
+            alert(
+                errorData.message ||
+                'Your session has expired. The page will refresh. Please submit your booking again.'
+            );
+
+            window.location.reload();
+
+            return;
         }
+
+        var data = await res.json().catch(function () {
+            return {};
+        });
+
+        // Handle other errors
+        if (!res.ok || !data.status) {
+
+            alert(
+                data.message ||
+                'Booking failed. Please try again.'
+            );
+
+            return;
+        }
+
+        // Only remove payload after successful booking
+        sessionStorage.removeItem('mx_booking_payload');
+
+        // Real booking success
+        openSuccessReceipt(
+            data.booking_id || ('MX-' + Date.now()),
+            payload
+        );
+
+    } catch (error) {
+
+        console.error('Booking error:', error);
+
+        // Do NOT show success receipt here
+        alert(
+            'Unable to submit your booking. Please check your internet connection and try again.'
+        );
+
     }
+}
 
     /* ================================================================
        SUCCESS RECEIPT (logged-in users)
