@@ -3166,6 +3166,7 @@ $('#mxContactModal').on('click', function (e) {
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify(payload),
+                
             });
             var data = await res.json().catch(function () { return {}; });
             sessionStorage.removeItem('mx_booking_payload');
@@ -3175,6 +3176,16 @@ $('#mxContactModal').on('click', function (e) {
             sessionStorage.removeItem('mx_booking_payload');
             openSuccessReceipt('MX-DEMO-' + Date.now(), payload);
         }
+        $(document).ajaxError(function (event, xhr) {
+
+    if (
+        xhr.status === 419 ||
+        xhr.responseText.includes('CSRF token mismatch')
+    ) {
+        window.location.reload();
+    }
+
+});
     }
 
     /* ================================================================
