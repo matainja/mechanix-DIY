@@ -605,24 +605,3 @@ $('#mxAuthModal').on('hidden.bs.modal', function () {
     // Default tab
     $('#guestTab').tab('show');
 });
-
-
-// csrf token mismatch then reload
-fetch(url, options)
-    .then(response => {
-        if (response.status === 419) {
-            window.location.reload();
-            return;
-        }
-
-        return response.json();
-    })
-    .then(data => {
-        if (!data) return;
-
-        // normal response handling
-        console.log(data);
-    })
-    .catch(error => {
-        console.error(error);
-    });

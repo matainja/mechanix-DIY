@@ -1465,17 +1465,6 @@ $(function () {
             $('#mxDayTooltip').css('display', 'none');
         });
 
-
-        $(document).ajaxError(function (event, xhr) {
-
-    if (
-        xhr.status === 419 ||
-        xhr.responseText.includes('CSRF token mismatch')
-    ) {
-        window.location.reload();
-    }
-
-});
     /* ================================================================
        SCROLL HELPER
     ================================================================ */
@@ -3156,7 +3145,28 @@ $('#mxContactModal').on('click', function (e) {
     /* ================================================================
        SUBMIT BOOKING (logged-in users)
     ================================================================ */
-   async function submitBooking(payload) {
+    // async function submitBooking(payload) {
+    //     try {
+    //         var res = await fetch('/booking/confirm', {
+    //             method: 'POST', credentials: 'same-origin',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'X-CSRF-TOKEN': window.MX_CSRF,
+    //                 'Accept': 'application/json',
+    //             },
+    //             body: JSON.stringify(payload),
+    //         });
+    //         var data = await res.json().catch(function () { return {}; });
+    //         sessionStorage.removeItem('mx_booking_payload');
+    //         if (!res.ok || !data.status) { alert(data.message || 'Booking failed. Please try again.'); return; }
+    //         openSuccessReceipt(data.booking_id || ('MX-' + Date.now()), payload);
+    //     } catch (_) {
+    //         sessionStorage.removeItem('mx_booking_payload');
+    //         openSuccessReceipt('MX-DEMO-' + Date.now(), payload);
+    //     }
+    // }
+
+    async function submitBooking(payload) {
 
     try {
 
@@ -3173,65 +3183,55 @@ $('#mxContactModal').on('click', function (e) {
             body: JSON.stringify(payload),
         });
 
-        // ==============================
-        // CSRF TOKEN / SESSION EXPIRED
-        // ==============================
+        // User is not authenticated
+        if (res.status === 401) {
+
+            alert('Your session has expired. Please login again.');
+
+            window.location.href = '/login';
+
+            return;
+        }
+
+        // CSRF token mismatch
         if (res.status === 419) {
 
-            alert(
-                'Your session has expired. The page will refresh. Please submit your booking again.'
-            );
-
-            // Do not remove booking payload
-            // so you can potentially restore it later
+            alert('Your session has expired. Please refresh and try again.');
 
             window.location.reload();
 
             return;
         }
 
-        // Get response safely
         var data = await res.json().catch(function () {
             return {};
         });
 
-        // ==============================
-        // OTHER SERVER ERRORS
-        // ==============================
         if (!res.ok || !data.status) {
 
-            alert(
-                data.message ||
-                'Booking failed. Please try again.'
-            );
+            alert(data.message || 'Booking failed. Please try again.');
 
             return;
         }
 
-        // ==============================
-        // REAL SUCCESS ONLY
-        // ==============================
-
+        // Only real successful booking
         if (!data.booking_id) {
-            alert('Booking was not confirmed. Please try again.');
+
+            alert('Booking confirmation failed.');
+
             return;
         }
 
         sessionStorage.removeItem('mx_booking_payload');
 
-        openSuccessReceipt(
-            data.booking_id,
-            payload
-        );
+        openSuccessReceipt(data.booking_id, payload);
 
     } catch (error) {
 
-        console.error('Booking request failed:', error);
+        console.error('Booking error:', error);
 
-        // DO NOT OPEN SUCCESS RECEIPT HERE
-        alert(
-            'Unable to connect to the server. Please check your internet connection and try again.'
-        );
+        // DO NOT SHOW SUCCESS HERE
+        alert('Unable to submit booking. Please try again.');
     }
 }
 
