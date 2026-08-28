@@ -1466,20 +1466,20 @@ $(function () {
         });
 
 
-        // csrf token mismatch then reload
-fetch(url, options)
-    .then(response => {
+        fetch(url, options)
+    .then(async (response) => {
+
         if (response.status === 419) {
             window.location.reload();
-            return;
+            return null;
         }
 
         return response.json();
     })
     .then(data => {
-        if (!data) return;
+        if (data === null) return;
 
-        // normal response handling
+        // your normal code
         console.log(data);
     })
     .catch(error => {
