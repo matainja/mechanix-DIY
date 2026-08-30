@@ -35,7 +35,7 @@ class BookingController extends Controller
 
     public function store(StoreBookingRequest $request)
     {
-        dd(7777);
+        
         return DB::transaction(function () use ($request) {
 
             $date        = $request->date;
