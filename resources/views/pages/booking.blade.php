@@ -1132,7 +1132,7 @@
 
 
 
-    //call to confirm modal
+    {{-- //call to confirm modal --}}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
