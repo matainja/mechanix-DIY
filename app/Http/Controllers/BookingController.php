@@ -155,8 +155,8 @@ class BookingController extends Controller
                 }
             }
             // Notify owner of new booking
-Mail::to(config('services.booking_notify_email'))
-    ->send(new NewBookingNotification($booking));
+// Mail::to(config('services.booking_notify_email'))
+//     ->send(new NewBookingNotification($booking));
             return response()->json([
                 'status'     => true,
                 'booking_id' => $booking->id,
