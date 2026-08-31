@@ -29,7 +29,7 @@ Route::get('/rental/{item}', [RentalController::class, 'details'])->name('rental
 
 //Booking Routes
 Route::get('/booking', [BookingController::class, 'index'])->name('booking');
-Route::post('/booking/confirm', [BookingController::class, 'store'])->name('booking.store');
+// Route::post('/booking/confirm', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking/calendar-data', [BookingController::class, 'calendarData'])->name('booking.calendarData');
 Route::get('/booking/lift-statuses', [BookingController::class, 'getLiftStatuses'])->name('booking.liftStatuses');
 
@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
     Route::put('/profile_update', [UserDashboardController::class, 'update'])->name('user.profile.update');
     Route::get('/profile/settings', [UserDashboardController::class, 'settings'])->name('user.profile.settings');
+      Route::post('/booking/confirm', [BookingController::class, 'store'])->name('booking.store');
 });
 //Loin & Register Popup
 
