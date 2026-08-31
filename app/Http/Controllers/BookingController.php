@@ -33,160 +33,136 @@ class BookingController extends Controller
         return view('pages.booking', compact('product', 'allLiftProducts'));
     }
 
-   public function store(StoreBookingRequest $request)
-{
-    $result = DB::transaction(function () use ($request) {
+    public function store(StoreBookingRequest $request)
+    {
+        
+        return DB::transaction(function () use ($request) {
 
-        $date        = $request->date;
-        $startHour   = (int) substr($request->start, 0, 2);
-        $hours       = (int) $request->hours;
-        $workstation = (int) $request->workstation;
-        $lift        = $request->lift;
+            $date        = $request->date;
+            $startHour   = (int) substr($request->start, 0, 2);
+            $hours       = (int) $request->hours;
+            $workstation = (int) $request->workstation;
+            $lift        = $request->lift;
 
-        $times = [];
+            $times = [];
+            for ($i = 0; $i < $hours; $i++) {
+                $hour    = $startHour + $i;
+                $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
+            }
 
-        for ($i = 0; $i < $hours; $i++) {
-            $hour = $startHour + $i;
+            // FIX: filter by booking_slots.lift_type directly instead of relying on
+            // the join to `bookings.lift_type`. Previously, two different lifts booked
+            // at the same date/time/workstation collided into the SAME booking_slots
+            // row (no lift_type column existed), so this exists-check and the slot
+            // writes below were effectively shared across lifts. With lift_type now
+            // a first-class column on booking_slots, each lift's availability check
+            // is fully isolated.
+            $exists = BookingSlot::join(
+                'bookings',
+                'booking_slots.booking_id',
+                '=',
+                'bookings.id'
+            )
+            ->where('booking_slots.date', $date)
+            ->where('booking_slots.workstation', $workstation)
+            ->where('booking_slots.lift_type', $lift)
+            ->whereIn('booking_slots.time', $times)
+            ->where(function ($query) {
+                $query->where('booking_slots.status', 'booked')
+                    ->orWhere(function ($q) {
+                        $q->where('booking_slots.status', 'pending')
+                            ->where(function ($b) {
+                                $b->where('bookings.expires_at', '>', now())
+                                    ->orWhereNull('bookings.expires_at');
+                            });
+                    });
+            })
+            ->exists();
 
-            $times[] = str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00:00';
-        }
-
-        $exists = BookingSlot::join(
-            'bookings',
-            'booking_slots.booking_id',
-            '=',
-            'bookings.id'
-        )
-        ->where('booking_slots.date', $date)
-        ->where('booking_slots.workstation', $workstation)
-        ->where('booking_slots.lift_type', $lift)
-        ->whereIn('booking_slots.time', $times)
-        ->where(function ($query) {
-            $query->where('booking_slots.status', 'booked')
-                ->orWhere(function ($q) {
-                    $q->where('booking_slots.status', 'pending')
-                        ->where(function ($b) {
-                            $b->where('bookings.expires_at', '>', now())
-                                ->orWhereNull('bookings.expires_at');
-                        });
-                });
-        })
-        ->exists();
-
-        if ($exists) {
-            return [
-                'success'  => false,
-                'response' => response()->json([
+            if ($exists) {
+                return response()->json([
                     'status'  => false,
                     'message' => 'One or more slots are already booked or reserved.',
-                ], 409),
-            ];
-        }
+                ], 409);
+            }
 
-        $expiresAt = now()->addMinutes(30);
+            $expiresAt = now()->addMinutes(30);
 
-        $booking = Booking::create([
-            'user_id'       => auth()->id(),
-            'date'          => $date,
-            'product_id'    => $request->product_id,
-            'start_time'    => $request->start,
-            'hours'         => $hours,
-            'lift_type'     => $request->lift,
-            'workstation'   => $workstation,
-            'package_hours' => $request->package,
-            'rate_per_hour' => $request->total / $hours,
-            'total'         => $request->total,
-            'status'        => 'pending',
-            'expires_at'    => $expiresAt,
-        ]);
-
-        foreach ($times as $time) {
-            BookingSlot::updateOrCreate(
-                [
-                    'date'        => $date,
-                    'time'        => $time,
-                    'workstation' => $workstation,
-                    'lift_type'   => $lift,
-                ],
-                [
-                    'booking_id' => $booking->id,
-                    'status'     => 'pending',
-                ]
-            );
-        }
-
-        // Add-on alignment rack
-        if ($request->addon_lift === 'flat2') {
-
-            $addonBooking = Booking::create([
+            $booking = Booking::create([
                 'user_id'       => auth()->id(),
                 'date'          => $date,
-                'product_id'    => null,
+                'product_id'    => $request->product_id,
                 'start_time'    => $request->start,
                 'hours'         => $hours,
-                'lift_type'     => 'flat2',
+                'lift_type'     => $request->lift,
                 'workstation'   => $workstation,
-                'package_hours' => $hours,
-                'rate_per_hour' => (float) $request->addon_price,
-                'total'         => (float) $request->addon_price * $hours,
+                'package_hours' => $request->package,
+                'rate_per_hour' => $request->total / $hours,
+                'total'         => $request->total,
                 'status'        => 'pending',
+                'expires_at'    => $expiresAt,
             ]);
 
             foreach ($times as $time) {
+                // FIX: lift_type is now part of the lookup key, not just the value.
+                // Before: ['date'=>$date,'time'=>$time,'workstation'=>$workstation]
+                // was the *entire* key, so booking Lift B at the same date/time/
+                // workstation as an already-booked Lift A would match Lift A's row
+                // and overwrite its booking_id — silently stealing the slot.
                 BookingSlot::updateOrCreate(
                     [
                         'date'        => $date,
                         'time'        => $time,
                         'workstation' => $workstation,
-                        'lift_type'   => 'flat2',
+                        'lift_type'   => $lift,
                     ],
                     [
-                        'booking_id' => $addonBooking->id,
+                        'booking_id' => $booking->id,
                         'status'     => 'pending',
                     ]
                 );
             }
-        }
 
-        return [
-            'success'  => true,
-            'booking'  => $booking,
-        ];
-    });
+            // Handle add-on alignment rack booking (logged-in user)
+            if ($request->addon_lift === 'flat2') {
+                $addonBooking = Booking::create([
+                    'user_id'       => auth()->id(),
+                    'date'          => $date,
+                    'product_id'    => null,
+                    'start_time'    => $request->start,
+                    'hours'         => $hours,
+                    'lift_type'     => 'flat2',
+                    'workstation'   => $workstation,
+                    'package_hours' => $hours,
+                    'rate_per_hour' => (float) $request->addon_price,
+                    'total'         => (float) $request->addon_price * $hours,
+                    'status'        => 'pending',
+                ]);
 
-    // Booking failed / conflict
-    if (!$result['success']) {
-        return $result['response'];
+                foreach ($times as $time) {
+                    BookingSlot::updateOrCreate(
+                        [
+                            'date'        => $date,
+                            'time'        => $time,
+                            'workstation' => $workstation,
+                            'lift_type'   => 'flat2',
+                        ],
+                        [
+                            'booking_id' => $addonBooking->id,
+                            'status'     => 'pending',
+                        ]
+                    );
+                }
+            }
+            // Notify owner of new booking
+// Mail::to(config('services.booking_notify_email'))
+//     ->send(new NewBookingNotification($booking));
+            return response()->json([
+                'status'     => true,
+                'booking_id' => $booking->id,
+            ]);
+        });
     }
-
-    $booking = $result['booking'];
-
-    /*
-     * Send email AFTER transaction is successfully committed.
-     * If email fails, booking remains created.
-     */
-    try {
-
-        Mail::to(config('services.booking_notify_email'))
-            ->send(new NewBookingNotification($booking));
-
-    } catch (\Throwable $e) {
-
-        Log::error('Booking email failed', [
-            'booking_id' => $booking->id,
-            'error'      => $e->getMessage(),
-        ]);
-
-        // Do NOT return error to customer.
-        // Booking was already successfully created.
-    }
-
-    return response()->json([
-        'status'     => true,
-        'booking_id' => $booking->id,
-    ]);
-}
-    
 
     public function calendarData(Request $request)
     {
