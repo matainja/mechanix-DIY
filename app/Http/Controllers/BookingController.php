@@ -154,37 +154,36 @@ class BookingController extends Controller
     $booking = $result;
 
     // Transaction has committed — safe to do slow/external work now,
-    // outside any DB lock, and its failure can't roll back the booking.
-    try {
-        $response = Http::withHeaders([
-            'accept'       => 'application/json',
-            'api-key'      => config('services.brevo.key'),
-            'content-type' => 'application/json',
-        ])->timeout(5)->post('https://api.brevo.com/v3/smtp/email', [
-            'sender' => [
-                'name'  => 'Mechanix D.I.Y.',
-                'email' => 'matainja0144@gmail.com',
-            ],
-            'to' => [
-                ['email' => $request->user()->email ?? 'dassomodip123@gmail.com'],
-            ],
-            'subject'     => 'Booking Confirmation',
-            'htmlContent' => "<html><body><h1>Booking Confirmed</h1><p>Booking #{$booking->id}</p></body></html>",
-        ]);
+  try {
+    $notifyEmails = array_filter(array_map('trim', explode(',', config('services.booking_notify_email', ''))));
 
-        if (! $response->successful()) {
-            Log::warning('Brevo mail failed', [
-                'booking_id' => $booking->id,
-                'status'     => $response->status(),
-                'body'       => $response->body(),
-            ]);
-        }
-    } catch (\Throwable $e) {
-        Log::warning('Brevo mail exception', [
+    $response = Http::withHeaders([
+        'accept'       => 'application/json',
+        'api-key'      => config('services.brevo.key'),
+        'content-type' => 'application/json',
+    ])->timeout(5)->post('https://api.brevo.com/v3/smtp/email', [
+        'sender' => [
+            'name'  => 'Mechanix D.I.Y.',
+            'email' => 'matainja0144@gmail.com',
+        ],
+        'to'          => array_map(fn ($email) => ['email' => $email], $notifyEmails),
+        'subject'     => 'New Booking Notification',
+        'htmlContent' => view('emails.new-booking', ['booking' => $booking])->render(),
+    ]);
+
+    if (! $response->successful()) {
+        Log::warning('Brevo mail failed', [
             'booking_id' => $booking->id,
-            'error'      => $e->getMessage(),
+            'status'     => $response->status(),
+            'body'       => $response->body(),
         ]);
     }
+} catch (\Throwable $e) {
+    Log::error('Brevo mail exception', [
+        'booking_id' => $booking->id,
+        'error'      => $e->getMessage(),
+    ]);
+}
 
     return response()->json([
         'status'     => true,
