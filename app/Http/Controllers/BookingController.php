@@ -15,6 +15,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 use App\Mail\NewBookingNotification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class BookingController extends Controller
 {
@@ -155,8 +156,67 @@ class BookingController extends Controller
                 }
             }
             // Notify owner of new booking
-Mail::to(config('services.booking_notify_email'))
-    ->send(new NewBookingNotification($booking));
+// Mail::to(config('services.booking_notify_email'))
+//     ->send(new NewBookingNotification($booking));
+try {
+
+    $response = Http::timeout(20)
+        ->withHeaders([
+            'accept'       => 'application/json',
+            'api-key'      => 'YOUR_BREVO_API_KEY',
+            'content-type' => 'application/json',
+        ])
+        ->post('https://api.brevo.com/v3/smtp/email', [
+            'sender' => [
+                'name'  => 'Mechanix D.I.Y.',
+                'email' => 'matainja0144@gmail.com',
+            ],
+
+            'to' => [
+                [
+                    'email' => 'dassomodip123@gmail.com',
+                ],
+            ],
+
+            'subject' => 'Test Email',
+
+            'htmlContent' => '
+                <html>
+                    <body>
+                        <h1>Test email</h1>
+                        <p>Hello from Laravel server.</p>
+                    </body>
+                </html>
+            ',
+        ]);
+
+    if ($response->successful()) {
+
+        Log::info('Brevo email sent successfully', [
+            'booking_id' => $booking->id ?? null,
+            'response'   => $response->json(),
+        ]);
+
+    } else {
+
+        // Email failed, but DON'T fail the booking
+        Log::error('Brevo email failed', [
+            'booking_id' => $booking->id ?? null,
+            'status'     => $response->status(),
+            'response'   => $response->body(),
+        ]);
+    }
+
+} catch (\Throwable $e) {
+
+    // Brevo/network error
+    // Booking still remains successful
+
+    Log::error('Brevo email exception', [
+        'booking_id' => $booking->id ?? null,
+        'error'      => $e->getMessage(),
+    ]);
+}
             return response()->json([
                 'status'     => true,
                 'booking_id' => $booking->id,
