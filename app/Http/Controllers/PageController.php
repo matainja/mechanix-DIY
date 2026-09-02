@@ -40,13 +40,23 @@ class PageController extends Controller
     {
         return view('pages.privacypolicy');
     }
-        public function commonpage()
-    {
-         $rentals = Product::with(['images', 'prices'])
-            ->latest()
-            ->get(); // Remove the where('status', 1) filter to show all products
+    //     public function commonpage()
+    // {
+    //      $rentals = Product::with(['images', 'prices'])
+    //         ->latest()
+    //         ->get(); // Remove the where('status', 1) filter to show all products
  
-        return view('pages.commonpage', compact('rentals'));
-    }
+    //     return view('pages.commonpage', compact('rentals'));
+    // }
+
+    public function commonpage()
+{
+    $rentals = Product::with(['images', 'prices'])
+        ->where('id', '!=', 22)
+        ->latest()
+        ->get();
+
+    return view('pages.commonpage', compact('rentals'));
+}
 
 }
