@@ -2575,13 +2575,13 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
                 '<input type="checkbox" id="mxAddonAlignmentRack" hidden>' +
 
                 '<img class="mx-addon-image" src="' + productMeta.image + '"' +
-                ' alt="' + productMeta.name + '"' +
-                ' onerror="this.src=\'assets/images/rentals/allignmentrack.jpg\'">' +
+' alt="Alignment Rack"' +
+' onerror="this.src=\'assets/images/rentals/allignmentrack.jpg\'">' +
 
-                '<div class="mx-addon-info">' +
-                    '<span class="mx-hours">' + productMeta.name + '</span>' +
-                    '<span class="mx-price">$' + addonPrice + '</span>' +
-                '</div>' +
+'<div class="mx-addon-info">' +
+    '<span class="mx-hours">Alignment Rack</span>' +
+    '<span class="mx-price">$' + addonPrice + '</span>' +
+'</div>' +
 
             '</label>' +
 
@@ -2687,6 +2687,12 @@ $('#mxsLift').text(getActiveLiftLabel() + ' ($' + getRatePerHour() + '/hr)');
             $('.mx-liftbtn[data-lift="' + liftKey + '"]').trigger('click');
         });
     }
+
+    // ADDED: product mode never called renderAddonSection() — do it here,
+// only for the four-post lift, without touching the direct-booking logic above.
+if (PRODUCT_MODE && selectedLift === 'four') {
+    renderAddonSection();
+}
 
     /* ================================================================
        BOOK NOW → time-slot view

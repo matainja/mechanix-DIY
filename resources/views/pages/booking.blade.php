@@ -176,7 +176,7 @@
                     </svg>
                     Booking: <strong>{{ $productLiftName }}</strong>
                     &nbsp;—&nbsp;
-                    <a href="{{ route('rentals') }}" class="mx-product-change">Change product</a>
+                    <a href="{{ route('commonpage') }}" class="mx-product-change">Change product</a>
                 </div>
 
                 <div id="mxProductMeta" data-product-mode="1" data-lift-key="{{ $productLiftKey }}"
@@ -189,7 +189,31 @@
             <div class="mx-main">
 
                 <div class="mx-left" id="liftSection">
+ {{-- ADDED: same data the direct-booking branch already has, so the
+         alignment-rack add-on can render for product-mode too --}}
+    <script id="mxAllLiftPrices" type="application/json">
+        {!! json_encode($allLiftPricesJson, JSON_UNESCAPED_UNICODE) !!}
+    </script>
 
+    @php
+        $alignmentProduct = $allLiftProducts->first(function ($p) {
+            return str_contains(strtolower($p->name), 'alignment');
+        });
+        $alignmentImage = $alignmentProduct
+            ? $alignmentProduct->images->firstWhere('is_default', 1) ??
+                $alignmentProduct->images->first()
+            : null;
+    @endphp
+
+    <script id="mxAddonProductData" type="application/json">
+{!! json_encode([
+    'name'        => Alignment Rack,
+    'description' => $alignmentProduct->description ?? '',
+    'image'       => $alignmentImage
+                        ? asset('storage/' . $alignmentImage->image_path)
+                        : asset('assets/images/rentals/allignmentrack.jpg'),
+], JSON_UNESCAPED_UNICODE) !!}
+    </script>
                     @if ($isProductMode)
                         @foreach ($product->prices as $price)
                             <div class="mx-pricecard {{ $loop->first ? 'mx-selected' : '' }}"
