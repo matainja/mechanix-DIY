@@ -50,7 +50,7 @@
                 }
             }
             $liftNames = [
-                'four' => 'Four-Post Lift',
+                'four' => 'Four-Post Lift / Alignment Rack',
                 'two' => 'Two-Post Lift',
                 'scissor' => 'Scissor Lift',
                 'flat' => 'Motorcycle Lift',
@@ -127,7 +127,7 @@
                             <i class="bi bi-chevron-down"></i>
                         </button>
                         <ul class="dropdown-menu w-100" id="mxLiftDropdownMenu">
-                            <li><a class="dropdown-item" data-lift="four" href="#">Four-Post Lift</a></li>
+                            <li><a class="dropdown-item" data-lift="four" href="#">Four-Post Lift / Allignment Rack</a></li>
                             <li><a class="dropdown-item" data-lift="two" href="#">Two-Post Lift</a></li>
                             <li><a class="dropdown-item" data-lift="scissor" href="#">Scissor Lift</a></li>
                             <li><a class="dropdown-item" data-lift="flat" href="#">Motorcycle Lift</a></li>
@@ -139,7 +139,7 @@
                 <div class="mx-liftbar">
                     <button class="mx-liftbtn" data-lift="four">
                         <img src="{{ asset('assets/images/icons/four-post.png') }}" class="mx-ic" alt="">
-                        <span>Four-Post Style Lift</span>
+                        <span>Four-Post Style Lift / Allignment Rack</span>
                     </button>
                     <button class="mx-liftbtn mx-redmark" data-lift="two">
                         <img src="{{ asset('assets/images/icons/two-post.png') }}" class="mx-ic" alt="">
