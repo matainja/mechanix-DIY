@@ -97,7 +97,7 @@
                         </div>
                     </div>
 
-
+<br>
                     {{-- BOOK BUTTON --}}
                     <a href="{{ route('booking', ['product_id'=>$rental->id]) }}" class="details-bookbtn">
                         Book Now
