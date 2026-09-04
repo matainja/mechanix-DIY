@@ -207,7 +207,7 @@
 
     <script id="mxAddonProductData" type="application/json">
 {!! json_encode([
-    'name'        => Alignment Rack,
+    'name'        => $alignmentProduct->name ?? 'Alignment Rack',
     'description' => $alignmentProduct->description ?? '',
     'image'       => $alignmentImage
                         ? asset('storage/' . $alignmentImage->image_path)
